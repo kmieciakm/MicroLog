@@ -8,11 +8,12 @@ namespace MicroLog.Core
 {
     public interface ILogger
     {
-        void LogTrace();
-        void LogDebug();
-        void LogInformation();
-        void LogWarning();
-        void LogError();
-        void LogCritical();
+        public bool ShouldLog(LogLevel level);
+        Task LogTraceAsync(string message);
+        Task LogDebugAsync(string message);
+        Task LogInformationAsync(string message);
+        Task LogWarningAsync(string message, Exception exception = null);
+        Task LogErrorAsync(string message, Exception exception = null);
+        Task LogCriticalAsync(string message, Exception exception = null);
     }
 }

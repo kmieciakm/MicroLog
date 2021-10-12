@@ -1,4 +1,5 @@
-﻿using MicroLog.Core.Infrastructure;
+﻿using MicroLog.Core.Config;
+using MicroLog.Core.Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,34 +23,39 @@ namespace MicroLog.Core
             _Config = config;
         }
 
-        public void LogCritical()
+        public bool ShouldLog(LogLevel level)
+            => level >= _Config.MinimumLevel;
+
+        private async Task LogAsync(LogLevel level, string message, Exception exception = null)
         {
-            throw new NotImplementedException();
+            if (ShouldLog(level))
+            {
+                var logEvent = new LogEvent(_Config.ServiceName)
+                {
+                    Level = level,
+                    Message = message,
+                    Exception = exception
+                };
+                await _LogSink.InsertAsync(logEvent);
+            }
         }
 
-        public void LogDebug()
-        {
-            throw new NotImplementedException();
-        }
+        public async Task LogTraceAsync(string message)
+            => await LogAsync(LogLevel.Trace, message);
 
-        public void LogError()
-        {
-            throw new NotImplementedException();
-        }
+        public async Task LogDebugAsync(string message)
+            => await LogAsync(LogLevel.Debug, message);
 
-        public void LogInformation()
-        {
-            throw new NotImplementedException();
-        }
+        public async Task LogInformationAsync(string message)
+            => await LogAsync(LogLevel.Information, message);
 
-        public void LogTrace()
-        {
-            throw new NotImplementedException();
-        }
+        public async Task LogWarningAsync(string message, Exception exception = null)
+            => await LogAsync(LogLevel.Warning, message, exception);
 
-        public void LogWarning()
-        {
-            throw new NotImplementedException();
-        }
+        public async Task LogErrorAsync(string message, Exception exception = null)
+            => await LogAsync(LogLevel.Error, message, exception);
+
+        public async Task LogCriticalAsync(string message, Exception exception = null)
+            => await LogAsync(LogLevel.Critical, message, exception);
     }
 }

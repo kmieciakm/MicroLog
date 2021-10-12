@@ -8,6 +8,7 @@ namespace MicroLog.Core
 {
     public interface ILogEventIdentity
     {
-        string Id { get; set; }
+        string EventId { get; init; }
+        string ServiceId { get; init; }
     }
 }

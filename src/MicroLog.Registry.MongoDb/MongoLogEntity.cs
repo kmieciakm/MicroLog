@@ -11,22 +11,23 @@ using System.Threading.Tasks;
 
 namespace MicroLog.Registry.MongoDb
 {
-    public class LogEntity : ILogEvent
+    public class MongoLogEntity : ILogEvent
     {
         [BsonId]
-        public ILogEventIdentity Identity { get; set; }
+        public ILogEventIdentity Identity { get; private set; }
         public string Message { get; set; }
         [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
-        public DateTime Timestamp { get; set; }
+        public DateTime Timestamp { get; init; }
         public LogLevel Level { get; set; }
         public Exception Exception { get; set; }
 
-        public LogEntity()
+        public MongoLogEntity()
         {
-            Identity = new LogIdentity();
+            Identity = new MongoLogIdentity();
+            Timestamp = DateTime.Now;
         }
 
-        public LogEntity(LogIdentity identity, string message, DateTime timestamp, LogLevel level, Exception exception)
+        public MongoLogEntity(MongoLogIdentity identity, string message, DateTime timestamp, LogLevel level, Exception exception)
         {
             Identity = identity;
             Message = message;
@@ -37,7 +38,7 @@ namespace MicroLog.Registry.MongoDb
 
         public override bool Equals(object obj)
         {
-            return obj is LogEntity entity &&
+            return obj is MongoLogEntity entity &&
                    Identity.Equals(entity.Identity) &&
                    Message == entity.Message &&
                    new DateComparer().Equals(Timestamp, entity.Timestamp) &&

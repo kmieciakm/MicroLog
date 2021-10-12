@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MicroLog.Core
+namespace MicroLog.Core.Config
 {
     public class MicroLogConfig
     {

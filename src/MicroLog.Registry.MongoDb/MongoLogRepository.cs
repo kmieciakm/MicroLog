@@ -10,11 +10,11 @@ using System.Threading.Tasks;
 
 namespace MicroLog.Registry.MongoDb
 {
-    public class LogRepository : ILogSink, ILogRegistry
+    public class MongoLogRepository : ILogSink, ILogRegistry
     {
-        private IMongoCollection<LogEntity> _Collection { get; }
+        private IMongoCollection<MongoLogEntity> _Collection { get; }
 
-        public LogRepository(IMongoCollection<LogEntity> collection)
+        public MongoLogRepository(IMongoCollection<MongoLogEntity> collection)
         {
             _Collection = collection;
         }
@@ -33,20 +33,20 @@ namespace MicroLog.Registry.MongoDb
 
         async Task<IEnumerable<ILogEvent>> ILogRegistry.GetAsync(Expression<Func<ILogEvent, bool>> predicate)
         {
-            Func<LogEntity, bool> func = predicate.Compile();
+            Func<MongoLogEntity, bool> func = predicate.Compile();
             using var entities = await _Collection.FindAsync(entity => func.Invoke(entity));
             return entities.ToEnumerable();
         }
 
         async Task ILogSink.InsertAsync(ILogEvent logEntity)
         {
-            var entity = logEntity as LogEntity;
+            var entity = logEntity as MongoLogEntity;
             await _Collection.InsertOneAsync(entity);
         }
 
         async Task ILogSink.InsertAsync(IEnumerable<ILogEvent> logEntities)
         {
-            var entities = logEntities as IEnumerable<LogEntity>;
+            var entities = logEntities as IEnumerable<MongoLogEntity>;
             await _Collection.InsertManyAsync(entities);
         }
     }

@@ -8,9 +8,9 @@ namespace MicroLog.Core
 {
     public interface ILogEvent
     {
-        ILogEventIdentity Identity { get; set; }
+        ILogEventIdentity Identity { get; }
         string Message { get; set; }
-        DateTime Timestamp { get; set; }
+        DateTime Timestamp { get; init; }
         LogLevel Level { get; set; }
         Exception Exception { get; set; }
     }

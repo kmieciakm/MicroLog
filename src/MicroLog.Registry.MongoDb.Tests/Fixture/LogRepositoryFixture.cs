@@ -10,24 +10,24 @@ namespace MicroLog.Registry.MongoDb.Tests.Fixture
 {
     public abstract class LogRepositoryFixture : MongoIntegrationFixture
     {
-        private static IMongoCollection<LogEntity> CreateMongoTestCollection(string connectionString)
+        private static IMongoCollection<MongoLogEntity> CreateMongoTestCollection(string connectionString)
         {
             var client = new MongoClient(connectionString);
             var database = client.GetDatabase("TestDatabase");
-            var collection = database.GetCollection<LogEntity>("TestCollection");
+            var collection = database.GetCollection<MongoLogEntity>("TestCollection");
             return collection;
         }
 
         protected static ILogSink CreateMongoLogSink(string connectionString)
         {
             var collection = CreateMongoTestCollection(connectionString);
-            return new LogRepository(collection);
+            return new MongoLogRepository(collection);
         }
 
         protected static ILogRegistry CreateMongoLogRegistry(string connectionString)
         {
             var collection = CreateMongoTestCollection(connectionString);
-            return new LogRepository(collection);
+            return new MongoLogRepository(collection);
         }
     }
 }

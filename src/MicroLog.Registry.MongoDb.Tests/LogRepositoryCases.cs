@@ -17,12 +17,10 @@ namespace MicroLog.Registry.MongoDb.Tests
             var logSink = CreateMongoLogSink(connectionString);
             var logRegistry = CreateMongoLogRegistry(connectionString);
 
-            var logEvent = new LogEntity()
+            var logEvent = new MongoLogEntity()
             {
-                Identity = new LogIdentity(),
                 Level = LogLevel.Information,
-                Message = "Works !!!",
-                Timestamp = DateTime.Now
+                Message = "Works !!!"
             };
 
             logSink.InsertAsync(logEvent).Wait();
