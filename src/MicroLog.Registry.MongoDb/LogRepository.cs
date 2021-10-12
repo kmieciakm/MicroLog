@@ -1,5 +1,6 @@
 ﻿using MicroLog.Core;
 using MicroLog.Core.Infrastructure;
+using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,29 +12,42 @@ namespace MicroLog.Registry.MongoDb
 {
     public class LogRepository : ILogSink, ILogRegistry
     {
-        Task<ILogEvent> ILogRegistry.GetAsync(ILogEventIdentity id)
+        private IMongoCollection<LogEntity> _Collection { get; }
+
+        public LogRepository(IMongoCollection<LogEntity> collection)
         {
-            throw new NotImplementedException();
+            _Collection = collection;
         }
 
-        Task<IEnumerable<ILogEvent>> ILogRegistry.GetAsync(IEnumerable<ILogEventIdentity> ids)
+        async Task<ILogEvent> ILogRegistry.GetAsync(ILogEventIdentity identity)
         {
-            throw new NotImplementedException();
+            using var entity = await _Collection.FindAsync(entity => entity.Identity == identity);
+            return entity.FirstOrDefault();
         }
 
-        Task<IEnumerable<ILogEvent>> ILogRegistry.GetAsync(Expression<Func<ILogEvent, bool>> predicate)
+        async Task<IEnumerable<ILogEvent>> ILogRegistry.GetAsync(IEnumerable<ILogEventIdentity> identities)
         {
-            throw new NotImplementedException();
+            using var entity = await _Collection.FindAsync(entity => entity.Identity == identities);
+            return entity.ToEnumerable();
         }
 
-        Task ILogSink.InsertAsync(ILogEvent logEntity)
+        async Task<IEnumerable<ILogEvent>> ILogRegistry.GetAsync(Expression<Func<ILogEvent, bool>> predicate)
         {
-            throw new NotImplementedException();
+            Func<LogEntity, bool> func = predicate.Compile();
+            using var entities = await _Collection.FindAsync(entity => func.Invoke(entity));
+            return entities.ToEnumerable();
         }
 
-        Task ILogSink.InsertAsync(IEnumerable<ILogEvent> logEntities)
+        async Task ILogSink.InsertAsync(ILogEvent logEntity)
         {
-            throw new NotImplementedException();
+            var entity = logEntity as LogEntity;
+            await _Collection.InsertOneAsync(entity);
+        }
+
+        async Task ILogSink.InsertAsync(IEnumerable<ILogEvent> logEntities)
+        {
+            var entities = logEntities as IEnumerable<LogEntity>;
+            await _Collection.InsertManyAsync(entities);
         }
     }
 }

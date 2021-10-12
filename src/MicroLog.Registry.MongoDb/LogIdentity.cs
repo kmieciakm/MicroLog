@@ -11,8 +11,32 @@ namespace MicroLog.Registry.MongoDb
 {
     public class LogIdentity : ILogEventIdentity
     {
-        [BsonId]
-        [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
+
+        public LogIdentity()
+        {
+            Id = ObjectId.GenerateNewId().ToString();
+        }
+
+        public LogIdentity(string id)
+        {
+            Id = id;
+        }
+
+        public LogIdentity(ObjectId id)
+        {
+            Id = id.ToString();
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is LogIdentity identity &&
+                   Id == identity.Id;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Id);
+        }
     }
 }

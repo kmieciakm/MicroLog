@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MicroLog.Registry.MongoDb
+namespace MicroLog.Registry.MongoDb.Config
 {
     public class MicroLogMongoDbConfig
     {

@@ -5,9 +5,11 @@ VisualStudioVersion = 16.0.31702.278
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroLog.Core", "MicroLog.Core\MicroLog.Core.csproj", "{DFF1E84F-514C-4D0A-8CA6-1C0EC6D20AE2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroLog.Registry.MongoDb", "MicroLog.Registry.MongoDb\MicroLog.Registry.MongoDb.csproj", "{82DCD81E-3A95-4643-A987-B79417CA772D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroLog.Registry.MongoDb", "MicroLog.Registry.MongoDb\MicroLog.Registry.MongoDb.csproj", "{82DCD81E-3A95-4643-A987-B79417CA772D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroLog.Provider.AspNetCore", "MicroLog.Provider.AspNetCore\MicroLog.Provider.AspNetCore.csproj", "{EE6E9E58-EE2D-4B73-8B89-8B1DF133623E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroLog.Provider.AspNetCore", "MicroLog.Provider.AspNetCore\MicroLog.Provider.AspNetCore.csproj", "{EE6E9E58-EE2D-4B73-8B89-8B1DF133623E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroLog.Registry.MongoDb.Tests", "MicroLog.Registry.MongoDb.Tests\MicroLog.Registry.MongoDb.Tests.csproj", "{C9A8AE5B-FA45-45C7-BA3B-5CB82C504A88}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{EE6E9E58-EE2D-4B73-8B89-8B1DF133623E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EE6E9E58-EE2D-4B73-8B89-8B1DF133623E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EE6E9E58-EE2D-4B73-8B89-8B1DF133623E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C9A8AE5B-FA45-45C7-BA3B-5CB82C504A88}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C9A8AE5B-FA45-45C7-BA3B-5CB82C504A88}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C9A8AE5B-FA45-45C7-BA3B-5CB82C504A88}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C9A8AE5B-FA45-45C7-BA3B-5CB82C504A88}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

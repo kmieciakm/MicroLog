@@ -9,8 +9,8 @@ namespace MicroLog.Core.Infrastructure
 {
     public interface ILogRegistry
     {
-        Task<ILogEvent> GetAsync(ILogEventIdentity id);
-        Task<IEnumerable<ILogEvent>> GetAsync(IEnumerable<ILogEventIdentity> ids);
+        Task<ILogEvent> GetAsync(ILogEventIdentity identity);
+        Task<IEnumerable<ILogEvent>> GetAsync(IEnumerable<ILogEventIdentity> identities);
         Task<IEnumerable<ILogEvent>> GetAsync(Expression<Func<ILogEvent, bool>> predicate);
     }
 }
