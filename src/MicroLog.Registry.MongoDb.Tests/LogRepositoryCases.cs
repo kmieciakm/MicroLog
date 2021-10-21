@@ -2,9 +2,9 @@ using MicroLog.Core;
 using System;
 using Xunit;
 using Shouldly;
-using MicroLog.Registry.MongoDb.Tests.Fixture;
+using MicroLog.Driver.MongoDb.Tests.Fixture;
 
-namespace MicroLog.Registry.MongoDb.Tests
+namespace MicroLog.Driver.MongoDb.Tests
 {
     public class LogRepositoryCases : LogRepositoryFixture
     {

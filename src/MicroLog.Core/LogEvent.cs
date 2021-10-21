@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MicroLog.Core.Abstractions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MicroLog.Core
 {
-    class LogEvent : ILogEvent
+    public class LogEvent : ILogEvent
     {
         public ILogEventIdentity Identity { get; }
         public string Message { get; set; }
@@ -14,9 +15,9 @@ namespace MicroLog.Core
         public LogLevel Level { get; set; }
         public Exception Exception { get; set; }
 
-        public LogEvent(string serviceId)
+        public LogEvent()
         {
-            Identity = new LogIdentity(serviceId);
+            Identity = new LogIdentity();
             Timestamp = DateTime.Now;
         }
 

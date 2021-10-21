@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MicroLog.Registry.MongoDb.Utils
+namespace MicroLog.Driver.MongoDb.Utils
 {
-    public class DateComparer : IEqualityComparer<DateTime>
+    class DateComparer : IEqualityComparer<DateTime>
     {
         public bool Equals(DateTime x, DateTime y)
         {

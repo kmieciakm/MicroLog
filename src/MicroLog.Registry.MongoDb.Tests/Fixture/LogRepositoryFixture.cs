@@ -1,4 +1,4 @@
-﻿using MicroLog.Core.Infrastructure;
+﻿using MicroLog.Core.Abstractions;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MicroLog.Registry.MongoDb.Tests.Fixture
+namespace MicroLog.Driver.MongoDb.Tests.Fixture
 {
     public abstract class LogRepositoryFixture : MongoIntegrationFixture
     {

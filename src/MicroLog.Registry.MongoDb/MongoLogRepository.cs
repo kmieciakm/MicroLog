@@ -1,5 +1,4 @@
-﻿using MicroLog.Core;
-using MicroLog.Core.Infrastructure;
+﻿using MicroLog.Core.Abstractions;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
@@ -8,7 +7,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MicroLog.Registry.MongoDb
+namespace MicroLog.Driver.MongoDb
 {
     public class MongoLogRepository : ILogSink, ILogRegistry
     {

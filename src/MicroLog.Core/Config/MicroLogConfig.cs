@@ -8,7 +8,7 @@ namespace MicroLog.Core.Config
 {
     public class MicroLogConfig
     {
-        public string ServiceName { get; set; }
+        public string Url { get; set; }
         public LogLevel MinimumLevel { get; set; }
     }
 }

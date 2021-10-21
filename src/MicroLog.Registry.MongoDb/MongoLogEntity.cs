@@ -1,15 +1,14 @@
 ﻿using MicroLog.Core;
-using MicroLog.Core.Infrastructure;
-using MicroLog.Registry.MongoDb.Utils;
+using MicroLog.Core.Abstractions;
+using MicroLog.Driver.MongoDb.Utils;
 using MongoDB.Bson.Serialization.Attributes;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MicroLog.Registry.MongoDb
+namespace MicroLog.Driver.MongoDb
 {
     public class MongoLogEntity : ILogEvent
     {

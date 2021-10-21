@@ -1,6 +1,6 @@
 ﻿using System;
 using Microsoft.Extensions.Logging;
-using IMicroLogger = MicroLog.Core.ILogger;
+using IMicroLogger = MicroLog.Core.Abstractions.ILogger;
 
 namespace MicroLog.Provider.AspNetCore
 {

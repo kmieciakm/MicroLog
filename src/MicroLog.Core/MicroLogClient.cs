@@ -1,42 +1,41 @@
-﻿using MicroLog.Core.Config;
-using MicroLog.Core.Infrastructure;
+﻿using MicroLog.Core.Abstractions;
+using MicroLog.Core.Config;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace MicroLog.Core
 {
-    public class MicroLogger : ILogger
+    public class MicroLogClient : ILogger
     {
-        private ILogSink _LogSink { get; set; }
+        private HttpClient _HttpClient { get; set; }
         private MicroLogConfig _Config { get; set; }
 
-        public MicroLogger(ILogSink logSink)
-        {
-            _LogSink = logSink;
-        }
-
-        public MicroLogger(ILogSink logSink, MicroLogConfig config) : this(logSink)
+        public MicroLogClient(MicroLogConfig config)
         {
             _Config = config;
         }
 
-        public bool ShouldLog(LogLevel level)
+        private bool ShouldLog(LogLevel level)
             => level >= _Config.MinimumLevel;
 
         private async Task LogAsync(LogLevel level, string message, Exception exception = null)
         {
             if (ShouldLog(level))
             {
-                var logEvent = new LogEvent(_Config.ServiceName)
+                var logEvent = new LogEvent()
                 {
                     Level = level,
                     Message = message,
                     Exception = exception
                 };
-                await _LogSink.InsertAsync(logEvent);
+                var content = JsonSerializer.Serialize(logEvent);
+                var body = new StringContent(content, Encoding.UTF8, "application/json");
+                await _HttpClient.PostAsync(_Config.Url, body);
             }
         }
 

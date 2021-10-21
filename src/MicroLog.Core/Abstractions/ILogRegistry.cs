@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MicroLog.Core.Infrastructure
+namespace MicroLog.Core.Abstractions
 {
     public interface ILogRegistry
     {

@@ -4,11 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MicroLog.Core
+namespace MicroLog.Core.Abstractions
 {
     public interface ILogger
     {
-        public bool ShouldLog(LogLevel level);
         Task LogTraceAsync(string message);
         Task LogDebugAsync(string message);
         Task LogInformationAsync(string message);
