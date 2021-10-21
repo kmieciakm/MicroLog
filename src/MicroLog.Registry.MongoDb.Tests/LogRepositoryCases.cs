@@ -14,7 +14,7 @@ namespace MicroLog.Driver.MongoDb.Tests
             using var db = Container().Start();
             var connectionString = GetConnectionString(db);
 
-            var logSink = CreateMongoLogSink(connectionString);
+            var logCollector = CreateMongoLogCollector(connectionString);
             var logRegistry = CreateMongoLogRegistry(connectionString);
 
             var logEvent = new MongoLogEntity()
@@ -23,7 +23,7 @@ namespace MicroLog.Driver.MongoDb.Tests
                 Message = "Works !!!"
             };
 
-            logSink.InsertAsync(logEvent).Wait();
+            logCollector.InsertAsync(logEvent).Wait();
             var log = logRegistry.GetAsync(logEvent.Identity).GetAwaiter().GetResult();
 
             log.ShouldBe(logEvent);

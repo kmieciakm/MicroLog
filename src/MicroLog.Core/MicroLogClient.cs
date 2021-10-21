@@ -10,20 +10,39 @@ using System.Threading.Tasks;
 
 namespace MicroLog.Core
 {
+    class MicroLogRoutes
+    {
+        private string _Base { get; init; }
+        public string Insert
+        {
+            get
+            {
+                return $"{_Base}/insert";
+            }
+        }
+
+        public MicroLogRoutes(string url)
+        {
+            _Base = $"{url}/api/sink";
+        }
+    }
+
     public class MicroLogClient : ILogger
     {
         private HttpClient _HttpClient { get; set; }
         private MicroLogConfig _Config { get; set; }
+        private MicroLogRoutes _Routes { get; set; }
 
         public MicroLogClient(MicroLogConfig config)
         {
             _Config = config;
+            _Routes = new MicroLogRoutes(config.Url);
         }
 
-        private bool ShouldLog(LogLevel level)
+        public bool ShouldLog(LogLevel level)
             => level >= _Config.MinimumLevel;
 
-        private async Task LogAsync(LogLevel level, string message, Exception exception = null)
+        public async Task LogAsync(LogLevel level, string message, Exception exception = null)
         {
             if (ShouldLog(level))
             {
@@ -35,7 +54,7 @@ namespace MicroLog.Core
                 };
                 var content = JsonSerializer.Serialize(logEvent);
                 var body = new StringContent(content, Encoding.UTF8, "application/json");
-                await _HttpClient.PostAsync(_Config.Url, body);
+                await _HttpClient.PostAsync(_Routes.Insert, body);
             }
         }
 

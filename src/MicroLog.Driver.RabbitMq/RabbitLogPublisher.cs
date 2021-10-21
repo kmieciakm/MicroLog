@@ -9,37 +9,24 @@ using System.Threading.Tasks;
 
 namespace MicroLog.Driver.RabbitMq
 {
-    public class RabbitLogPublisher : ILogSink
+    public class RabbitLogPublisher : RabbitLogBase, ILogCollector
     {
-        private ConnectionFactory _ConnectionFactory { get; set; }
-        private string _QueueName { get; set; }
-
         public RabbitLogPublisher(RabbitLogConfig rabbitConfig)
+            : base(rabbitConfig)
         {
-            _ConnectionFactory = new ConnectionFactory
-            {
-                HostName = rabbitConfig.HostName,
-                Port = rabbitConfig.Port,
-                UserName = rabbitConfig.UserName,
-                Password = rabbitConfig.Password
-            };
-            _QueueName = rabbitConfig.Queue;
         }
 
         public Task InsertAsync(ILogEvent logEntity)
         {
-            using (IConnection connection = _ConnectionFactory.CreateConnection())
+            using (IConnection connection = ConnectionFactory.CreateConnection())
             {
                 using (IModel channel = connection.CreateModel())
                 {
-                    channel.QueueDeclare(
-                        queue: _QueueName,
-                        durable: true,
-                        exclusive: false,
-                        autoDelete: false);
+                    DeclareQueue(channel);
 
+                    var prop = GetProperties(channel, logEntity);
                     var body = JsonSerializer.SerializeToUtf8Bytes(logEntity);
-                    channel.BasicPublish("", _QueueName, null, body);
+                    channel.BasicPublish("", QueueName, prop, body);
                 }
             }
             return Task.CompletedTask;
@@ -47,24 +34,23 @@ namespace MicroLog.Driver.RabbitMq
 
         public Task InsertAsync(IEnumerable<ILogEvent> logEntities)
         {
-            using (IConnection connection = _ConnectionFactory.CreateConnection())
+            using (IConnection connection = ConnectionFactory.CreateConnection())
             {
                 using (IModel channel = connection.CreateModel())
                 {
-                    channel.QueueDeclare(
-                        queue: _QueueName,
-                        durable: true,
-                        exclusive: false,
-                        autoDelete: false);
+                    DeclareQueue(channel);
 
                     ReadOnlyMemory<byte> body;
-                    var basicPublishBatch = channel.CreateBasicPublishBatch();
+                    IBasicProperties prop;
+                    IBasicPublishBatch basicPublishBatch = channel.CreateBasicPublishBatch();
+
                     foreach (var log in logEntities)
                     {
+                        prop = GetProperties(channel, log);
                         body = JsonSerializer.SerializeToUtf8Bytes(log);
-                        basicPublishBatch.Add("", _QueueName, false, null, body);
+                        basicPublishBatch.Add("", QueueName, false, prop, body);
                     }
-                    
+
                     basicPublishBatch.Publish();
                 }
             }

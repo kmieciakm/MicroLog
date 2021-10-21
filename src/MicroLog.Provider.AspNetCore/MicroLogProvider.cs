@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.Extensions.Logging;
 using IMicroLogger = MicroLog.Core.Abstractions.ILogger;
+using IMicroLogLevel = MicroLog.Core.LogLevel;
 
 namespace MicroLog.Provider.AspNetCore
 {
@@ -15,17 +16,31 @@ namespace MicroLog.Provider.AspNetCore
 
         public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
         {
-            throw new NotImplementedException();
+            var level = ConvertLogLevel(logLevel);
+            _Logger.LogAsync(level, formatter(state, exception), exception);
         }
 
         public bool IsEnabled(LogLevel logLevel)
         {
-            throw new NotImplementedException();
+            var level = ConvertLogLevel(logLevel);
+            return _Logger.ShouldLog(level);
         }
 
-        public IDisposable BeginScope<TState>(TState state)
+        public IDisposable BeginScope<TState>(TState state) => default;
+
+        private static IMicroLogLevel ConvertLogLevel(LogLevel logLevel)
         {
-            throw new NotImplementedException();
+            return logLevel switch
+            {
+                LogLevel.Trace => IMicroLogLevel.Trace,
+                LogLevel.Debug => IMicroLogLevel.Debug,
+                LogLevel.Information => IMicroLogLevel.Information,
+                LogLevel.Warning => IMicroLogLevel.Warning,
+                LogLevel.Error => IMicroLogLevel.Error,
+                LogLevel.Critical => IMicroLogLevel.Critical,
+                LogLevel.None => IMicroLogLevel.None,
+                _ => IMicroLogLevel.None
+            };
         }
     }
 }

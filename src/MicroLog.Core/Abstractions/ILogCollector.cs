@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MicroLog.Core.Abstractions
 {
-    public interface ILogSink
+    public interface ILogCollector
     {
         Task InsertAsync(ILogEvent logEntity);
         Task InsertAsync(IEnumerable<ILogEvent> logEntities);

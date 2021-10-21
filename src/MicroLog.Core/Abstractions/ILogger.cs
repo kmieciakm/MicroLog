@@ -8,6 +8,8 @@ namespace MicroLog.Core.Abstractions
 {
     public interface ILogger
     {
+        bool ShouldLog(LogLevel level);
+        Task LogAsync(LogLevel level, string message, Exception exception = null);
         Task LogTraceAsync(string message);
         Task LogDebugAsync(string message);
         Task LogInformationAsync(string message);

@@ -18,7 +18,7 @@ namespace MicroLog.Driver.MongoDb.Tests.Fixture
             return collection;
         }
 
-        protected static ILogSink CreateMongoLogSink(string connectionString)
+        protected static ILogCollector CreateMongoLogCollector(string connectionString)
         {
             var collection = CreateMongoTestCollection(connectionString);
             return new MongoLogRepository(collection);

@@ -14,9 +14,9 @@ namespace MicroLog.Core
     [Route("api/sink")]
     public class MicroLog : ControllerBase
     {
-        private ILogSink _LogSink { get; set; }
+        private ILogCollector _LogSink { get; set; }
 
-        public MicroLog(ILogSink logSink)
+        public MicroLog(ILogCollector logSink)
         {
             _LogSink = logSink;
         }
