@@ -25,7 +25,7 @@ namespace MicroLog.Sink.MongoDb
         {
             var client = new MongoClient(config.ConnectionString);
             _Database = client.GetDatabase(config.DatabaseName);
-            _Collection = _Database.GetCollection<MongoLogEntity>("Logs");
+            _Collection = _Database.GetCollection<MongoLogEntity>("logs");
         }
 
         async Task<ILogEvent> ILogRegistry.GetAsync(ILogEventIdentity identity)

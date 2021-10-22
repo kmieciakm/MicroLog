@@ -1,3 +1,4 @@
+using MicroLog.Collector.Config;
 using MicroLog.Collector.RabbitMq;
 using MicroLog.Collector.RabbitMq.Config;
 using MicroLog.Collector.Workers;
@@ -31,13 +32,19 @@ namespace MicroLog.Collector
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.Configure<MongoSinkConfig>(Configuration.GetSection("MongoSinkConfig"));
-            services.AddSingleton<ILogSink, MongoLogRepository>();
+            services.Configure<SinksConfig>(
+                Configuration
+                    .GetSection("Sinks"));
 
-            services.Configure<RabbitCollectorConfig>(Configuration.GetSection("RabbitCollectorConfig"));
+            services.RegisterSinks();
+
+            services.Configure<RabbitCollectorConfig>(
+                Configuration
+                    .GetSection("Collector")
+                    .GetSection("RabbitMq"));
             services.AddSingleton<ILogPublisher, RabbitLogPublisher>();
-            services.AddSingleton<ILogConsumer, RabbitLogConsumer>();
 
+            services.AddSingleton<ILogConsumer, RabbitLogConsumer>();
             services.AddHostedService<LogProcessor>();
 
             services.AddControllers();
