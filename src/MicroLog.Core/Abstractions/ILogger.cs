@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace MicroLog.Core.Abstractions
 {
+    /// <summary>
+    /// Asynchronous logger. 
+    /// </summary>
     public interface ILogger
     {
         bool ShouldLog(LogLevel level);

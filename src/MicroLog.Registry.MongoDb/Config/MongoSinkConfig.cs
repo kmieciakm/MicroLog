@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MicroLog.Driver.MongoDb.Config
+namespace MicroLog.Sink.MongoDb.Config
 {
-    public class MongoDbLogConfig
+    public class MongoSinkConfig
     {
         public string ConnectionString { get; set; }
         public string DatabaseName { get; set; }

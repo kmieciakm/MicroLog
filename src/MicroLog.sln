@@ -5,13 +5,17 @@ VisualStudioVersion = 16.0.31702.278
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroLog.Core", "MicroLog.Core\MicroLog.Core.csproj", "{DFF1E84F-514C-4D0A-8CA6-1C0EC6D20AE2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroLog.Driver.MongoDb", "MicroLog.Registry.MongoDb\MicroLog.Driver.MongoDb.csproj", "{82DCD81E-3A95-4643-A987-B79417CA772D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroLog.Sink.MongoDb", "MicroLog.Registry.MongoDb\MicroLog.Sink.MongoDb.csproj", "{82DCD81E-3A95-4643-A987-B79417CA772D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroLog.Provider.AspNetCore", "MicroLog.Provider.AspNetCore\MicroLog.Provider.AspNetCore.csproj", "{EE6E9E58-EE2D-4B73-8B89-8B1DF133623E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroLog.Driver.MongoDb.Tests", "MicroLog.Registry.MongoDb.Tests\MicroLog.Driver.MongoDb.Tests.csproj", "{C9A8AE5B-FA45-45C7-BA3B-5CB82C504A88}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroLog.Sink.MongoDb.Tests", "MicroLog.Registry.MongoDb.Tests\MicroLog.Sink.MongoDb.Tests.csproj", "{C9A8AE5B-FA45-45C7-BA3B-5CB82C504A88}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroLog.Driver.RabbitMq", "MicroLog.Driver.RabbitMq\MicroLog.Driver.RabbitMq.csproj", "{55F4C1F4-DB78-47DB-937D-53A12B317262}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroLog.Collector.RabbitMq", "MicroLog.Driver.RabbitMq\MicroLog.Collector.RabbitMq.csproj", "{55F4C1F4-DB78-47DB-937D-53A12B317262}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroLog.Collector", "MicroLog.Collector\MicroLog.Collector.csproj", "{7CBCE49A-D75E-4CF6-B317-F8DAC7E4304E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroLog.Collector.Client", "MicroLog.Collector.Client\MicroLog.Collector.Client.csproj", "{14DDB4A9-7050-48EB-9369-2DCD50085F6A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +43,14 @@ Global
 		{55F4C1F4-DB78-47DB-937D-53A12B317262}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{55F4C1F4-DB78-47DB-937D-53A12B317262}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{55F4C1F4-DB78-47DB-937D-53A12B317262}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7CBCE49A-D75E-4CF6-B317-F8DAC7E4304E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7CBCE49A-D75E-4CF6-B317-F8DAC7E4304E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7CBCE49A-D75E-4CF6-B317-F8DAC7E4304E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7CBCE49A-D75E-4CF6-B317-F8DAC7E4304E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{14DDB4A9-7050-48EB-9369-2DCD50085F6A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{14DDB4A9-7050-48EB-9369-2DCD50085F6A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{14DDB4A9-7050-48EB-9369-2DCD50085F6A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{14DDB4A9-7050-48EB-9369-2DCD50085F6A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -11,14 +11,14 @@ using System.Threading.Tasks;
 namespace MicroLog.Core
 {
     [ApiController]
-    [Route("api/sink")]
-    public class MicroLog : ControllerBase
+    [Route("api/[controller]")]
+    public class Collector : ControllerBase
     {
-        private ILogCollector _LogSink { get; set; }
+        private ILogPublisher _LogPublisher { get; set; }
 
-        public MicroLog(ILogCollector logSink)
+        public Collector(ILogPublisher logSink)
         {
-            _LogSink = logSink;
+            _LogPublisher = logSink;
         }
 
         [AllowAnonymous]
@@ -27,7 +27,7 @@ namespace MicroLog.Core
         {
             try
             {
-                await _LogSink.InsertAsync(logEvent);
+                await _LogPublisher.PublishAsync(logEvent);
                 return Ok();
             }
             catch (Exception ex)

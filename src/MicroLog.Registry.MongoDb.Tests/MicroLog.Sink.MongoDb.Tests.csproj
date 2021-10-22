@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
@@ -23,7 +23,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MicroLog.Core\MicroLog.Core.csproj" />
-    <ProjectReference Include="..\MicroLog.Registry.MongoDb\MicroLog.Driver.MongoDb.csproj" />
+    <ProjectReference Include="..\MicroLog.Registry.MongoDb\MicroLog.Sink.MongoDb.csproj" />
   </ItemGroup>
 
 </Project>

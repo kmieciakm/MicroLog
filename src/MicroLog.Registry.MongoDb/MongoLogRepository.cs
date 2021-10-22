@@ -7,9 +7,9 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MicroLog.Driver.MongoDb
+namespace MicroLog.Sink.MongoDb
 {
-    public class MongoLogRepository : ILogCollector, ILogRegistry
+    public class MongoLogRepository : ILogSink, ILogRegistry
     {
         private IMongoCollection<MongoLogEntity> _Collection { get; }
 
@@ -37,13 +37,13 @@ namespace MicroLog.Driver.MongoDb
             return entities.ToEnumerable();
         }
 
-        async Task ILogCollector.InsertAsync(ILogEvent logEntity)
+        async Task ILogSink.InsertAsync(ILogEvent logEntity)
         {
             var entity = logEntity as MongoLogEntity;
             await _Collection.InsertOneAsync(entity);
         }
 
-        async Task ILogCollector.InsertAsync(IEnumerable<ILogEvent> logEntities)
+        async Task ILogSink.InsertAsync(IEnumerable<ILogEvent> logEntities)
         {
             var entities = logEntities as IEnumerable<MongoLogEntity>;
             await _Collection.InsertManyAsync(entities);

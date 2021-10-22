@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace MicroLog.Core.Abstractions
 {
-    public interface ILogCollector
+    /// <summary>
+    /// Writes log entries to the permanent data storage.
+    /// </summary>
+    public interface ILogSink
     {
         Task InsertAsync(ILogEvent logEntity);
         Task InsertAsync(IEnumerable<ILogEvent> logEntities);

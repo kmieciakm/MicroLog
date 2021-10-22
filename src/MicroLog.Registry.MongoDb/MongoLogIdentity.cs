@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MicroLog.Driver.MongoDb
+namespace MicroLog.Sink.MongoDb
 {
     public class MongoLogIdentity : ILogEventIdentity
     {

@@ -1,5 +1,5 @@
-﻿using MicroLog.Core.Abstractions;
-using MicroLog.Driver.RabbitMq.Config;
+﻿using MicroLog.Collector.RabbitMq.Config;
+using MicroLog.Core.Abstractions;
 using RabbitMQ.Client;
 using System;
 using System.Collections.Generic;
@@ -7,16 +7,16 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace MicroLog.Driver.RabbitMq
+namespace MicroLog.Collector.RabbitMq
 {
-    public class RabbitLogPublisher : RabbitLogBase, ILogCollector
+    public class RabbitLogPublisher : RabbitLogBase, ILogPublisher
     {
-        public RabbitLogPublisher(RabbitLogConfig rabbitConfig)
+        public RabbitLogPublisher(RabbitCollectorConfig rabbitConfig)
             : base(rabbitConfig)
         {
         }
 
-        public Task InsertAsync(ILogEvent logEntity)
+        public Task PublishAsync(ILogEvent logEntity)
         {
             using (IConnection connection = ConnectionFactory.CreateConnection())
             {
@@ -32,7 +32,7 @@ namespace MicroLog.Driver.RabbitMq
             return Task.CompletedTask;
         }
 
-        public Task InsertAsync(IEnumerable<ILogEvent> logEntities)
+        public Task PublishAsync(IEnumerable<ILogEvent> logEntities)
         {
             using (IConnection connection = ConnectionFactory.CreateConnection())
             {

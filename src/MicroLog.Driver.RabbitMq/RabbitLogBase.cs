@@ -1,5 +1,5 @@
-﻿using MicroLog.Core.Abstractions;
-using MicroLog.Driver.RabbitMq.Config;
+﻿using MicroLog.Collector.RabbitMq.Config;
+using MicroLog.Core.Abstractions;
 using RabbitMQ.Client;
 using System;
 using System.Collections.Generic;
@@ -7,14 +7,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MicroLog.Driver.RabbitMq
+namespace MicroLog.Collector.RabbitMq
 {
     public abstract class RabbitLogBase
     {
         protected ConnectionFactory ConnectionFactory { get; set; }
         protected string QueueName { get; set; }
 
-        public RabbitLogBase(RabbitLogConfig rabbitConfig)
+        public RabbitLogBase(RabbitCollectorConfig rabbitConfig)
         {
             ConnectionFactory = new ConnectionFactory
             {

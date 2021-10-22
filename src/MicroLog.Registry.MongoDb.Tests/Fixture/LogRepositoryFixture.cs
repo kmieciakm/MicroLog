@@ -1,4 +1,5 @@
 ﻿using MicroLog.Core.Abstractions;
+using MicroLog.Sink.MongoDb;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
@@ -6,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MicroLog.Driver.MongoDb.Tests.Fixture
+namespace MicroLog.Sink.MongoDb.Tests.Fixture
 {
     public abstract class LogRepositoryFixture : MongoIntegrationFixture
     {
@@ -18,7 +19,7 @@ namespace MicroLog.Driver.MongoDb.Tests.Fixture
             return collection;
         }
 
-        protected static ILogCollector CreateMongoLogCollector(string connectionString)
+        protected static ILogSink CreateMongoLogSink(string connectionString)
         {
             var collection = CreateMongoTestCollection(connectionString);
             return new MongoLogRepository(collection);

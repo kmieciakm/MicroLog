@@ -12,7 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace MicroLog.Driver.MongoDb.Tests.Fixture
+namespace MicroLog.Sink.MongoDb.Tests.Fixture
 {
     public abstract class MongoIntegrationFixture
     {
