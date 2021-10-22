@@ -1,5 +1,6 @@
 ﻿using MicroLog.Collector.RabbitMq.Config;
 using MicroLog.Core.Abstractions;
+using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 using System;
 using System.Collections.Generic;
@@ -11,8 +12,8 @@ namespace MicroLog.Collector.RabbitMq
 {
     public class RabbitLogPublisher : RabbitLogBase, ILogPublisher
     {
-        public RabbitLogPublisher(RabbitCollectorConfig rabbitConfig)
-            : base(rabbitConfig)
+        public RabbitLogPublisher(IOptions<RabbitCollectorConfig> rabbitConfig)
+            : base(rabbitConfig.Value)
         {
         }
 

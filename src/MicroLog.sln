@@ -13,9 +13,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroLog.Sink.MongoDb.Tests
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroLog.Collector.RabbitMq", "MicroLog.Driver.RabbitMq\MicroLog.Collector.RabbitMq.csproj", "{55F4C1F4-DB78-47DB-937D-53A12B317262}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroLog.Collector", "MicroLog.Collector\MicroLog.Collector.csproj", "{7CBCE49A-D75E-4CF6-B317-F8DAC7E4304E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroLog.Collector", "MicroLog.Collector\MicroLog.Collector.csproj", "{7CBCE49A-D75E-4CF6-B317-F8DAC7E4304E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroLog.Collector.Client", "MicroLog.Collector.Client\MicroLog.Collector.Client.csproj", "{14DDB4A9-7050-48EB-9369-2DCD50085F6A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroLog.Collector.Client", "MicroLog.Collector.Client\MicroLog.Collector.Client.csproj", "{14DDB4A9-7050-48EB-9369-2DCD50085F6A}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{75366C85-9104-4A3B-B54E-913B93CF1E18}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,10 @@ Global
 		{14DDB4A9-7050-48EB-9369-2DCD50085F6A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{14DDB4A9-7050-48EB-9369-2DCD50085F6A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{14DDB4A9-7050-48EB-9369-2DCD50085F6A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{75366C85-9104-4A3B-B54E-913B93CF1E18}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{75366C85-9104-4A3B-B54E-913B93CF1E18}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{75366C85-9104-4A3B-B54E-913B93CF1E18}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{75366C85-9104-4A3B-B54E-913B93CF1E18}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

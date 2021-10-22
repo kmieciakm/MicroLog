@@ -1,5 +1,6 @@
 ﻿using MicroLog.Core.Abstractions;
 using MicroLog.Sink.MongoDb;
+using MicroLog.Sink.MongoDb.Config;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
@@ -11,24 +12,23 @@ namespace MicroLog.Sink.MongoDb.Tests.Fixture
 {
     public abstract class LogRepositoryFixture : MongoIntegrationFixture
     {
-        private static IMongoCollection<MongoLogEntity> CreateMongoTestCollection(string connectionString)
-        {
-            var client = new MongoClient(connectionString);
-            var database = client.GetDatabase("TestDatabase");
-            var collection = database.GetCollection<MongoLogEntity>("TestCollection");
-            return collection;
-        }
+        private static MongoSinkConfig CreateMongoTestConfig(string connectionString) 
+            => new MongoSinkConfig()
+            {
+                ConnectionString = connectionString,
+                DatabaseName = "TestDatabase"
+            };
 
         protected static ILogSink CreateMongoLogSink(string connectionString)
         {
-            var collection = CreateMongoTestCollection(connectionString);
-            return new MongoLogRepository(collection);
+            var config = CreateMongoTestConfig(connectionString);
+            return new MongoLogRepository(config);
         }
 
         protected static ILogRegistry CreateMongoLogRegistry(string connectionString)
         {
-            var collection = CreateMongoTestCollection(connectionString);
-            return new MongoLogRepository(collection);
+            var config = CreateMongoTestConfig(connectionString);
+            return new MongoLogRepository(config);
         }
     }
 }

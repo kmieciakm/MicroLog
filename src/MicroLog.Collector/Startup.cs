@@ -31,10 +31,10 @@ namespace MicroLog.Collector
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddOptions<MongoSinkConfig>("MongoSinkConfig");
+            services.Configure<MongoSinkConfig>(Configuration.GetSection("MongoSinkConfig"));
             services.AddSingleton<ILogSink, MongoLogRepository>();
 
-            services.AddOptions<RabbitCollectorConfig>("RabbitCollectorConfig");
+            services.Configure<RabbitCollectorConfig>(Configuration.GetSection("RabbitCollectorConfig"));
             services.AddSingleton<ILogPublisher, RabbitLogPublisher>();
             services.AddSingleton<ILogConsumer, RabbitLogConsumer>();
 

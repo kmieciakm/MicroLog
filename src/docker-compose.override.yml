@@ -1,0 +1,35 @@
+version: '3.4'
+
+services:
+  microlog.mongoDb:
+    ports:
+      - "27017:27017"
+
+  microlog.rabbitmq:
+    hostname: rabbit-log-collector
+    volumes:
+      - ./rabbitmq/etc/definitions.json:/etc/rabbitmq/definitions.json
+      - ./rabbitmq/etc/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
+      - ./rabbitmq/data:/var/lib/rabbitmq/mnesia/rabbit@rabbit-log-collector
+      - ./rabbitmq/logs:/var/log/rabbitmq/log
+    ports:
+      - 5672:5672
+      - 15672:15672
+
+  microlog.collector:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - "MongoSinkConfig__ConnectionString=mongodb://microlog.mongoDb:27017"
+      - "MongoSinkConfig__DatabaseName=LogsDb"
+      - "RabbitCollectorConfig__HostName=rabbit-log-collector"
+      - "RabbitCollectorConfig__Port=5672"
+      - "RabbitCollectorConfig__UserName=rabbit"
+      - "RabbitCollectorConfig__Password=rabbit"
+      - "RabbitCollectorConfig__Queue=log-queue"
+    ports:
+      - "80"
+      - "443"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro

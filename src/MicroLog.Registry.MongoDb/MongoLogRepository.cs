@@ -1,4 +1,6 @@
 ﻿using MicroLog.Core.Abstractions;
+using MicroLog.Sink.MongoDb.Config;
+using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
@@ -11,11 +13,15 @@ namespace MicroLog.Sink.MongoDb
 {
     public class MongoLogRepository : ILogSink, ILogRegistry
     {
+        private IMongoDatabase _Database { get; }
         private IMongoCollection<MongoLogEntity> _Collection { get; }
 
-        public MongoLogRepository(IMongoCollection<MongoLogEntity> collection)
+        public MongoLogRepository(IOptions<MongoSinkConfig> configOptions)
         {
-            _Collection = collection;
+            var config = configOptions.Value;
+            var client = new MongoClient(config.ConnectionString);
+            _Database = client.GetDatabase(config.DatabaseName);
+            _Collection = _Database.GetCollection<MongoLogEntity>("Logs");
         }
 
         async Task<ILogEvent> ILogRegistry.GetAsync(ILogEventIdentity identity)
@@ -39,13 +45,13 @@ namespace MicroLog.Sink.MongoDb
 
         async Task ILogSink.InsertAsync(ILogEvent logEntity)
         {
-            var entity = logEntity as MongoLogEntity;
+            var entity = MongoLogMapper.Map(logEntity);
             await _Collection.InsertOneAsync(entity);
         }
 
         async Task ILogSink.InsertAsync(IEnumerable<ILogEvent> logEntities)
         {
-            var entities = logEntities as IEnumerable<MongoLogEntity>;
+            var entities = logEntities.Select(entity => MongoLogMapper.Map(entity));
             await _Collection.InsertManyAsync(entities);
         }
     }
