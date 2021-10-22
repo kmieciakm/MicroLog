@@ -17,8 +17,12 @@ namespace MicroLog.Sink.MongoDb
         private IMongoCollection<MongoLogEntity> _Collection { get; }
 
         public MongoLogRepository(IOptions<MongoSinkConfig> configOptions)
+            : this(configOptions.Value)
         {
-            var config = configOptions.Value;
+        }
+
+        public MongoLogRepository(MongoSinkConfig config)
+        {
             var client = new MongoClient(config.ConnectionString);
             _Database = client.GetDatabase(config.DatabaseName);
             _Collection = _Database.GetCollection<MongoLogEntity>("Logs");

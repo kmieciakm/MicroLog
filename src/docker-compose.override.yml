@@ -26,10 +26,8 @@ services:
       - "RabbitCollectorConfig__Port=5672"
       - "RabbitCollectorConfig__UserName=rabbit"
       - "RabbitCollectorConfig__Password=rabbit"
-      - "RabbitCollectorConfig__Queue=log-queue"
     ports:
-      - "80"
-      - "443"
+      - "5001:443"
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro

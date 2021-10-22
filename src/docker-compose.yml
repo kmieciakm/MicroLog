@@ -6,8 +6,6 @@ services:
     container_name: microlog.mongoDb
     volumes:
       - logsDb_data:/data/db
-    ports:
-      - "27017:27017"
 
   microlog.rabbitmq:
     image: rabbitmq:3-management-alpine
