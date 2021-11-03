@@ -8,18 +8,19 @@ using System.Threading.Tasks;
 
 namespace MicroLog.Collector.Workers
 {
-    public class LogProcessor : BackgroundService
+    public class LogConsumerWorker : BackgroundService
     {
         private System.Timers.Timer _Timer { get; }
-        public ILogConsumer _LogConsumer { get; set; }
+        public IEnumerable<ILogConsumer> _LogConsumers { get; set; }
 
-        public LogProcessor(ILogConsumer consumer)
+        public LogConsumerWorker(IEnumerable<ILogConsumer> consumers)
         {
-            _LogConsumer = consumer;
+            _LogConsumers = consumers;
             _Timer = new System.Timers.Timer(15000);
             _Timer.Elapsed += (sender, e) =>
             {
-                _LogConsumer.Consume();
+                foreach(var consumer in _LogConsumers)
+                    consumer.Consume();
             };
             _Timer.AutoReset = false;
         }

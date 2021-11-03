@@ -15,22 +15,23 @@ namespace MicroLog.Collector.RabbitMq
 {
     public class RabbitLogConsumer : RabbitLogBase, ILogConsumer, IDisposable
     {
-        private IEnumerable<ILogSink> _Sinks { get; set; }
-        private IConnection _Connection { get; set; }
-        private IModel _Channel { get; set; }
+        private string _Queue { get; }
+        private ILogSink _Sink { get; }
+        private IConnection _Connection { get; }
+        private IModel _Channel { get; }
 
-        public RabbitLogConsumer(IOptions<RabbitCollectorConfig> rabbitConfig, IEnumerable<ILogSink> sinks)
+        public RabbitLogConsumer(IOptions<RabbitCollectorConfig> rabbitConfig, ILogSink sink)
             : base(rabbitConfig.Value)
         {
-            _Sinks = sinks;
+            _Sink = sink;
+            _Queue = $"log-{sink.GetConfiguration().Name}";
             _Connection = ConnectionFactory.CreateConnection();
             _Channel = _Connection.CreateModel();
         }
 
         public void Consume()
         {
-            var queue = "log-mongo";
-            DeclareQueue(_Channel, queue);
+            DeclareQueue(_Channel, _Queue);
 
             var consumer = new EventingBasicConsumer(_Channel);
             consumer.Received += async (sender, e) =>
@@ -38,12 +39,10 @@ namespace MicroLog.Collector.RabbitMq
                 var body = e.Body.ToArray();
                 var message = Encoding.UTF8.GetString(body);
                 ILogEvent log = JsonSerializer.Deserialize<LogEvent>(message);
-                foreach (var sink in _Sinks)
-                {
-                    await sink.InsertAsync(log);
-                }
+                await _Sink.InsertAsync(log);
             };
-            _Channel.BasicConsume(queue, true, consumer);
+
+            _Channel.BasicConsume(_Queue, true, consumer);
         }
 
         public void Dispose()

@@ -1,4 +1,5 @@
 ﻿using MicroLog.Collector.RabbitMq.Config;
+using MicroLog.Core.Abstractions;
 using MicroLog.Sink.MongoDb.Config;
 using System;
 using System.Collections.Generic;
@@ -12,8 +13,13 @@ namespace MicroLog.Collector.Config
         public IEnumerable<MongoSinkConfig> Mongo { get; set; }
     }
 
-    public class PublishersConfig
+    public class PublisherConfig : IPublisherConfig
     {
-        public RabbitPublisherConfig RabbitMq { get; set; }
+        public string Queues { get; set; }
+
+        public IEnumerable<string> GetQueues()
+        {
+            return Queues.Split(',');
+        }
     }
 }

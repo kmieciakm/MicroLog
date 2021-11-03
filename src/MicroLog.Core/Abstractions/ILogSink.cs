@@ -11,6 +11,7 @@ namespace MicroLog.Core.Abstractions
     /// </summary>
     public interface ILogSink
     {
+        ISinkConfig GetConfiguration();
         Task InsertAsync(ILogEvent logEntity);
         Task InsertAsync(IEnumerable<ILogEvent> logEntities);
     }

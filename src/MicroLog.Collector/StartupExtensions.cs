@@ -1,6 +1,7 @@
 ﻿using MicroLog.Collector.Config;
 using MicroLog.Collector.RabbitMq;
 using MicroLog.Collector.RabbitMq.Config;
+using MicroLog.Collector.Utils;
 using MicroLog.Collector.Workers;
 using MicroLog.Core.Abstractions;
 using MicroLog.Sink.MongoDb;
@@ -18,14 +19,14 @@ namespace MicroLog.Collector
     {
         public static IServiceCollection AddSinks(this IServiceCollection services, IConfiguration configuration)
         {
-            services.Configure<Configs>(configuration.GetSection("Sinks"));
+            services.Configure<SinksConfig>(configuration.GetSection("Sinks"));
 
             var sinksConfig = services
                 .BuildServiceProvider()
-                .GetRequiredService<IOptions<Configs>>()
+                .GetRequiredService<IOptions<SinksConfig>>()
                 .Value;
 
-            foreach (var mongoSink in sinksConfig.Mongo)
+            foreach (var mongoSink in sinksConfig.Mongo.OrEmptyIfNull())
             {
                 services.AddSingleton<ILogSink>(new MongoLogRepository(mongoSink));
             }
@@ -33,7 +34,7 @@ namespace MicroLog.Collector
             return services;
         }
 
-        public static IServiceCollection AddCollectors(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddCollector(this IServiceCollection services, IConfiguration configuration)
         {
             services.Configure<RabbitCollectorConfig>(
                 configuration
@@ -43,23 +44,22 @@ namespace MicroLog.Collector
             return services;
         }
 
-        public static IServiceCollection AddPublishers(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddPublisher(this IServiceCollection services, IConfiguration configuration)
         {
-            services.Configure<PublishersConfig>(configuration.GetSection("Publisher"));
-
-            var rabbitConfig = services
-                .BuildServiceProvider()
-                .GetRequiredService<IOptions<RabbitCollectorConfig>>()
-                .Value;
+            services.Configure<PublisherConfig>(configuration.GetSection("Publisher"));
 
             var publisherConfig = services
                 .BuildServiceProvider()
-                .GetRequiredService<IOptions<PublishersConfig>>()
+                .GetRequiredService<IOptions<PublisherConfig>>()
                 .Value;
 
-            if (publisherConfig.RabbitMq is not null)
+            if (publisherConfig is not null)
             {
-                services.AddSingleton<ILogPublisher>(new RabbitLogPublisher(rabbitConfig, publisherConfig.RabbitMq));
+                var rabbitConfig = services
+                    .BuildServiceProvider()
+                    .GetRequiredService<IOptions<RabbitCollectorConfig>>()
+                    .Value;
+                services.AddSingleton<ILogPublisher>(new RabbitLogPublisher(rabbitConfig, publisherConfig));
             }
 
             return services;
@@ -67,8 +67,22 @@ namespace MicroLog.Collector
 
         public static IServiceCollection AddConsumers(this IServiceCollection services)
         {
-            services.AddSingleton<ILogConsumer, RabbitLogConsumer>();
-            services.AddHostedService<LogProcessor>();
+            var sinks = services
+                .BuildServiceProvider()
+                .GetServices<ILogSink>();
+
+            foreach (var sink in sinks)
+            {
+                var rabbitConfig = services
+                    .BuildServiceProvider()
+                    .GetRequiredService<IOptions<RabbitCollectorConfig>>();
+                services.AddSingleton<ILogConsumer>(new RabbitLogConsumer(rabbitConfig, sink));
+            }
+
+            if (sinks.Count() > 0)
+            {
+                services.AddHostedService<LogConsumerWorker>();
+            }
 
             return services;
         }

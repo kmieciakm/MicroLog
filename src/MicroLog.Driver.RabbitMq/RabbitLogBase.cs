@@ -42,6 +42,7 @@ namespace MicroLog.Collector.RabbitMq
         protected IBasicProperties GetProperties(IModel channel, ILogEvent logEntity)
         {
             var properties = channel.CreateBasicProperties();
+            properties.Persistent = true;
             properties.Priority = logEntity.Level switch
             {
                 Core.LogLevel.None => 1,

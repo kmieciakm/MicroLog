@@ -27,8 +27,8 @@ namespace MicroLog.Collector
         {
             services
                 .AddSinks(Configuration)
-                .AddCollectors(Configuration)
-                .AddPublishers(Configuration)
+                .AddCollector(Configuration)
+                .AddPublisher(Configuration)
                 .AddConsumers();
 
             services.AddControllers();

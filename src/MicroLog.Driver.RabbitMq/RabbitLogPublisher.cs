@@ -14,14 +14,14 @@ namespace MicroLog.Collector.RabbitMq
     {
         public IEnumerable<string> Queues { get; set; }
 
-        public RabbitLogPublisher(RabbitCollectorConfig rabbitConfig, RabbitPublisherConfig rabbitPublisherConfig)
+        public RabbitLogPublisher(RabbitCollectorConfig rabbitConfig, IPublisherConfig publisherConfig)
             : base(rabbitConfig)
         {
-            Queues = rabbitPublisherConfig.GetQueues();
+            Queues = publisherConfig.GetQueues();
         }
 
-        public RabbitLogPublisher(IOptions<RabbitCollectorConfig> rabbitOptions, IOptions<RabbitPublisherConfig> rabbitPublisherOptions)
-            : this(rabbitOptions.Value, rabbitPublisherOptions.Value)
+        public RabbitLogPublisher(IOptions<RabbitCollectorConfig> rabbitOptions, IPublisherConfig publisherOptions)
+            : this(rabbitOptions.Value, publisherOptions)
         {
         }
 

@@ -13,6 +13,8 @@ namespace MicroLog.Sink.MongoDb
 {
     public class MongoLogRepository : ILogSink, ILogRegistry
     {
+        private const string COLLECTION_NAME = "logs";
+        private MongoSinkConfig _Config { get; }
         private IMongoDatabase _Database { get; }
         private IMongoCollection<MongoLogEntity> _Collection { get; }
 
@@ -23,9 +25,10 @@ namespace MicroLog.Sink.MongoDb
 
         public MongoLogRepository(MongoSinkConfig config)
         {
+            _Config = config;
             var client = new MongoClient(config.ConnectionString);
             _Database = client.GetDatabase(config.DatabaseName);
-            _Collection = _Database.GetCollection<MongoLogEntity>("logs");
+            _Collection = _Database.GetCollection<MongoLogEntity>(COLLECTION_NAME);
         }
 
         async Task<ILogEvent> ILogRegistry.GetAsync(ILogEventIdentity identity)
@@ -58,5 +61,7 @@ namespace MicroLog.Sink.MongoDb
             var entities = logEntities.Select(entity => MongoLogMapper.Map(entity));
             await _Collection.InsertManyAsync(entities);
         }
+
+        public ISinkConfig GetConfiguration() => _Config;
     }
 }
