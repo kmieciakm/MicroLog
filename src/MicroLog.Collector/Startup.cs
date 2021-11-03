@@ -1,10 +1,3 @@
-using MicroLog.Collector.Config;
-using MicroLog.Collector.RabbitMq;
-using MicroLog.Collector.RabbitMq.Config;
-using MicroLog.Collector.Workers;
-using MicroLog.Core.Abstractions;
-using MicroLog.Sink.MongoDb;
-using MicroLog.Sink.MongoDb.Config;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -32,20 +25,11 @@ namespace MicroLog.Collector
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.Configure<SinksConfig>(
-                Configuration
-                    .GetSection("Sinks"));
-
-            services.RegisterSinks();
-
-            services.Configure<RabbitCollectorConfig>(
-                Configuration
-                    .GetSection("Collector")
-                    .GetSection("RabbitMq"));
-            services.AddSingleton<ILogPublisher, RabbitLogPublisher>();
-
-            services.AddSingleton<ILogConsumer, RabbitLogConsumer>();
-            services.AddHostedService<LogProcessor>();
+            services
+                .AddSinks(Configuration)
+                .AddCollectors(Configuration)
+                .AddPublishers(Configuration)
+                .AddConsumers();
 
             services.AddControllers();
             services.AddSwaggerGen(c =>

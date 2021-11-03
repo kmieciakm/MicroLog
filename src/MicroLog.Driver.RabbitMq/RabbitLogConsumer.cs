@@ -29,7 +29,8 @@ namespace MicroLog.Collector.RabbitMq
 
         public void Consume()
         {
-            DeclareQueue(_Channel);
+            var queue = "log-mongo";
+            DeclareQueue(_Channel, queue);
 
             var consumer = new EventingBasicConsumer(_Channel);
             consumer.Received += async (sender, e) =>
@@ -42,7 +43,7 @@ namespace MicroLog.Collector.RabbitMq
                     await sink.InsertAsync(log);
                 }
             };
-            _Channel.BasicConsume(QueueName, true, consumer);
+            _Channel.BasicConsume(queue, true, consumer);
         }
 
         public void Dispose()

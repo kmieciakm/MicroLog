@@ -12,8 +12,16 @@ namespace MicroLog.Collector.RabbitMq
 {
     public class RabbitLogPublisher : RabbitLogBase, ILogPublisher
     {
-        public RabbitLogPublisher(IOptions<RabbitCollectorConfig> rabbitConfig)
-            : base(rabbitConfig.Value)
+        public IEnumerable<string> Queues { get; set; }
+
+        public RabbitLogPublisher(RabbitCollectorConfig rabbitConfig, RabbitPublisherConfig rabbitPublisherConfig)
+            : base(rabbitConfig)
+        {
+            Queues = rabbitPublisherConfig.GetQueues();
+        }
+
+        public RabbitLogPublisher(IOptions<RabbitCollectorConfig> rabbitOptions, IOptions<RabbitPublisherConfig> rabbitPublisherOptions)
+            : this(rabbitOptions.Value, rabbitPublisherOptions.Value)
         {
         }
 
@@ -21,13 +29,16 @@ namespace MicroLog.Collector.RabbitMq
         {
             using (IConnection connection = ConnectionFactory.CreateConnection())
             {
-                using (IModel channel = connection.CreateModel())
+                foreach (var queue in Queues)
                 {
-                    DeclareQueue(channel);
+                    using (IModel channel = connection.CreateModel())
+                    {
+                        DeclareQueue(channel, queue);
 
-                    var prop = GetProperties(channel, logEntity);
-                    var body = JsonSerializer.SerializeToUtf8Bytes(logEntity);
-                    channel.BasicPublish("", QueueName, prop, body);
+                        var prop = GetProperties(channel, logEntity);
+                        var body = JsonSerializer.SerializeToUtf8Bytes(logEntity);
+                        channel.BasicPublish("", queue, prop, body);
+                    }
                 }
             }
             return Task.CompletedTask;
@@ -37,22 +48,25 @@ namespace MicroLog.Collector.RabbitMq
         {
             using (IConnection connection = ConnectionFactory.CreateConnection())
             {
-                using (IModel channel = connection.CreateModel())
+                foreach (var queue in Queues)
                 {
-                    DeclareQueue(channel);
-
-                    ReadOnlyMemory<byte> body;
-                    IBasicProperties prop;
-                    IBasicPublishBatch basicPublishBatch = channel.CreateBasicPublishBatch();
-
-                    foreach (var log in logEntities)
+                    using (IModel channel = connection.CreateModel())
                     {
-                        prop = GetProperties(channel, log);
-                        body = JsonSerializer.SerializeToUtf8Bytes(log);
-                        basicPublishBatch.Add("", QueueName, false, prop, body);
-                    }
+                        DeclareQueue(channel, queue);
 
-                    basicPublishBatch.Publish();
+                        ReadOnlyMemory<byte> body;
+                        IBasicProperties prop;
+                        IBasicPublishBatch basicPublishBatch = channel.CreateBasicPublishBatch();
+
+                        foreach (var log in logEntities)
+                        {
+                            prop = GetProperties(channel, log);
+                            body = JsonSerializer.SerializeToUtf8Bytes(log);
+                            basicPublishBatch.Add("", queue, false, prop, body);
+                        }
+
+                        basicPublishBatch.Publish();
+                    }
                 }
             }
             return Task.CompletedTask;

@@ -12,7 +12,6 @@ namespace MicroLog.Collector.RabbitMq
     public abstract class RabbitLogBase
     {
         protected ConnectionFactory ConnectionFactory { get; set; }
-        protected string QueueName { get; set; }
 
         public RabbitLogBase(RabbitCollectorConfig rabbitConfig)
         {
@@ -23,10 +22,9 @@ namespace MicroLog.Collector.RabbitMq
                 UserName = rabbitConfig.UserName,
                 Password = rabbitConfig.Password
             };
-            QueueName = rabbitConfig.Queue;
         }
 
-        protected void DeclareQueue(IModel channel)
+        protected void DeclareQueue(IModel channel, string queue)
         {
             var args = new Dictionary<string, object>
                     {
@@ -34,7 +32,7 @@ namespace MicroLog.Collector.RabbitMq
                     };
 
             channel.QueueDeclare(
-                queue: QueueName,
+                queue: queue,
                 durable: true,
                 exclusive: false,
                 autoDelete: false,

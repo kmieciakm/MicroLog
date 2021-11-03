@@ -20,11 +20,13 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=https://+:443;http://+:80
-      - "Sinks__Mongo__0__ConnectionString=mongodb://microlog.mongoDb:27017"
       - "Collector__RabbitMq__HostName=rabbit-log-collector"
       - "Collector__RabbitMq__Port=5672"
       - "Collector__RabbitMq__UserName=rabbit"
       - "Collector__RabbitMq__Password=rabbit"
+      - "Publisher__RabbitMq__Queues=log-mongo"
+      - "Sinks__Mongo__0__Name=mongo"
+      - "Sinks__Mongo__0__ConnectionString=mongodb://microlog.mongoDb:27017"
     ports:
       - "5001:443"
     volumes:
