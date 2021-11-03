@@ -6,10 +6,13 @@ services:
     container_name: microlog.mongoDb
     volumes:
       - logsDb_data:/data/db
+      - logsDb_config:/data/configdb
 
   microlog.rabbitmq:
     image: rabbitmq:3-management-alpine
     container_name: microlog.rabbitmq
+    volumes:
+      - rabbitMq_data:/var/lib/rabbitmq
 
   microlog.collector:
     image: ${DOCKER_REGISTRY-}micrologcollector
@@ -17,6 +20,11 @@ services:
     build:
       context: .
       dockerfile: MicroLog.Collector/Dockerfile
+    depends_on:
+      - microlog.rabbitmq
+      - microlog.mongoDb
 
 volumes:
   logsDb_data:
+  logsDb_config:
+  rabbitMq_data:
