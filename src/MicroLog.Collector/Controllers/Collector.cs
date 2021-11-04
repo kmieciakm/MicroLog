@@ -16,9 +16,9 @@ namespace MicroLog.Core
     {
         private ILogPublisher _LogPublisher { get; set; }
 
-        public Collector(ILogPublisher logSink)
+        public Collector(ILogPublisher logPublisher)
         {
-            _LogPublisher = logSink;
+            _LogPublisher = logPublisher;
         }
 
         [AllowAnonymous]

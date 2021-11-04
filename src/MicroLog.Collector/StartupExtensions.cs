@@ -1,10 +1,12 @@
 ﻿using MicroLog.Collector.Config;
+using MicroLog.Collector.Middleware;
 using MicroLog.Collector.RabbitMq;
 using MicroLog.Collector.RabbitMq.Config;
 using MicroLog.Collector.Utils;
 using MicroLog.Collector.Workers;
 using MicroLog.Core.Abstractions;
 using MicroLog.Sink.MongoDb;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -50,10 +52,10 @@ namespace MicroLog.Collector
 
             var publisherConfig = services
                 .BuildServiceProvider()
-                .GetRequiredService<IOptions<PublisherConfig>>()
+                .GetService<IOptions<PublisherConfig>>()
                 .Value;
 
-            if (publisherConfig is not null)
+            if (publisherConfig.IsPublisherSpecified)
             {
                 var rabbitConfig = services
                     .BuildServiceProvider()
@@ -79,12 +81,15 @@ namespace MicroLog.Collector
                 services.AddSingleton<ILogConsumer>(new RabbitLogConsumer(rabbitConfig, sink));
             }
 
-            if (sinks.Count() > 0)
+            if (sinks.Any())
             {
                 services.AddHostedService<LogConsumerWorker>();
             }
 
             return services;
         }
+
+        public static IApplicationBuilder UseRequestBroker(this IApplicationBuilder app)
+            => app.UseMiddleware<CollectorRequestBroker>();
     }
 }

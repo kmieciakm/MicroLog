@@ -53,6 +53,8 @@ namespace MicroLog.Collector
 
             app.UseAuthorization();
 
+            app.UseRequestBroker();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

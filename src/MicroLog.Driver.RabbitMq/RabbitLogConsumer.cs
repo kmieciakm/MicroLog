@@ -17,20 +17,21 @@ namespace MicroLog.Collector.RabbitMq
     {
         private string _Queue { get; }
         private ILogSink _Sink { get; }
-        private IConnection _Connection { get; }
-        private IModel _Channel { get; }
+        private IConnection _Connection { get; set; }
+        private IModel _Channel { get; set; }
 
         public RabbitLogConsumer(IOptions<RabbitCollectorConfig> rabbitConfig, ILogSink sink)
             : base(rabbitConfig.Value)
         {
             _Sink = sink;
             _Queue = $"log-{sink.GetConfiguration().Name}";
-            _Connection = ConnectionFactory.CreateConnection();
-            _Channel = _Connection.CreateModel();
         }
 
         public void Consume()
         {
+            _Connection = ConnectionFactory.CreateConnection();
+            _Channel = _Connection.CreateModel();
+
             DeclareQueue(_Channel, _Queue);
 
             var consumer = new EventingBasicConsumer(_Channel);
