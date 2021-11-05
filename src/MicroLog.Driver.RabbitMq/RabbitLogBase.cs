@@ -11,10 +11,12 @@ namespace MicroLog.Collector.RabbitMq
 {
     public abstract class RabbitLogBase
     {
+        protected RabbitCollectorConfig RabbitConfig { get; set; }
         protected ConnectionFactory ConnectionFactory { get; set; }
 
         public RabbitLogBase(RabbitCollectorConfig rabbitConfig)
         {
+            RabbitConfig = rabbitConfig;
             ConnectionFactory = new ConnectionFactory
             {
                 HostName = rabbitConfig.HostName,
