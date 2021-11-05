@@ -15,6 +15,9 @@ namespace MicroLog.Core
         public LogLevel Level { get; set; }
         public Exception Exception { get; set; }
 
+        private Dictionary<string, ILogProperty> _properties { get; set; } = new();
+        public IReadOnlyCollection<ILogProperty> Properties => _properties.Values.ToList().AsReadOnly();
+
         public LogEvent()
         {
             Identity = new LogIdentity();
@@ -28,6 +31,14 @@ namespace MicroLog.Core
             Timestamp = timestamp;
             Level = level;
             Exception = exception;
+        }
+
+        public void Enrich(ILogProperty logProperty)
+        {
+            if (!_properties.ContainsKey(logProperty.Name))
+            {
+                _properties.Add(logProperty.Name, logProperty);
+            }
         }
 
         public override bool Equals(object obj)

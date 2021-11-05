@@ -14,7 +14,8 @@ namespace MicroLog.Sink.MongoDb
                 message: log.Message,
                 timestamp: log.Timestamp,
                 level: log.Level,
-                exception: log.Exception
+                exception: log.Exception,
+                properties: log.Properties.Select(prop => new MongoLogProperty(prop))
             );
     }
 }
