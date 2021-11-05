@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 namespace MicroLog.Core.Abstractions
 {
     /// <summary>
-    /// Process messages from queue.
-    /// Consumes log entries and saves them in the permanent data storage.
+    /// Send log entries to the Message Queue.
     /// </summary>
-    public interface ILogConsumer
+    public interface ILogPublisher
     {
-        void Consume();
+        Task PublishAsync(ILogEvent logEntity);
+        Task PublishAsync(IEnumerable<ILogEvent> logEntities);
     }
 }

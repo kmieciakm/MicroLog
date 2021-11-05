@@ -12,7 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace MicroLog.Driver.MongoDb.Tests.Fixture
+namespace MicroLog.Sink.MongoDb.Tests.Fixture
 {
     public abstract class MongoIntegrationFixture
     {
@@ -29,6 +29,7 @@ namespace MicroLog.Driver.MongoDb.Tests.Fixture
                     $"MONGO_INITDB_ROOT_USERNAME={root}",
                     $"MONGO_INITDB_ROOT_PASSWORD={secret}"})
                 .WaitForPort("27017/tcp", 30000)
+                .RemoveVolumesOnDispose(true)
                 .Build();
         }
 

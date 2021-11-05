@@ -1,38 +1,55 @@
-﻿using MicroLog.Core.Abstractions;
-using MicroLog.Driver.RabbitMq.Config;
+﻿using MicroLog.Collector.RabbitMq.Config;
+using MicroLog.Core;
+using MicroLog.Core.Abstractions;
+using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace MicroLog.Driver.RabbitMq
+namespace MicroLog.Collector.RabbitMq
 {
-    public class RabbitLogConsumer : RabbitLogBase, ILogConsumer
+    public class RabbitLogConsumer : RabbitLogBase, ILogConsumer, IDisposable
     {
-        public RabbitLogConsumer(RabbitLogConfig rabbitConfig)
-            : base(rabbitConfig)
+        private string _Queue { get; }
+        private ILogSink _Sink { get; }
+        private IConnection _Connection { get; set; }
+        private IModel _Channel { get; set; }
+
+        public RabbitLogConsumer(IOptions<RabbitCollectorConfig> rabbitConfig, ILogSink sink)
+            : base(rabbitConfig.Value)
         {
+            _Sink = sink;
+            _Queue = $"log-{sink.GetConfiguration().Name}";
         }
 
         public void Consume()
         {
-            using (IConnection connection = ConnectionFactory.CreateConnection())
-            {
-                using (IModel channel = connection.CreateModel())
-                {
-                    DeclareQueue(channel);
+            _Connection = ConnectionFactory.CreateConnection();
+            _Channel = _Connection.CreateModel();
 
-                    var consumer = new EventingBasicConsumer(channel);
-                    consumer.Received += (sender, e) =>
-                    {
-                        
-                    };
-                    channel.BasicConsume(QueueName, true, consumer);
-                }
-            }
+            DeclareQueue(_Channel, _Queue);
+
+            var consumer = new EventingBasicConsumer(_Channel);
+            consumer.Received += async (sender, e) =>
+            {
+                var body = e.Body.ToArray();
+                var message = Encoding.UTF8.GetString(body);
+                ILogEvent log = JsonSerializer.Deserialize<LogEvent>(message);
+                await _Sink.InsertAsync(log);
+            };
+
+            _Channel.BasicConsume(_Queue, true, consumer);
+        }
+
+        public void Dispose()
+        {
+            _Connection.Close();
+            _Connection.Dispose();
         }
     }
 }

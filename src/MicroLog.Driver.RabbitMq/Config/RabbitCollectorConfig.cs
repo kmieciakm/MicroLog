@@ -4,14 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MicroLog.Driver.RabbitMq.Config
+namespace MicroLog.Collector.RabbitMq.Config
 {
-    public class RabbitLogConfig
+    public class RabbitCollectorConfig
     {
         public string HostName { get; set; }
         public int Port { get; set; }
         public string UserName { get; set; }
         public string Password { get; set; }
-        public string Queue { get; set; }
     }
 }

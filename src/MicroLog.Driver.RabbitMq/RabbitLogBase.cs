@@ -1,5 +1,5 @@
-﻿using MicroLog.Core.Abstractions;
-using MicroLog.Driver.RabbitMq.Config;
+﻿using MicroLog.Collector.RabbitMq.Config;
+using MicroLog.Core.Abstractions;
 using RabbitMQ.Client;
 using System;
 using System.Collections.Generic;
@@ -7,14 +7,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MicroLog.Driver.RabbitMq
+namespace MicroLog.Collector.RabbitMq
 {
     public abstract class RabbitLogBase
     {
         protected ConnectionFactory ConnectionFactory { get; set; }
-        protected string QueueName { get; set; }
 
-        public RabbitLogBase(RabbitLogConfig rabbitConfig)
+        public RabbitLogBase(RabbitCollectorConfig rabbitConfig)
         {
             ConnectionFactory = new ConnectionFactory
             {
@@ -23,10 +22,9 @@ namespace MicroLog.Driver.RabbitMq
                 UserName = rabbitConfig.UserName,
                 Password = rabbitConfig.Password
             };
-            QueueName = rabbitConfig.Queue;
         }
 
-        protected void DeclareQueue(IModel channel)
+        protected void DeclareQueue(IModel channel, string queue)
         {
             var args = new Dictionary<string, object>
                     {
@@ -34,7 +32,7 @@ namespace MicroLog.Driver.RabbitMq
                     };
 
             channel.QueueDeclare(
-                queue: QueueName,
+                queue: queue,
                 durable: true,
                 exclusive: false,
                 autoDelete: false,
@@ -44,6 +42,7 @@ namespace MicroLog.Driver.RabbitMq
         protected IBasicProperties GetProperties(IModel channel, ILogEvent logEntity)
         {
             var properties = channel.CreateBasicProperties();
+            properties.Persistent = true;
             properties.Priority = logEntity.Level switch
             {
                 Core.LogLevel.None => 1,

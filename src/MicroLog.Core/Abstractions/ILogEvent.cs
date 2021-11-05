@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace MicroLog.Core.Abstractions
 {
+    /// <summary>
+    /// Log message.
+    /// </summary>
     public interface ILogEvent
     {
         ILogEventIdentity Identity { get; }

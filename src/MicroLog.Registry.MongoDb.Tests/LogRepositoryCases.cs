@@ -2,9 +2,9 @@ using MicroLog.Core;
 using System;
 using Xunit;
 using Shouldly;
-using MicroLog.Driver.MongoDb.Tests.Fixture;
+using MicroLog.Sink.MongoDb.Tests.Fixture;
 
-namespace MicroLog.Driver.MongoDb.Tests
+namespace MicroLog.Sink.MongoDb.Tests
 {
     public class LogRepositoryCases : LogRepositoryFixture
     {
@@ -14,7 +14,7 @@ namespace MicroLog.Driver.MongoDb.Tests
             using var db = Container().Start();
             var connectionString = GetConnectionString(db);
 
-            var logCollector = CreateMongoLogCollector(connectionString);
+            var logSink = CreateMongoLogSink(connectionString);
             var logRegistry = CreateMongoLogRegistry(connectionString);
 
             var logEvent = new MongoLogEntity()
@@ -23,7 +23,7 @@ namespace MicroLog.Driver.MongoDb.Tests
                 Message = "Works !!!"
             };
 
-            logCollector.InsertAsync(logEvent).Wait();
+            logSink.InsertAsync(logEvent).Wait();
             var log = logRegistry.GetAsync(logEvent.Identity).GetAwaiter().GetResult();
 
             log.ShouldBe(logEvent);

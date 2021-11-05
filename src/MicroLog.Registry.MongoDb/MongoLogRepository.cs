@@ -1,4 +1,6 @@
 ﻿using MicroLog.Core.Abstractions;
+using MicroLog.Sink.MongoDb.Config;
+using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
@@ -7,15 +9,26 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MicroLog.Driver.MongoDb
+namespace MicroLog.Sink.MongoDb
 {
-    public class MongoLogRepository : ILogCollector, ILogRegistry
+    public class MongoLogRepository : ILogSink, ILogRegistry
     {
+        private const string COLLECTION_NAME = "logs";
+        private MongoSinkConfig _Config { get; }
+        private IMongoDatabase _Database { get; }
         private IMongoCollection<MongoLogEntity> _Collection { get; }
 
-        public MongoLogRepository(IMongoCollection<MongoLogEntity> collection)
+        public MongoLogRepository(IOptions<MongoSinkConfig> configOptions)
+            : this(configOptions.Value)
         {
-            _Collection = collection;
+        }
+
+        public MongoLogRepository(MongoSinkConfig config)
+        {
+            _Config = config;
+            var client = new MongoClient(config.ConnectionString);
+            _Database = client.GetDatabase(config.DatabaseName);
+            _Collection = _Database.GetCollection<MongoLogEntity>(COLLECTION_NAME);
         }
 
         async Task<ILogEvent> ILogRegistry.GetAsync(ILogEventIdentity identity)
@@ -37,16 +50,18 @@ namespace MicroLog.Driver.MongoDb
             return entities.ToEnumerable();
         }
 
-        async Task ILogCollector.InsertAsync(ILogEvent logEntity)
+        async Task ILogSink.InsertAsync(ILogEvent logEntity)
         {
-            var entity = logEntity as MongoLogEntity;
+            var entity = MongoLogMapper.Map(logEntity);
             await _Collection.InsertOneAsync(entity);
         }
 
-        async Task ILogCollector.InsertAsync(IEnumerable<ILogEvent> logEntities)
+        async Task ILogSink.InsertAsync(IEnumerable<ILogEvent> logEntities)
         {
-            var entities = logEntities as IEnumerable<MongoLogEntity>;
+            var entities = logEntities.Select(entity => MongoLogMapper.Map(entity));
             await _Collection.InsertManyAsync(entities);
         }
+
+        public ISinkConfig GetConfiguration() => _Config;
     }
 }

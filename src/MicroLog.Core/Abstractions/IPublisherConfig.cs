@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace MicroLog.Core.Abstractions
 {
-    public interface ILogCollector
+    public interface IPublisherConfig
     {
-        Task InsertAsync(ILogEvent logEntity);
-        Task InsertAsync(IEnumerable<ILogEvent> logEntities);
+        IEnumerable<string> GetQueues();
     }
 }

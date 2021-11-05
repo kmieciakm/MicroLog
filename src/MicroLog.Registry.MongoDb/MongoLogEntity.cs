@@ -1,6 +1,6 @@
 ﻿using MicroLog.Core;
 using MicroLog.Core.Abstractions;
-using MicroLog.Driver.MongoDb.Utils;
+using MicroLog.Sink.MongoDb.Utils;
 using MongoDB.Bson.Serialization.Attributes;
 using System;
 using System.Collections.Generic;
@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MicroLog.Driver.MongoDb
+namespace MicroLog.Sink.MongoDb
 {
     public class MongoLogEntity : ILogEvent
     {

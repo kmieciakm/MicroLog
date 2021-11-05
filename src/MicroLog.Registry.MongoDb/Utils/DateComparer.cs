@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MicroLog.Driver.MongoDb.Utils
+namespace MicroLog.Sink.MongoDb.Utils
 {
     class DateComparer : IEqualityComparer<DateTime>
     {

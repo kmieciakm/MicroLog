@@ -1,4 +1,5 @@
-﻿using MicroLog.Core.Abstractions;
+﻿using MicroLog.Core;
+using MicroLog.Core.Abstractions;
 using MicroLog.Core.Config;
 using System;
 using System.Collections.Generic;
@@ -8,25 +9,8 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace MicroLog.Core
+namespace MicroLog.Collector.Client
 {
-    class MicroLogRoutes
-    {
-        private string _Base { get; init; }
-        public string Insert
-        {
-            get
-            {
-                return $"{_Base}/insert";
-            }
-        }
-
-        public MicroLogRoutes(string url)
-        {
-            _Base = $"{url}/api/sink";
-        }
-    }
-
     public class MicroLogClient : ILogger
     {
         private HttpClient _HttpClient { get; set; }

@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace MicroLog.Core.Abstractions
 {
+    /// <summary>
+    /// Provides access to logs persisted in a data storage.
+    /// </summary>
     public interface ILogRegistry
     {
         Task<ILogEvent> GetAsync(ILogEventIdentity identity);

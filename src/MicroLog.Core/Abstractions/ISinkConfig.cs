@@ -6,11 +6,8 @@ using System.Threading.Tasks;
 
 namespace MicroLog.Core.Abstractions
 {
-    /// <summary>
-    /// Unique identification of event log.
-    /// </summary>
-    public interface ILogEventIdentity
+    public interface ISinkConfig
     {
-        string EventId { get; init; }
+        public string Name { get; set; }
     }
 }
