@@ -1,5 +1,4 @@
-﻿using MicroLog.Collector.RabbitMq.Config;
-using MicroLog.Core.Abstractions;
+﻿using MicroLog.Core.Abstractions;
 using MicroLog.Sink.MongoDb.Config;
 using System;
 using System.Collections.Generic;

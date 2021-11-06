@@ -23,7 +23,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MicroLog.Core\MicroLog.Core.csproj" />
-    <ProjectReference Include="..\MicroLog.Registry.MongoDb\MicroLog.Sink.MongoDb.csproj" />
+    <ProjectReference Include="..\MicroLog.Sink.MongoDb\MicroLog.Sink.MongoDb.csproj" />
   </ItemGroup>
 
 </Project>
