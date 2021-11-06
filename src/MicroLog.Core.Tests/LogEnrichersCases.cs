@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using MicroLog.Core.Abstractions;
 using MicroLog.Core.Enrichers;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -53,6 +54,51 @@ namespace MicroLog.Core.Tests
             aggregateEnricher.Enrich(log);
 
             log.Properties.Should().HaveCount(2);
+        }
+
+        [Fact]
+        public void Log_HttpEnricher_Success()
+        {
+            LogEvent log = new()
+            {
+                Level = LogLevel.Error,
+                Message = "Bad request !!!"
+            };
+
+            HttpContext httpContext = new DefaultHttpContext();
+            httpContext.Request.Method = "POST";
+            httpContext.Response.StatusCode = 400;
+
+            HttpContextAccessor accessor = new();
+            accessor.HttpContext = httpContext;
+
+            HttpContextEnricher enricher = new(accessor);
+            enricher.Enrich(log);
+
+            LogProperty property = new()
+            {
+                Name = "HttpContext",
+                Value = "{\"Request\":{\"Url\":\":///\",\"Method\":\"POST\"},\"Response\":{\"StatusCode\":\"400\"}}"
+            };
+
+            log.Properties.Should().HaveCount(1);
+            log.Properties.First().Should().Be(property);
+        }
+
+        [Fact]
+        public void Log_HttpEnricher_EmptyAccessor()
+        {
+            LogEvent log = new()
+            {
+                Level = LogLevel.Warning,
+                Message = "No HttpContext !!!"
+            };
+
+            HttpContextAccessor accessor = new();
+            HttpContextEnricher enricher = new(accessor);
+            enricher.Enrich(log);
+
+            log.Properties.Should().HaveCount(0);
         }
     }
 }
