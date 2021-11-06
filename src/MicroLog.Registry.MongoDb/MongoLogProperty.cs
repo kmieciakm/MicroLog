@@ -9,17 +9,16 @@ namespace MicroLog.Sink.MongoDb
     record MongoLogProperty : ILogProperty
     {
         public string Name { get; init; }
-
-        private string _bsonValue;
+        public BsonDocument BsonValue { get; private set; }
         public string Value
         {
             get
             {
-                return _bsonValue;
+                return BsonValue.ToJson();
             }
             init
             {
-                _bsonValue = BsonDocument.Parse(value).ToJson();
+                BsonValue = BsonDocument.Parse(value);
             }
         }
 

@@ -29,10 +29,24 @@ namespace MicroLog.Sink.MongoDb
             => _properties
                 .Select(property =>
                     {
-                        var bsonValues = property.Value.ToBsonDocument().Values;
-                        // skip first value that specifies the type and get second that stores saved object in json
-                        var json = bsonValues.ElementAt(1).ToJson();
-                        return new LogProperty() { Name = property.Key, Value = json };
+                        string json;
+                        // Before performing save to database _properties dictionary
+                        // stores BsonDocument objects, but when MongoLogEntity object
+                        // is recraeted from database the type of values in dictionary
+                        // is KeyValuePair<>
+                        if (property.Value is not BsonDocument bson)
+                        {
+                            // Create BsonDocument from KeyValuePair<> object
+                            bson = property.Value.ToBsonDocument();
+                            // BsonDocument contains the type as first value,
+                            // the second value stores saved object in json
+                            json = bson.ElementAt(1).Value.ToJson();
+                        }
+                        else
+                        {
+                            json = bson.ToJson();
+                        }
+                        return new LogProperty { Name = property.Key, Value = json };
                     })
                 .ToList()
                 .AsReadOnly();
@@ -52,7 +66,7 @@ namespace MicroLog.Sink.MongoDb
             Exception = exception;
             foreach (var prop in properties)
             {
-                _properties.Add(prop.Name, prop.Value);
+                _properties.Add(prop.Name, prop.BsonValue);
             }
         }
 
