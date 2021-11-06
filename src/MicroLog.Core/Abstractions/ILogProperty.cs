@@ -8,7 +8,7 @@ namespace MicroLog.Core.Abstractions
 {
     public interface ILogProperty
     {
-        string Name { get; set; }
-        string Value { get; set; }
+        string Name { get; init; }
+        string Value { get; init; }
     }
 }

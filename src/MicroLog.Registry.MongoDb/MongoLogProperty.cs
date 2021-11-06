@@ -1,22 +1,31 @@
-﻿using MicroLog.Core;
-using MicroLog.Core.Abstractions;
+﻿using MicroLog.Core.Abstractions;
 using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace MicroLog.Sink.MongoDb
 {
-    class MongoLogProperty : ILogProperty
+    record MongoLogProperty : ILogProperty
     {
-        public string Name { get; set; }
+        public string Name { get; init; }
 
-        public string Value { get; set; }
+        private string _bsonValue;
+        public string Value
+        {
+            get
+            {
+                return _bsonValue;
+            }
+            init
+            {
+                _bsonValue = BsonDocument.Parse(value).ToJson();
+            }
+        }
 
         public MongoLogProperty(ILogProperty property)
+            : this(property.Name, property.Value)
         {
-            Name = property.Name;
-            Value = property.Value;
         }
 
         public MongoLogProperty(string name, string value)

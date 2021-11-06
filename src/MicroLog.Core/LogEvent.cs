@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace MicroLog.Core
@@ -24,13 +25,17 @@ namespace MicroLog.Core
             Timestamp = DateTime.Now;
         }
 
-        public LogEvent(ILogEventIdentity identity, string message, DateTime timestamp, LogLevel level, Exception exception)
+        public LogEvent(ILogEventIdentity identity, string message, DateTime timestamp, LogLevel level, Exception exception, IEnumerable<LogProperty> properties)
         {
             Identity = identity;
             Message = message;
             Timestamp = timestamp;
             Level = level;
             Exception = exception;
+            foreach (var prop in properties)
+            {
+                _properties.Add(prop.Name, prop);
+            }
         }
 
         public void Enrich(ILogProperty logProperty)
@@ -43,17 +48,19 @@ namespace MicroLog.Core
 
         public override bool Equals(object obj)
         {
-            return obj is LogEvent @event &&
+            return obj is ILogEvent @event &&
                    Identity.Equals(@event.Identity) &&
                    Message == @event.Message &&
                    Timestamp == @event.Timestamp &&
                    Level == @event.Level &&
-                   EqualityComparer<Exception>.Default.Equals(Exception, @event.Exception);
+                   Properties.SequenceEqual(@event.Properties);
+                   /*Exception.GetType().Equals(@event.Exception.GetType()) &&
+                   Exception.Message.Equals(@event.Exception.Message);*/
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(Identity, Message, Timestamp, Level, Exception);
+            return HashCode.Combine(Identity, Message, Timestamp, Level, Exception, Properties);
         }
     }
 }

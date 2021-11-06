@@ -32,7 +32,7 @@ namespace MicroLog.Sink.MongoDb
                         var bsonValues = property.Value.ToBsonDocument().Values;
                         // skip first value that specifies the type and get second that stores saved object in json
                         var json = bsonValues.ElementAt(1).ToJson();
-                        return new MongoLogProperty(property.Key, json);
+                        return new LogProperty() { Name = property.Key, Value = json };
                     })
                 .ToList()
                 .AsReadOnly();
@@ -52,24 +52,25 @@ namespace MicroLog.Sink.MongoDb
             Exception = exception;
             foreach (var prop in properties)
             {
-                BsonDocument doc = BsonDocument.Parse(prop.Value);
-                _properties.Add(prop.Name, doc);
+                _properties.Add(prop.Name, prop.Value);
             }
         }
 
         public override bool Equals(object obj)
         {
-            return obj is MongoLogEntity entity &&
+            return obj is ILogEvent entity &&
                    Identity.Equals(entity.Identity) &&
                    Message == entity.Message &&
                    new DateComparer().Equals(Timestamp, entity.Timestamp) &&
                    Level == entity.Level &&
-                   EqualityComparer<Exception>.Default.Equals(Exception, entity.Exception);
+                   Properties.SequenceEqual(entity.Properties);
+                   /*Exception.GetType().Equals(entity.Exception.GetType()) &&
+                   Exception.Message.Equals(entity.Exception.Message);*/
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(Identity, Message, Timestamp, Level, Exception);
+            return HashCode.Combine(Identity, Message, Timestamp, Level, Exception, Properties);
         }
     }
 }
