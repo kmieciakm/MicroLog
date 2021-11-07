@@ -9,8 +9,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroLog.Sink.MongoDb", "Mi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroLog.Provider.AspNetCore", "MicroLog.Provider.AspNetCore\MicroLog.Provider.AspNetCore.csproj", "{EE6E9E58-EE2D-4B73-8B89-8B1DF133623E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroLog.Sink.MongoDb.Tests", "MicroLog.Sink.MongoDb.Tests\MicroLog.Sink.MongoDb.Tests.csproj", "{C9A8AE5B-FA45-45C7-BA3B-5CB82C504A88}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroLog.Collector.RabbitMq", "MicroLog.Collector.RabbitMq\MicroLog.Collector.RabbitMq.csproj", "{55F4C1F4-DB78-47DB-937D-53A12B317262}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroLog.Collector", "MicroLog.Collector\MicroLog.Collector.csproj", "{7CBCE49A-D75E-4CF6-B317-F8DAC7E4304E}"
@@ -19,11 +17,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroLog.Collector.Client",
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{75366C85-9104-4A3B-B54E-913B93CF1E18}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroLog.Core.Tests", "MicroLog.Core.Tests\MicroLog.Core.Tests.csproj", "{005E1544-F513-4CAB-AA95-DCEF33793D5F}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroLog.Sink.InMemory", "MicroLog.Sink.InMemory\MicroLog.Sink.InMemory.csproj", "{7FA4AAA6-388A-47D6-9E08-EE7436A72AB7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroLog.Collector.Tests", "MicroLog.Collector.Tests\MicroLog.Collector.Tests.csproj", "{C49689E1-CCC7-492E-9E64-6984AB693BCB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroLog.Collector.Tests", "tests\MicroLog.Collector.Tests\MicroLog.Collector.Tests.csproj", "{38FFB1E5-656E-49FD-917C-15889E32C623}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroLog.Core.Tests", "tests\MicroLog.Core.Tests\MicroLog.Core.Tests.csproj", "{A0C38054-6B09-4EE5-90F6-021585FCBF27}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroLog.Sink.MongoDb.Tests", "tests\MicroLog.Sink.MongoDb.Tests\MicroLog.Sink.MongoDb.Tests.csproj", "{AC835ED0-4217-493E-896F-9BCE7F0ACADD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{F23A1995-7319-4F5B-93E2-48BA875A6759}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -43,10 +45,6 @@ Global
 		{EE6E9E58-EE2D-4B73-8B89-8B1DF133623E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EE6E9E58-EE2D-4B73-8B89-8B1DF133623E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EE6E9E58-EE2D-4B73-8B89-8B1DF133623E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C9A8AE5B-FA45-45C7-BA3B-5CB82C504A88}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C9A8AE5B-FA45-45C7-BA3B-5CB82C504A88}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C9A8AE5B-FA45-45C7-BA3B-5CB82C504A88}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C9A8AE5B-FA45-45C7-BA3B-5CB82C504A88}.Release|Any CPU.Build.0 = Release|Any CPU
 		{55F4C1F4-DB78-47DB-937D-53A12B317262}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{55F4C1F4-DB78-47DB-937D-53A12B317262}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{55F4C1F4-DB78-47DB-937D-53A12B317262}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -63,21 +61,30 @@ Global
 		{75366C85-9104-4A3B-B54E-913B93CF1E18}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{75366C85-9104-4A3B-B54E-913B93CF1E18}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{75366C85-9104-4A3B-B54E-913B93CF1E18}.Release|Any CPU.Build.0 = Release|Any CPU
-		{005E1544-F513-4CAB-AA95-DCEF33793D5F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{005E1544-F513-4CAB-AA95-DCEF33793D5F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{005E1544-F513-4CAB-AA95-DCEF33793D5F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{005E1544-F513-4CAB-AA95-DCEF33793D5F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7FA4AAA6-388A-47D6-9E08-EE7436A72AB7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7FA4AAA6-388A-47D6-9E08-EE7436A72AB7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7FA4AAA6-388A-47D6-9E08-EE7436A72AB7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7FA4AAA6-388A-47D6-9E08-EE7436A72AB7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C49689E1-CCC7-492E-9E64-6984AB693BCB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C49689E1-CCC7-492E-9E64-6984AB693BCB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C49689E1-CCC7-492E-9E64-6984AB693BCB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C49689E1-CCC7-492E-9E64-6984AB693BCB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{38FFB1E5-656E-49FD-917C-15889E32C623}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{38FFB1E5-656E-49FD-917C-15889E32C623}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{38FFB1E5-656E-49FD-917C-15889E32C623}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{38FFB1E5-656E-49FD-917C-15889E32C623}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A0C38054-6B09-4EE5-90F6-021585FCBF27}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A0C38054-6B09-4EE5-90F6-021585FCBF27}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A0C38054-6B09-4EE5-90F6-021585FCBF27}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A0C38054-6B09-4EE5-90F6-021585FCBF27}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AC835ED0-4217-493E-896F-9BCE7F0ACADD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC835ED0-4217-493E-896F-9BCE7F0ACADD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AC835ED0-4217-493E-896F-9BCE7F0ACADD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AC835ED0-4217-493E-896F-9BCE7F0ACADD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{38FFB1E5-656E-49FD-917C-15889E32C623} = {F23A1995-7319-4F5B-93E2-48BA875A6759}
+		{A0C38054-6B09-4EE5-90F6-021585FCBF27} = {F23A1995-7319-4F5B-93E2-48BA875A6759}
+		{AC835ED0-4217-493E-896F-9BCE7F0ACADD} = {F23A1995-7319-4F5B-93E2-48BA875A6759}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8876A5B1-768F-403B-9418-15E551AA6890}

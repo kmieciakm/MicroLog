@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MicroLog.Core\MicroLog.Core.csproj" />
+    <ProjectReference Include="..\..\MicroLog.Core\MicroLog.Core.csproj" />
   </ItemGroup>
 
 </Project>
