@@ -8,11 +8,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MicroLog.Sink.MongoDb.Tests.Fixture
+namespace MicroLog.IntegrationTests.MongoDb.Fixture
 {
-    public abstract class LogRepositoryFixture : MongoIntegrationFixture
+    public abstract class MongoFixture : MongoIntegrationFixture
     {
-        private static MongoSinkConfig CreateMongoTestConfig(string connectionString) 
+        private static MongoSinkConfig CreateMongoTestConfig(string connectionString)
             => new MongoSinkConfig()
             {
                 ConnectionString = connectionString,

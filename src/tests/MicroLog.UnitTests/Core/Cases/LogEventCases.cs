@@ -1,9 +1,10 @@
 using FluentAssertions;
+using MicroLog.Core;
 using System;
 using System.Collections.Generic;
 using Xunit;
 
-namespace MicroLog.Core.Tests
+namespace MicroLog.UnitTests.Core.Cases
 {
     public class LogEventCases
     {
@@ -41,7 +42,7 @@ namespace MicroLog.Core.Tests
                 Message = "Works !!!"
             };
 
-            logEvent.Timestamp.Should().NotBe(default(DateTime));
+            logEvent.Timestamp.Should().NotBe(default);
             logEvent.Identity.Should().NotBeNull();
         }
 

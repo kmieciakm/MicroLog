@@ -2,12 +2,13 @@ using MicroLog.Core;
 using System;
 using Xunit;
 using Shouldly;
-using MicroLog.Sink.MongoDb.Tests.Fixture;
 using MicroLog.Core.Enrichers;
+using MicroLog.IntegrationTests.MongoDb.Fixture;
+using MicroLog.Sink.MongoDb;
 
-namespace MicroLog.Sink.MongoDb.Tests
+namespace MicroLog.IntegrationTests.MongoDb.Cases
 {
-    public class LogRepositoryCases : LogRepositoryFixture
+    public class MongoLogRepositoryCases : MongoFixture
     {
         [Fact]
         public void Log_Save_Success()

@@ -10,11 +10,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace MicroLog.Collector.Tests.Fixture
+namespace MicroLog.FunctionalTests.Collector.Fixture
 {
     public abstract class CollectorFixture
     {
-        private static string dockerComposeFile = Path.Combine(Directory.GetCurrentDirectory(), (TemplateString)"docker-compose.yml");
+        private static string dockerComposeFile = Path.Combine(Directory.GetCurrentDirectory(), (TemplateString)"collector/fixture/docker-compose.yml");
 
         protected static ICompositeService Services()
         {

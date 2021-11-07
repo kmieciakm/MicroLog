@@ -19,11 +19,11 @@ Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-co
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroLog.Sink.InMemory", "MicroLog.Sink.InMemory\MicroLog.Sink.InMemory.csproj", "{7FA4AAA6-388A-47D6-9E08-EE7436A72AB7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroLog.Collector.Tests", "tests\MicroLog.Collector.Tests\MicroLog.Collector.Tests.csproj", "{38FFB1E5-656E-49FD-917C-15889E32C623}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroLog.FunctionalTests", "tests\MicroLog.FunctionalTests\MicroLog.FunctionalTests.csproj", "{38FFB1E5-656E-49FD-917C-15889E32C623}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroLog.Core.Tests", "tests\MicroLog.Core.Tests\MicroLog.Core.Tests.csproj", "{A0C38054-6B09-4EE5-90F6-021585FCBF27}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroLog.UnitTests", "tests\MicroLog.UnitTests\MicroLog.UnitTests.csproj", "{A0C38054-6B09-4EE5-90F6-021585FCBF27}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroLog.Sink.MongoDb.Tests", "tests\MicroLog.Sink.MongoDb.Tests\MicroLog.Sink.MongoDb.Tests.csproj", "{AC835ED0-4217-493E-896F-9BCE7F0ACADD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroLog.IntegrationTests", "tests\MicroLog.IntegrationTests\MicroLog.IntegrationTests.csproj", "{AC835ED0-4217-493E-896F-9BCE7F0ACADD}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{F23A1995-7319-4F5B-93E2-48BA875A6759}"
 EndProject

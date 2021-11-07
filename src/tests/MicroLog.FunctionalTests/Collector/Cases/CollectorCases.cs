@@ -1,6 +1,6 @@
 ﻿using MicroLog.Collector.Client;
-using MicroLog.Collector.Tests.Fixture;
 using MicroLog.Core.Config;
+using MicroLog.FunctionalTests.Collector.Fixture;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace MicroLog.Collector.Tests
+namespace MicroLog.FunctionalTests.Collector.Cases
 {
     public class CollectorCases : CollectorFixture
     {

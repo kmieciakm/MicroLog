@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using MicroLog.Core;
 using MicroLog.Core.Abstractions;
 using MicroLog.Core.Enrichers;
 using Microsoft.AspNetCore.Http;
@@ -9,7 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace MicroLog.Core.Tests
+namespace MicroLog.UnitTests.Core.Cases
 {
     public class LogEnrichersCases
     {
