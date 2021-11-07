@@ -2,7 +2,6 @@
 using MicroLog.Core.Abstractions;
 using MicroLog.Sink.MongoDb.Utils;
 using MongoDB.Bson;
-using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Attributes;
 using System;
 using System.Collections.Generic;
@@ -12,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace MicroLog.Sink.MongoDb
 {
-    class MongoLogEntity : ILogEvent
+    internal class MongoLogEntity : ILogEvent
     {
         [BsonId]
         public ILogEventIdentity Identity { get; private set; }

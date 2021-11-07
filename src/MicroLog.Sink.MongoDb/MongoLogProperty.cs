@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace MicroLog.Sink.MongoDb
 {
-    record MongoLogProperty : ILogProperty
+    internal record MongoLogProperty : ILogProperty
     {
         public string Name { get; init; }
         public BsonDocument BsonValue { get; private set; }

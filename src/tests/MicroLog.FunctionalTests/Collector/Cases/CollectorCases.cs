@@ -1,5 +1,4 @@
 ﻿using MicroLog.Collector.Client;
-using MicroLog.Core.Config;
 using MicroLog.FunctionalTests.Collector.Fixture;
 using System;
 using System.Collections.Generic;

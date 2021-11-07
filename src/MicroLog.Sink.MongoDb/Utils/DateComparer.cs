@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MicroLog.Sink.MongoDb.Utils
 {
-    class DateComparer : IEqualityComparer<DateTime>
+    internal class DateComparer : IEqualityComparer<DateTime>
     {
         public bool Equals(DateTime x, DateTime y)
         {

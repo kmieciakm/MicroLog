@@ -1,6 +1,5 @@
 ﻿using MicroLog.Core;
 using MicroLog.Core.Abstractions;
-using MicroLog.Core.Config;
 using System;
 using System.Collections.Generic;
 using System.Linq;

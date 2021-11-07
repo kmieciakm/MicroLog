@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MicroLog.Sink.MongoDb
 {
-    static class MongoLogMapper
+    internal static class MongoLogMapper
     {
         public static MongoLogEntity Map(ILogEvent log) => new MongoLogEntity(
                 identity: new MongoLogIdentity(log.Identity.EventId),

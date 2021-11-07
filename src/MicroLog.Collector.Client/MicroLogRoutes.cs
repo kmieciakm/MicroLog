@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MicroLog.Collector.Client
 {
-    class MicroLogRoutes
+    internal class MicroLogRoutes
     {
         private string _Base { get; init; }
         public string Insert

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace MicroLog.Collector.Utils
 {
-    public static class LinqUtils
+    internal static class LinqUtils
     {
         public static IEnumerable<T> OrEmptyIfNull<T>(this IEnumerable<T> source)
         {

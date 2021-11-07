@@ -1,9 +1,6 @@
-﻿using MicroLog.Collector.Config;
-using MicroLog.Core.Abstractions;
+﻿using MicroLog.Core.Abstractions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;

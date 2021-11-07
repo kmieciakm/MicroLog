@@ -3,7 +3,6 @@ using Ductus.FluentDocker.Model.Common;
 using Ductus.FluentDocker.Services;
 using Ductus.FluentDocker.Services.Impl;
 using MicroLog.Collector.Client;
-using MicroLog.Core.Config;
 using System;
 using System.IO;
 using System.Linq;
