@@ -1,5 +1,6 @@
 ﻿using MicroLog.Core;
 using MicroLog.Core.Abstractions;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +16,11 @@ namespace MicroLog.Collector.Client
         private HttpClient _HttpClient { get; set; }
         private MicroLogConfig _Config { get; set; }
         private MicroLogRoutes _Routes { get; set; }
+
+        public MicroLogClient(IOptions<MicroLogConfig> configOptions)
+            : this(configOptions.Value)
+        {
+        }
 
         public MicroLogClient(MicroLogConfig config)
         {
