@@ -1,7 +1,6 @@
 ﻿using MicroLog.Core.Abstractions;
 using MicroLog.Sink.MongoDb;
 using MicroLog.Sink.MongoDb.Config;
-using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,8 +11,8 @@ namespace MicroLog.IntegrationTests.MongoDb.Fixture
 {
     public abstract class MongoFixture : MongoIntegrationFixture
     {
-        private static MongoSinkConfig CreateMongoTestConfig(string connectionString)
-            => new MongoSinkConfig()
+        private static MongoConfig CreateMongoTestConfig(string connectionString)
+            => new MongoConfig()
             {
                 ConnectionString = connectionString,
                 DatabaseName = "TestDatabase"

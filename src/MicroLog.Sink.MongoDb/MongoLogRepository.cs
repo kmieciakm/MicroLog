@@ -14,16 +14,16 @@ namespace MicroLog.Sink.MongoDb
     public class MongoLogRepository : ILogSink, ILogRegistry
     {
         private const string COLLECTION_NAME = "logs";
-        private MongoSinkConfig _Config { get; }
+        private MongoConfig _Config { get; }
         private IMongoDatabase _Database { get; }
         private IMongoCollection<MongoLogEntity> _Collection { get; }
 
-        public MongoLogRepository(IOptions<MongoSinkConfig> configOptions)
+        public MongoLogRepository(IOptions<MongoConfig> configOptions)
             : this(configOptions.Value)
         {
         }
 
-        public MongoLogRepository(MongoSinkConfig config)
+        public MongoLogRepository(MongoConfig config)
         {
             _Config = config;
             var client = new MongoClient(config.ConnectionString);

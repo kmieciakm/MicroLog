@@ -9,7 +9,7 @@ namespace MicroLog.Collector.Config
 {
     public class SinksConfig
     {
-        public IEnumerable<MongoSinkConfig> Mongo { get; set; }
+        public IEnumerable<MongoConfig> Mongo { get; set; }
     }
 
     public class PublisherConfig : IPublisherConfig
