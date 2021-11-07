@@ -23,7 +23,7 @@ namespace MicroLog.Core
 
         public override bool Equals(object obj)
         {
-            return obj is LogIdentity identity &&
+            return obj is ILogEventIdentity identity &&
                    EventId == identity.EventId;
         }
 

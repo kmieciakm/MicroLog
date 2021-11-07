@@ -21,6 +21,7 @@ namespace MicroLog.Collector.Client
         {
             _Config = config;
             _Routes = new MicroLogRoutes(config.Url);
+            _HttpClient = new HttpClient();
         }
 
         public bool ShouldLog(LogLevel level)

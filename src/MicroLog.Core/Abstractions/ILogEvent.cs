@@ -16,5 +16,6 @@ namespace MicroLog.Core.Abstractions
         DateTime Timestamp { get; init; }
         LogLevel Level { get; set; }
         Exception Exception { get; set; }
+        IReadOnlyCollection<ILogProperty> Properties { get; }
     }
 }

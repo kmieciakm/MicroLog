@@ -33,13 +33,14 @@ namespace MicroLog.Sink.MongoDb
 
         async Task<ILogEvent> ILogRegistry.GetAsync(ILogEventIdentity identity)
         {
-            using var entity = await _Collection.FindAsync(entity => entity.Identity == identity);
+            var id = new MongoLogIdentity(identity.EventId);
+            using var entity = await _Collection.FindAsync(entity => entity.Identity.Equals(id));
             return entity.FirstOrDefault();
         }
 
         async Task<IEnumerable<ILogEvent>> ILogRegistry.GetAsync(IEnumerable<ILogEventIdentity> identities)
         {
-            using var entity = await _Collection.FindAsync(entity => entity.Identity == identities);
+            using var entity = await _Collection.FindAsync(entity => entity.Identity.Equals(identities));
             return entity.ToEnumerable();
         }
 

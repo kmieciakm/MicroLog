@@ -57,7 +57,7 @@ namespace MicroLog.Sink.MongoDb.Tests.Fixture
 
             bool isMongoLive = database
                 .RunCommandAsync((Command<BsonDocument>)"{ping:1}")
-                .Wait(5000);
+                .Wait(10000);
 
             isMongoLive.ShouldBeTrue();
         }

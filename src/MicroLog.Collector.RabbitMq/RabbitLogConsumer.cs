@@ -1,6 +1,7 @@
 ﻿using MicroLog.Collector.RabbitMq.Config;
 using MicroLog.Core;
 using MicroLog.Core.Abstractions;
+using MicroLog.Core.Enrichers;
 using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
@@ -19,12 +20,14 @@ namespace MicroLog.Collector.RabbitMq
         private ILogSink _Sink { get; }
         private IConnection _Connection { get; set; }
         private IModel _Channel { get; set; }
+        private ILogEnricher _SourceEnricher { get; }
 
         public RabbitLogConsumer(IOptions<RabbitCollectorConfig> rabbitConfig, ILogSink sink)
             : base(rabbitConfig.Value)
         {
             _Sink = sink;
             _Queue = $"log-{sink.GetConfiguration().Name}";
+            _SourceEnricher = new ValueEnricher("Source", RabbitConfig.HostName);
         }
 
         public void Consume()
@@ -39,7 +42,8 @@ namespace MicroLog.Collector.RabbitMq
             {
                 var body = e.Body.ToArray();
                 var message = Encoding.UTF8.GetString(body);
-                ILogEvent log = JsonSerializer.Deserialize<LogEvent>(message);
+                LogEvent log = JsonSerializer.Deserialize<LogEvent>(message);
+                _SourceEnricher.Enrich(log);
                 await _Sink.InsertAsync(log);
             };
 

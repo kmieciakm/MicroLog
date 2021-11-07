@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MicroLog.Sink.MongoDb
 {
-    public class MongoLogIdentity : ILogEventIdentity
+    class MongoLogIdentity : ILogEventIdentity
     {
         public string EventId { get; init; }
 
@@ -23,7 +23,7 @@ namespace MicroLog.Sink.MongoDb
 
         public override bool Equals(object obj)
         {
-            return obj is MongoLogIdentity identity &&
+            return obj is ILogEventIdentity identity &&
                    EventId == identity.EventId;
         }
 
