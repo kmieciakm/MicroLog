@@ -1,4 +1,5 @@
-﻿using MicroLog.Core.Abstractions;
+﻿using MicroLog.Core;
+using MicroLog.Core.Abstractions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -8,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MicroLog.Core
+namespace MicroLog.Collector.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]

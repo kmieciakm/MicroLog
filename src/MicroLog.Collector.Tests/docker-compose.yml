@@ -1,0 +1,56 @@
+version: '3.4'
+
+services:
+  microlog.mongoDb.test:
+    image: mongo
+    container_name: microlog.mongoDb.test
+    volumes:
+      - logsDb_test_data:/data/db
+      - logsDb_test_config:/data/configdb
+    ports:
+      - "27018:27017"
+
+  microlog.rabbitmq.test:
+    image: rabbitmq:3-management-alpine
+    container_name: microlog.rabbitmq.test
+    hostname: rabbit-test-collector
+    volumes:
+      - rabbitMq_test_data:/var/lib/rabbitmq
+      - ./rabbitmq/etc/definitions.json:/etc/rabbitmq/definitions.json
+      - ./rabbitmq/etc/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
+      - ./rabbitmq/data:/var/lib/rabbitmq/mnesia/rabbit@rabbit-log-collector
+      - ./rabbitmq/logs:/var/log/rabbitmq/log
+    ports:
+      - 5673:5672
+      - 15673:15672
+
+  microlog.collector.test:
+    image: ${DOCKER_REGISTRY-}micrologcollector
+    container_name: microlog.collector.test
+    build:
+      context: .
+      dockerfile: MicroLog.Collector/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - "Collector__RabbitMq__HostName=rabbit-test-collector"
+      - "Collector__RabbitMq__Port=5672"
+      - "Collector__RabbitMq__UserName=guest"
+      - "Collector__RabbitMq__Password=guest"
+      - "Publisher__Queues=log-mongo"
+      - "Sinks__Mongo__0__Name=mongo"
+      - "Sinks__Mongo__0__DatabaseName=microlog"
+      - "Sinks__Mongo__0__ConnectionString=mongodb://microlog.mongoDb.test:27017"
+    ports:
+      - "3002:443"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+    depends_on:
+      - microlog.rabbitmq.test
+      - microlog.mongoDb.test
+
+volumes:
+  logsDb_test_data:
+  logsDb_test_config:
+  rabbitMq_test_data:
