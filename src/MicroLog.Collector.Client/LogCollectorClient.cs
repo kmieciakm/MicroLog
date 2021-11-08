@@ -11,22 +11,26 @@ using System.Threading.Tasks;
 
 namespace MicroLog.Collector.Client
 {
-    public class MicroLogClient : ILogger
+    /// <summary>
+    /// <see cref="ILogger"/> that sends logs via HTTP.
+    /// Encapsulates HTTP client for log collector.
+    /// </summary>
+    public class LogCollectorClient : ILogger
     {
-        private HttpClient _HttpClient { get; set; }
-        private MicroLogConfig _Config { get; set; }
-        private MicroLogRoutes _Routes { get; set; }
+        private static readonly HttpClient _httpClient = new HttpClient();
 
-        public MicroLogClient(IOptions<MicroLogConfig> configOptions)
+        private LogCollectorConfig _Config { get; }
+        private LogCollectorRoutes _Routes { get; }
+
+        public LogCollectorClient(IOptions<LogCollectorConfig> configOptions)
             : this(configOptions.Value)
         {
         }
 
-        public MicroLogClient(MicroLogConfig config)
+        public LogCollectorClient(LogCollectorConfig config)
         {
             _Config = config;
-            _Routes = new MicroLogRoutes(config.Url);
-            _HttpClient = new HttpClient();
+            _Routes = new LogCollectorRoutes(config.Url);
         }
 
         public bool ShouldLog(LogLevel level)
@@ -44,7 +48,7 @@ namespace MicroLog.Collector.Client
                 };
                 var content = JsonSerializer.Serialize(logEvent);
                 var body = new StringContent(content, Encoding.UTF8, "application/json");
-                await _HttpClient.PostAsync(_Routes.Insert, body);
+                await _httpClient.PostAsync(_Routes.Insert, body);
             }
         }
 

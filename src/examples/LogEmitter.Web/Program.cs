@@ -24,14 +24,22 @@ namespace LogEmitter.Web
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    /*webBuilder.ConfigureServices(services => {
-                        var config = services.BuildServiceProvider().GetRequiredService<IConfiguration>();
-                        services.Configure<MicroLogConfig>(config.GetSection("MicroLogConfig"));
-                        services.AddSingleton<IMicroLogger, MicroLogClient>();
-                    });
-                    webBuilder.ConfigureLogging(builder => builder
-                        .ClearProviders()
-                        .AddAspMicroLogger());*/
+                    /*
+                     * Integration of MicroLog with default .Net ILogger interface.
+                     */
+                    //webBuilder.ConfigureServices(services =>
+                    //{
+                    //    var config = services.BuildServiceProvider().GetRequiredService<IConfiguration>();
+                    //    services.Configure<LogCollectorConfig>(config.GetSection("LogCollectorConfig"));
+                    //    services.AddSingleton<IMicroLogger, LogCollectorClient>();
+                    //});
+
+                    //webBuilder.ConfigureLogging(builder => builder
+                    //    .ClearProviders()
+                    //    .AddAspMicroLogger());
+                    /*
+                     * --------------------------------------------------------------
+                     */
 
                     webBuilder.UseStartup<Startup>();
                 });

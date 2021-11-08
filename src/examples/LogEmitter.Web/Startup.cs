@@ -28,12 +28,18 @@ namespace LogEmitter.Web
 
         public void ConfigureServices(IServiceCollection services)
         {
+            /*
+             * Integration of MicroLog with default .Net ILogger interface.
+             */
             services
-                .Configure<MicroLogConfig>(Configuration.GetSection("MicroLogConfig"))
-                .AddSingleton<IMicroLogger, MicroLogClient>()
+                .Configure<LogCollectorConfig>(Configuration.GetSection("LogCollectorConfig"))
+                .AddSingleton<IMicroLogger, LogCollectorClient>()
                 .AddLogging(builder => builder
                     .ClearProviders()
                     .AddAspMicroLogger());
+            /*
+             * --------------------------------------------------------------
+             */
 
             services.AddControllers();
             services.AddSwaggerGen(c =>

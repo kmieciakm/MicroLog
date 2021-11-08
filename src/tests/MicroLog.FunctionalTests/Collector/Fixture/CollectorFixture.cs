@@ -29,7 +29,7 @@ namespace MicroLog.FunctionalTests.Collector.Fixture
                 .Build();
         }
 
-        protected static MicroLogConfig GetMicroLogConfig(ICompositeService services)
+        protected static LogCollectorConfig GetMicroLogConfig(ICompositeService services)
             => new()
             {
                 Url = $"https://localhost:3002",

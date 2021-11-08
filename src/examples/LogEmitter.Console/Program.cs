@@ -1,13 +1,14 @@
 ﻿using MicroLog.Collector.Client;
+using MicroLog.Core;
 using System;
 
-MicroLogConfig config = new()
+LogCollectorConfig config = new()
 {
     Url = $"https://localhost:3001",
-    MinimumLevel = MicroLog.Core.LogLevel.Debug
+    MinimumLevel = LogLevel.Debug
 };
 
-MicroLogClient client = new(config);
+LogCollectorClient client = new(config);
 
 await client.LogDebugAsync("Server is listening  on port 5000.");
 await client.LogInformationAsync("Uploaded image: sample.png.");

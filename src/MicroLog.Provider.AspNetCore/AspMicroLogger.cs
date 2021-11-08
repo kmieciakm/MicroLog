@@ -5,6 +5,10 @@ using IMicroLogLevel = MicroLog.Core.LogLevel;
 
 namespace MicroLog.Provider.AspNetCore
 {
+    /// <summary>
+    /// Wrapper around core MicroLog ILogger,
+    /// that implements default Asp.Net logger interface <see cref="ILogger"/>.
+    /// </summary>
     public class AspMicroLogger : ILogger
     {
         private string _Name { get; }

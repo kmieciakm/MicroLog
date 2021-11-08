@@ -9,6 +9,9 @@ using IMicroLogger = MicroLog.Core.Abstractions.ILogger;
 
 namespace MicroLog.Provider.AspNetCore
 {
+    /// <summary>
+    /// Provider that can create instances of the <see cref="AspMicroLogger"/>.
+    /// </summary>
     public sealed class AspMicroLoggerProvider : ILoggerProvider
     {
         private IMicroLogger _Logger { get; }

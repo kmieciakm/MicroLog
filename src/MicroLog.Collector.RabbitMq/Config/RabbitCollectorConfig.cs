@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace MicroLog.Collector.RabbitMq.Config
 {
+    /// <summary>
+    /// Configuration of the RabbitMq endpoint.
+    /// </summary>
     public class RabbitCollectorConfig
     {
         public string HostName { get; set; }

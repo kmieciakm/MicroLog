@@ -1,4 +1,5 @@
 ﻿using MicroLog.Collector.RabbitMq.Config;
+using MicroLog.Core;
 using MicroLog.Core.Abstractions;
 using RabbitMQ.Client;
 using System;
@@ -9,6 +10,9 @@ using System.Threading.Tasks;
 
 namespace MicroLog.Collector.RabbitMq
 {
+    /// <summary>
+    /// Base class used to connect and configure Rabbit Message Queue.
+    /// </summary>
     public abstract class RabbitLogBase
     {
         protected RabbitCollectorConfig RabbitConfig { get; set; }
@@ -26,6 +30,11 @@ namespace MicroLog.Collector.RabbitMq
             };
         }
 
+        /// <summary>
+        /// Declares a queue with priority.
+        /// </summary>
+        /// <param name="channel">AMQP channel.</param>
+        /// <param name="queue">Queue name.</param>
         protected void DeclareQueue(IModel channel, string queue)
         {
             var args = new Dictionary<string, object>
@@ -41,11 +50,18 @@ namespace MicroLog.Collector.RabbitMq
                 arguments: args);
         }
 
-        protected IBasicProperties GetProperties(IModel channel, ILogEvent logEntity)
+        /// <summary>
+        /// Creates log specific properties for the channel.
+        /// Sets the priority of message based on log level (<see cref="LogLevel"/>) of a given log.
+        /// </summary>
+        /// <param name="channel">AMQP channel.</param>s
+        /// <param name="logEvent">Log event.</param>
+        /// <returns>Created properties.</returns>
+        protected IBasicProperties GetProperties(IModel channel, ILogEvent logEvent)
         {
             var properties = channel.CreateBasicProperties();
             properties.Persistent = true;
-            properties.Priority = logEntity.Level switch
+            properties.Priority = logEvent.Level switch
             {
                 Core.LogLevel.None => 1,
                 Core.LogLevel.Trace => 1,

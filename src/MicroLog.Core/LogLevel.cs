@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace MicroLog.Core
 {
+    /// <summary>
+    /// Specifies the relative importance of a log event.
+    /// </summary>
     public enum LogLevel
     {
         Trace = 0,

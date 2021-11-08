@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace MicroLog.Core
 {
+    /// <summary>
+    /// Base <see cref="ILogEventIdentity"/> implementation.
+    /// </summary>
     public class LogIdentity : ILogEventIdentity
     {
         public string EventId { get; init; }

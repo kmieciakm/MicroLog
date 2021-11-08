@@ -11,6 +11,9 @@ namespace MicroLog.Core.Abstractions
     /// </summary>
     public interface ILogEventIdentity
     {
+        /// <summary>
+        /// Id of event log.
+        /// </summary>
         string EventId { get; init; }
     }
 }

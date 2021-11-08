@@ -10,13 +10,18 @@ using System.Threading.Tasks;
 
 namespace MicroLog.Collector.RabbitMq
 {
+    /// <summary>
+    /// Implementation of <see cref="ILogPublisher"/> with RabbitMq. 
+    /// </summary>
     public class RabbitLogPublisher : RabbitLogBase, ILogPublisher
     {
-        public IEnumerable<string> Queues { get; set; }
+        public IPublisherConfig Config { get; }
+        private IEnumerable<string> Queues { get; }
 
         public RabbitLogPublisher(RabbitCollectorConfig rabbitConfig, IPublisherConfig publisherConfig)
             : base(rabbitConfig)
         {
+            Config = publisherConfig;
             Queues = publisherConfig.GetQueues();
         }
 
@@ -25,7 +30,7 @@ namespace MicroLog.Collector.RabbitMq
         {
         }
 
-        public Task PublishAsync(ILogEvent logEntity)
+        public Task PublishAsync(ILogEvent logEvent)
         {
             using (IConnection connection = ConnectionFactory.CreateConnection())
             {
@@ -35,8 +40,8 @@ namespace MicroLog.Collector.RabbitMq
                     {
                         DeclareQueue(channel, queue);
 
-                        var prop = GetProperties(channel, logEntity);
-                        var body = JsonSerializer.SerializeToUtf8Bytes(logEntity);
+                        var prop = GetProperties(channel, logEvent);
+                        var body = JsonSerializer.SerializeToUtf8Bytes(logEvent);
                         channel.BasicPublish("", queue, prop, body);
                     }
                 }
@@ -44,7 +49,7 @@ namespace MicroLog.Collector.RabbitMq
             return Task.CompletedTask;
         }
 
-        public Task PublishAsync(IEnumerable<ILogEvent> logEntities)
+        public Task PublishAsync(IEnumerable<ILogEvent> logEvents)
         {
             using (IConnection connection = ConnectionFactory.CreateConnection())
             {
@@ -58,7 +63,7 @@ namespace MicroLog.Collector.RabbitMq
                         IBasicProperties prop;
                         IBasicPublishBatch basicPublishBatch = channel.CreateBasicPublishBatch();
 
-                        foreach (var log in logEntities)
+                        foreach (var log in logEvents)
                         {
                             prop = GetProperties(channel, log);
                             body = JsonSerializer.SerializeToUtf8Bytes(log);

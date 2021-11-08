@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace MicroLog.Core
 {
+    /// <summary>
+    /// Base <see cref="ILogEvent"/> implementation.
+    /// </summary>
     public class LogEvent : ILogEvent
     {
         public ILogEventIdentity Identity { get; }
@@ -38,7 +41,12 @@ namespace MicroLog.Core
             }
         }
 
-        public void Enrich(ILogProperty logProperty)
+        /// <summary>
+        /// If a property with this name does not exist,
+        /// adds the given property to the log event.
+        /// </summary>
+        /// <param name="logProperty">Property to add.</param>
+        public void AddProperty(ILogProperty logProperty)
         {
             if (!_properties.ContainsKey(logProperty.Name))
             {

@@ -7,26 +7,32 @@ using System.Threading.Tasks;
 
 namespace MicroLog.Sink.InMemory
 {
+    /// <summary>
+    /// Dummy configuration for <see cref="InMemoryStorage"/>.
+    /// </summary>
     public class InMemoryConfig : ISinkConfig
     {
         public string Name { get; set; } = "InMemory";
     }
 
+    /// <summary>
+    /// In-memory storage.
+    /// </summary>
     public class InMemoryStorage : ILogSink, ILogRegistry
     {
+        public ISinkConfig Config { get; } = new InMemoryConfig();
+
         private Dictionary<string, ILogEvent> Storage { get; set; }
 
-        public ISinkConfig GetConfiguration() => new InMemoryConfig();
-
-        public Task InsertAsync(ILogEvent logEntity)
+        public Task InsertAsync(ILogEvent logEvent)
         {
-            Storage.Add(logEntity.Identity.EventId, logEntity);
+            Storage.Add(logEvent.Identity.EventId, logEvent);
             return Task.CompletedTask;
         }
 
-        public Task InsertAsync(IEnumerable<ILogEvent> logEntities)
+        public Task InsertAsync(IEnumerable<ILogEvent> logEvents)
         {
-            foreach(var logEntity in logEntities)
+            foreach(var logEntity in logEvents)
             {
                 Storage.Add(logEntity.Identity.EventId, logEntity);
             }
