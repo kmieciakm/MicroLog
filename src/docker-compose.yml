@@ -24,6 +24,13 @@ services:
       - microlog.rabbitmq
       - microlog.mongoDb
 
+  microlog.lama:
+    image: ${DOCKER_REGISTRY-}microloglama
+    container_name: microlog.lama
+    build:
+      context: .
+      dockerfile: Microlog.Lama/Server/Dockerfile
+
 volumes:
   logsDb_data:
   logsDb_config:
