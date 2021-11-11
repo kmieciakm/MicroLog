@@ -33,11 +33,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogEmitter.Console", "examp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogEmitter.Web", "examples\LogEmitter.Web\LogEmitter.Web.csproj", "{31117F80-36B0-4C9C-AC17-744A9C5B1F47}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroLog.Lama.Server", "MicroLog.Lama\Server\MircoLog.Lama.Server.csproj", "{856616AA-4184-4306-9CB7-7DC9B87D9D2B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MircoLog.Lama.Server", "MicroLog.Lama\Server\MircoLog.Lama.Server.csproj", "{856616AA-4184-4306-9CB7-7DC9B87D9D2B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroLog.Lama.Client", "MicroLog.Lama\Client\MircoLog.Lama.Client.csproj", "{39A94EB7-CED5-409B-AA9E-9B698D555D7D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MircoLog.Lama.Client", "MicroLog.Lama\Client\MircoLog.Lama.Client.csproj", "{39A94EB7-CED5-409B-AA9E-9B698D555D7D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroLog.Lama.Shared", "MicroLog.Lama\Shared\MircoLog.Lama.Shared.csproj", "{AFB63A4F-9009-42AA-913D-EE2B2C5AB5B6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MircoLog.Lama.Shared", "MicroLog.Lama\Shared\MircoLog.Lama.Shared.csproj", "{AFB63A4F-9009-42AA-913D-EE2B2C5AB5B6}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lama", "lama", "{1C7D0C12-2373-4853-8779-AAF1E6B4F242}"
 EndProject

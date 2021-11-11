@@ -13,6 +13,7 @@ public class AppTheme
             Background = new("#32333d"),
             Surface = new("#27272f"),
             TextPrimary = new ("#eeeeee"),
+            TextSecondary = new("eeeeee"),
             Primary = new("#0f9aa7"),
             Error = new("#de2d6d"),
             Success = new("#009d81")

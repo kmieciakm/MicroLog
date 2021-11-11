@@ -1,7 +1,17 @@
+using Microsoft.AspNetCore.ResponseCompression;
+using MircoLog.Lama.Server.Hubs;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
+
+builder.Services.AddSignalR();
+builder.Services.AddResponseCompression(opts =>
+{
+    opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
+        new[] { "application/octet-stream" });
+});
 
 var app = builder.Build();
 
@@ -22,8 +32,10 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-app.MapRazorPages();
-app.MapControllers();
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapHub<LogHub>("/loghub");
+});
 app.MapFallbackToFile("index.html");
 
 app.Run();
