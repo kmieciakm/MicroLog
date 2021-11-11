@@ -10,6 +10,9 @@ using System.Threading.Tasks;
 
 namespace MicroLog.Core.Enrichers
 {
+    /// <summary>
+    /// Enrich log event with HTTP-specific information.
+    /// </summary>
     public class HttpContextEnricher : ILogEnricher
     {
         private const string PROPERTY_NAME = "HttpContext";
@@ -39,6 +42,10 @@ namespace MicroLog.Core.Enrichers
             };
         }
 
+        /// <summary>
+        /// Adds information about an individual HTTP request / response to log event.
+        /// </summary>
+        /// <param name="log"></param>
         public void Enrich(LogEvent log)
         {
             if (_HttpContextProperty is not null)
@@ -48,7 +55,7 @@ namespace MicroLog.Core.Enrichers
                     Name = PROPERTY_NAME,
                     Value = JsonSerializer.Serialize(_HttpContextProperty)
                 };
-                log.Enrich(property);
+                log.AddProperty(property);
             }
         }
 

@@ -11,6 +11,9 @@ using System.Threading.Tasks;
 
 namespace MicroLog.Sink.MongoDb
 {
+    /// <summary>
+    /// A MongoDb log event representation.
+    /// </summary>
     internal class MongoLogEntity : ILogEvent
     {
         [BsonId]

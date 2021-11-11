@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace MicroLog.Sink.MongoDb
 {
+    /// <summary>
+    /// A MongoDb log identity.
+    /// </summary>
     internal class MongoLogIdentity : ILogEventIdentity
     {
         public string EventId { get; init; }

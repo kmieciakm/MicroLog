@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace MicroLog.Sink.MongoDb.Config
 {
+    /// <summary>
+    /// Configuration of the MongoDb connection.
+    /// </summary>
     public class MongoConfig : ISinkConfig
     {
         public string Name { get; set; }

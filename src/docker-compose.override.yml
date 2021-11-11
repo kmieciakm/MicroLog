@@ -28,9 +28,9 @@ services:
       - "Sinks__Mongo__0__Name=mongo"
       - "Sinks__Mongo__0__DatabaseName=microlog"
       - "Sinks__Mongo__0__ConnectionString=mongodb://microlog.mongoDb:27017"
-      - "Sinks__Mongo__1__Name=mongodb"
-      - "Sinks__Mongo__1__DatabaseName=microlog"
-      - "Sinks__Mongo__1__ConnectionString=mongodb://microlog.mongoDb:27017"
+      #- "Sinks__Mongo__1__Name=mongodb"
+      #- "Sinks__Mongo__1__DatabaseName=microlog"
+      #- "Sinks__Mongo__1__ConnectionString=mongodb://microlog.mongoDb:27017"
     ports:
       - "3001:443"
     volumes:

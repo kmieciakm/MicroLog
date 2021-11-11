@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace MicroLog.Core.Enrichers
 {
+    /// <summary>
+    /// Enrich log event with custom key-value record.
+    /// </summary>
     public class ValueEnricher : ILogEnricher
     {
         public string Name { get; init; }
@@ -19,6 +22,7 @@ namespace MicroLog.Core.Enrichers
             Value = value;
         }
 
+        /// <inheritdoc />
         public void Enrich(LogEvent log)
         {
             ValueObject obj = new(Value);
@@ -27,7 +31,7 @@ namespace MicroLog.Core.Enrichers
                 Name = Name,
                 Value = JsonSerializer.Serialize(obj)
             };
-            log.Enrich(property);
+            log.AddProperty(property);
         }
 
         private record ValueObject(string Value);

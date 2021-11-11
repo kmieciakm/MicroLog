@@ -14,7 +14,10 @@ using System.Threading.Tasks;
 
 namespace MicroLog.Collector.RabbitMq
 {
-    public class RabbitLogConsumer : RabbitLogBase, ILogConsumer, IDisposable
+    /// <summary>
+    /// Implementation of <see cref="ILogConsumer"/> with RabbitMq. 
+    /// </summary>
+    public class RabbitLogConsumer : RabbitLogBase, ILogConsumer
     {
         private string _Queue { get; }
         private ILogSink _Sink { get; }
@@ -26,7 +29,7 @@ namespace MicroLog.Collector.RabbitMq
             : base(rabbitConfig.Value)
         {
             _Sink = sink;
-            _Queue = $"log-{sink.GetConfiguration().Name}";
+            _Queue = $"log-{sink.Config.Name}";
             _SourceEnricher = new ValueEnricher("Source", RabbitConfig.HostName);
         }
 

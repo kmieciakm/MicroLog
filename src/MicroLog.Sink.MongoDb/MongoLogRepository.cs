@@ -11,10 +11,13 @@ using System.Threading.Tasks;
 
 namespace MicroLog.Sink.MongoDb
 {
+    /// <summary>
+    /// A MongoDb data access point of logs.
+    /// </summary>
     public class MongoLogRepository : ILogSink, ILogRegistry
     {
         private const string COLLECTION_NAME = "logs";
-        private MongoConfig _Config { get; }
+        public ISinkConfig Config { get; }
         private IMongoDatabase _Database { get; }
         private IMongoCollection<MongoLogEntity> _Collection { get; }
 
@@ -25,7 +28,7 @@ namespace MicroLog.Sink.MongoDb
 
         public MongoLogRepository(MongoConfig config)
         {
-            _Config = config;
+            Config = config;
             var client = new MongoClient(config.ConnectionString);
             _Database = client.GetDatabase(config.DatabaseName);
             _Collection = _Database.GetCollection<MongoLogEntity>(COLLECTION_NAME);
@@ -51,18 +54,16 @@ namespace MicroLog.Sink.MongoDb
             return entities.ToEnumerable();
         }
 
-        async Task ILogSink.InsertAsync(ILogEvent logEntity)
+        async Task ILogSink.InsertAsync(ILogEvent logEvent)
         {
-            var entity = MongoLogMapper.Map(logEntity);
+            var entity = MongoLogMapper.Map(logEvent);
             await _Collection.InsertOneAsync(entity);
         }
 
-        async Task ILogSink.InsertAsync(IEnumerable<ILogEvent> logEntities)
+        async Task ILogSink.InsertAsync(IEnumerable<ILogEvent> logEvents)
         {
-            var entities = logEntities.Select(entity => MongoLogMapper.Map(entity));
+            var entities = logEvents.Select(entity => MongoLogMapper.Map(entity));
             await _Collection.InsertManyAsync(entities);
         }
-
-        public ISinkConfig GetConfiguration() => _Config;
     }
 }

@@ -17,8 +17,8 @@ namespace MicroLog.FunctionalTests.Collector.Cases
             using var services = Services().Start();
             Task.Delay(15000).GetAwaiter().GetResult(); // Wait for all services to initialize
 
-            MicroLogConfig config = GetMicroLogConfig(services);
-            MicroLogClient client = new MicroLogClient(config);
+            LogCollectorConfig config = GetMicroLogConfig(services);
+            LogCollectorClient client = new LogCollectorClient(config);
 
             client.LogInformationAsync("Test message").GetAwaiter().GetResult();
         }

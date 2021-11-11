@@ -6,6 +6,9 @@ using System.Linq;
 
 namespace MicroLog.Sink.MongoDb
 {
+    /// <summary>
+    /// A MongoDb log property representation.
+    /// </summary>
     internal record MongoLogProperty : ILogProperty
     {
         public string Name { get; init; }

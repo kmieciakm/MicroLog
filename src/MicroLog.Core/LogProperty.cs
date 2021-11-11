@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace MicroLog.Core
 {
+    /// <summary>
+    /// Base <see cref="ILogProperty"/> record.
+    /// </summary>
     public record LogProperty : ILogProperty
     {
         public string Name { get; init; }
