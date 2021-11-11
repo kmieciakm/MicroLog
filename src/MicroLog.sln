@@ -29,9 +29,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{F23A1995
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "examples", "examples", "{59D7DB5F-C760-4200-B633-538A8E4616B2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogEmitter.Console", "examples\LogEmitter.Console\LogEmitter.Console.csproj", "{A2918AB7-41B3-4799-BC92-84951E1C88A5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogEmitter.Console", "examples\LogEmitter.Console\LogEmitter.Console.csproj", "{A2918AB7-41B3-4799-BC92-84951E1C88A5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogEmitter.Web", "examples\LogEmitter.Web\LogEmitter.Web.csproj", "{31117F80-36B0-4C9C-AC17-744A9C5B1F47}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogEmitter.Web", "examples\LogEmitter.Web\LogEmitter.Web.csproj", "{31117F80-36B0-4C9C-AC17-744A9C5B1F47}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MircoLog.Lama.Server", "MircoLog.Lama\Server\MircoLog.Lama.Server.csproj", "{856616AA-4184-4306-9CB7-7DC9B87D9D2B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MircoLog.Lama.Client", "MircoLog.Lama\Client\MircoLog.Lama.Client.csproj", "{39A94EB7-CED5-409B-AA9E-9B698D555D7D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MircoLog.Lama.Shared", "MircoLog.Lama\Shared\MircoLog.Lama.Shared.csproj", "{AFB63A4F-9009-42AA-913D-EE2B2C5AB5B6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lama", "lama", "{1C7D0C12-2373-4853-8779-AAF1E6B4F242}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -91,6 +99,18 @@ Global
 		{31117F80-36B0-4C9C-AC17-744A9C5B1F47}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{31117F80-36B0-4C9C-AC17-744A9C5B1F47}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{31117F80-36B0-4C9C-AC17-744A9C5B1F47}.Release|Any CPU.Build.0 = Release|Any CPU
+		{856616AA-4184-4306-9CB7-7DC9B87D9D2B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{856616AA-4184-4306-9CB7-7DC9B87D9D2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{856616AA-4184-4306-9CB7-7DC9B87D9D2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{856616AA-4184-4306-9CB7-7DC9B87D9D2B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{39A94EB7-CED5-409B-AA9E-9B698D555D7D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{39A94EB7-CED5-409B-AA9E-9B698D555D7D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{39A94EB7-CED5-409B-AA9E-9B698D555D7D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{39A94EB7-CED5-409B-AA9E-9B698D555D7D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AFB63A4F-9009-42AA-913D-EE2B2C5AB5B6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AFB63A4F-9009-42AA-913D-EE2B2C5AB5B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AFB63A4F-9009-42AA-913D-EE2B2C5AB5B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AFB63A4F-9009-42AA-913D-EE2B2C5AB5B6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -101,6 +121,9 @@ Global
 		{AC835ED0-4217-493E-896F-9BCE7F0ACADD} = {F23A1995-7319-4F5B-93E2-48BA875A6759}
 		{A2918AB7-41B3-4799-BC92-84951E1C88A5} = {59D7DB5F-C760-4200-B633-538A8E4616B2}
 		{31117F80-36B0-4C9C-AC17-744A9C5B1F47} = {59D7DB5F-C760-4200-B633-538A8E4616B2}
+		{856616AA-4184-4306-9CB7-7DC9B87D9D2B} = {1C7D0C12-2373-4853-8779-AAF1E6B4F242}
+		{39A94EB7-CED5-409B-AA9E-9B698D555D7D} = {1C7D0C12-2373-4853-8779-AAF1E6B4F242}
+		{AFB63A4F-9009-42AA-913D-EE2B2C5AB5B6} = {1C7D0C12-2373-4853-8779-AAF1E6B4F242}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8876A5B1-768F-403B-9418-15E551AA6890}

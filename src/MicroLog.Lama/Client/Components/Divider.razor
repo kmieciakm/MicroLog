@@ -1,0 +1,7 @@
+﻿<MudDivider Style="@_style"></MudDivider>
+
+@code {
+    [Parameter]
+    public int Height { get; set; } = 1;
+    private string _style { get { return $"margin-top: {Height}rem; margin-bottom: {Height}rem;"; } }
+}

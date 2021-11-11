@@ -1,0 +1,28 @@
+﻿<MudThemeManagerButton OnClick="@((e) => OpenThemeManager(true))" />
+<MudThemeManager Open="_themeManagerOpen" OpenChanged="OpenThemeManager" Theme="_themeManager" ThemeChanged="UpdateTheme" />
+
+@code {
+    public event Action? OnUpdateTheme;
+    private bool _themeManagerOpen = true;
+    private ThemeManagerTheme _themeManager = new ThemeManagerTheme() {
+        Theme = AppTheme.Theme
+    };
+
+    protected override void OnInitialized()
+    {
+        StateHasChanged();
+        OnUpdateTheme?.Invoke();
+    }
+
+    void OpenThemeManager(bool value)
+    {
+        _themeManagerOpen = value;
+    }
+
+    void UpdateTheme(ThemeManagerTheme value)
+    {
+        _themeManager = value;
+        StateHasChanged();
+        OnUpdateTheme?.Invoke();
+    }
+}

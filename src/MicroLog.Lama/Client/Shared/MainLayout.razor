@@ -1,0 +1,56 @@
+﻿@inherits LayoutComponentBase
+
+<MudThemeProvider Theme="AppTheme.Theme" />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+@if (showThemeManager)
+{
+    <ThemeManager @ref="ThemeManager"></ThemeManager>
+}
+
+<div class="page">
+    <MudLayout>
+        <MudAppBar Elevation="1" Fixed="true">
+            <img src="llama.png" alt="Logo" />
+            <div class="visually-hidden">https://favicon.io/terms-of-use</div>
+            <div class="visually-hidden">Icons made by <a href="https://www.freepik.com" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
+            <MudText Typo="Typo.h5" Class="ml-3">Log Alerting Monitoring and Analysis</MudText>
+            <MudSpacer />
+        </MudAppBar>
+
+        <MudDrawer Open="false" ClipMode="DrawerClipMode.Always" Anchor="Anchor.Right" PreserveOpenState="true" Elevation="1" Variant="DrawerVariant.Mini">
+            <MudNavMenu Class="pt-3">
+                <MudNavLink Class="md-1" Href="/" IconColor="Color.Primary" Icon="@Icons.Rounded.Dashboard"></MudNavLink>
+                <MudNavLink Class="md-1" Href="/credits" IconColor="Color.Primary" Icon="@Icons.Rounded.Info"></MudNavLink>
+            </MudNavMenu>
+        </MudDrawer>
+
+        <div class="centered">
+            <MudMainContent Class="mud-container-maxwidth-lg" Style="margin-right: 0px !important;">
+                <div class="mt-4 pa-3">
+                    @Body
+                </div>
+            </MudMainContent>
+        </div>
+    </MudLayout>
+</div>
+
+@code
+{
+    private bool showThemeManager = false;
+    private ThemeManager? ThemeManager { get; set; }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender && ThemeManager != null)
+        {
+            ThemeManager.OnUpdateTheme += () =>
+            {
+                StateHasChanged();
+            };
+        }
+
+        base.OnAfterRender(firstRender);
+    }
+}
