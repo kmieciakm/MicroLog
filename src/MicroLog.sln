@@ -41,7 +41,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lama", "lama", "{1C7D0C12-2
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroLog.Sink.Hub", "MicroLog.Sink.Hub\MicroLog.Sink.Hub.csproj", "{95BCA8FE-BDB1-443E-A9D1-75874DBEF67E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogEmitter.Web", "examples\LogEmitter.Web\LogEmitter.Web.csproj", "{B22D7595-67F9-4920-B0C0-A12B6742D157}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogEmitter.Web", "examples\LogEmitter.Web\LogEmitter.Web.csproj", "{B22D7595-67F9-4920-B0C0-A12B6742D157}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

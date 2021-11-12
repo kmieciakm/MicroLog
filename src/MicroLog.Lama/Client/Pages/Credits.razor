@@ -1,7 +1,25 @@
 ﻿@page "/credits"
 @inherits BasePage
 
-<h3>Credits</h3>
+<MudText Typo="Typo.h2">Credits</MudText>
+<Divider />
+
+<MudGrid Justify="Justify.SpaceBetween">
+    <MudItem xs="12" md="6">
+        <ImageCredentials Name="Logo" ImageSrc="llama.png">
+            Log icon made by <MudLink Href="https://www.freepik.com" Underline="Underline.Always">Freepik</MudLink> from <MudLink Href="https://www.flaticon.com/" Underline="Underline.Always">www.flaticon.com</MudLink>
+        </ImageCredentials>
+    </MudItem>
+    <MudItem xs="12" md="6">
+        <ImageCredentials Name="Favicon" ImageSrc="favicon.png">
+            The <MudLink Href="https://github.com/twitter/twemoji/blob/master/assets/svg/1f999.svg" Underline="Underline.Always">emoji graphics</MudLink> are from the open source project <MudLink Href="https://twemoji.twitter.com/" Underline="Underline.Always">Twemoji</MudLink>.
+            <br />
+            The graphics are copyright 2020 Twitter, Inc and other contributors.
+            <br />
+            The graphics are licensed under <MudLink Href="https://creativecommons.org/licenses/by/4.0/" Underline="Underline.Always">CC-BY 4.0</MudLink>.
+        </ImageCredentials>
+    </MudItem>
+</MudGrid>
 
 @code {
 
