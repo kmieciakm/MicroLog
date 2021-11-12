@@ -30,7 +30,7 @@ namespace MicroLog.Core.Abstractions
         /// <summary>
         /// An exception associated with the event, or null.
         /// </summary>
-        Exception Exception { get; set; }
+        LogException Exception { get; set; }
         /// <summary>
         /// All additional information assosisaated with the event.
         /// </summary>

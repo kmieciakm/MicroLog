@@ -36,7 +36,7 @@ namespace MicroLog.Collector.Client
         public bool ShouldLog(LogLevel level)
             => level >= _Config.MinimumLevel;
 
-        public async Task LogAsync(LogLevel level, string message, Exception exception = null)
+        public async Task LogAsync(LogLevel level, string message, LogException exception = null)
         {
             if (ShouldLog(level))
             {
@@ -61,13 +61,13 @@ namespace MicroLog.Collector.Client
         public async Task LogInformationAsync(string message)
             => await LogAsync(LogLevel.Information, message);
 
-        public async Task LogWarningAsync(string message, Exception exception = null)
+        public async Task LogWarningAsync(string message, LogException exception = null)
             => await LogAsync(LogLevel.Warning, message, exception);
 
-        public async Task LogErrorAsync(string message, Exception exception = null)
+        public async Task LogErrorAsync(string message, LogException exception = null)
             => await LogAsync(LogLevel.Error, message, exception);
 
-        public async Task LogCriticalAsync(string message, Exception exception = null)
+        public async Task LogCriticalAsync(string message, LogException exception = null)
             => await LogAsync(LogLevel.Critical, message, exception);
     }
 }

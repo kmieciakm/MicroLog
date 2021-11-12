@@ -22,7 +22,7 @@ namespace MicroLog.Sink.MongoDb
         [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
         public DateTime Timestamp { get; init; }
         public LogLevel Level { get; set; }
-        public Exception Exception { get; set; }
+        public LogException Exception { get; set; }
 
         [BsonExtraElements]
         private Dictionary<string, object> _properties { get; set; } = new();
@@ -59,7 +59,7 @@ namespace MicroLog.Sink.MongoDb
             Timestamp = DateTime.Now;
         }
 
-        public MongoLogEntity(MongoLogIdentity identity, string message, DateTime timestamp, LogLevel level, Exception exception, IEnumerable<MongoLogProperty> properties)
+        public MongoLogEntity(MongoLogIdentity identity, string message, DateTime timestamp, LogLevel level, LogException exception, IEnumerable<MongoLogProperty> properties)
         {
             Identity = identity;
             Message = message;
@@ -79,9 +79,8 @@ namespace MicroLog.Sink.MongoDb
                    Message == entity.Message &&
                    new DateComparer().Equals(Timestamp, entity.Timestamp) &&
                    Level == entity.Level &&
-                   Properties.SequenceEqual(entity.Properties);
-                   /*Exception.GetType().Equals(entity.Exception.GetType()) &&
-                   Exception.Message.Equals(entity.Exception.Message);*/
+                   Properties.SequenceEqual(entity.Properties) &&
+                   Exception is not null ? Exception.Equals(entity.Exception) : true;
         }
 
         public override int GetHashCode()

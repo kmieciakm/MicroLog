@@ -17,7 +17,8 @@ namespace MicroLog.Core
         public string Message { get; set; }
         public DateTime Timestamp { get; init; }
         public LogLevel Level { get; set; }
-        public Exception Exception { get; set; }
+        public string LevelName => Enum.GetName(typeof(LogLevel), Level);
+        public LogException Exception { get; set; }
 
         private Dictionary<string, ILogProperty> _properties { get; set; } = new();
         public IReadOnlyCollection<ILogProperty> Properties => _properties.Values.ToList().AsReadOnly();
@@ -28,19 +29,6 @@ namespace MicroLog.Core
             Timestamp = DateTime.Now;
         }
 
-        public LogEvent(ILogEventIdentity identity, string message, DateTime timestamp, LogLevel level, Exception exception, IEnumerable<LogProperty> properties)
-        {
-            Identity = identity;
-            Message = message;
-            Timestamp = timestamp;
-            Level = level;
-            Exception = exception;
-            foreach (var prop in properties)
-            {
-                _properties.Add(prop.Name, prop);
-            }
-        }
-
         public LogEvent(ILogEvent log)
         {
             Identity = log.Identity;
@@ -49,6 +37,24 @@ namespace MicroLog.Core
             Level = log.Level;
             Exception = log.Exception;
             foreach (var prop in log.Properties)
+            {
+                _properties.Add(prop.Name, prop);
+            }
+        }
+
+        public LogEvent(ILogEventIdentity identity, string message, DateTime timestamp, LogLevel level, Exception exception, IEnumerable<LogProperty> properties)
+            : this(identity, message, timestamp, level, new LogException(exception), properties)
+        {
+        }
+
+        public LogEvent(ILogEventIdentity identity, string message, DateTime timestamp, LogLevel level, LogException exception, IEnumerable<LogProperty> properties)
+        {
+            Identity = identity;
+            Message = message;
+            Timestamp = timestamp;
+            Level = level;
+            Exception = exception;
+            foreach (var prop in properties)
             {
                 _properties.Add(prop.Name, prop);
             }
@@ -74,9 +80,8 @@ namespace MicroLog.Core
                    Message == @event.Message &&
                    Timestamp == @event.Timestamp &&
                    Level == @event.Level &&
-                   Properties.SequenceEqual(@event.Properties);
-                   /*Exception.GetType().Equals(@event.Exception.GetType()) &&
-                   Exception.Message.Equals(@event.Exception.Message);*/
+                   Properties.SequenceEqual(@event.Properties) &&
+                   Exception is not null ? Exception.Equals(@event.Exception) : true;
         }
 
         public override int GetHashCode()
