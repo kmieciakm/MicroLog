@@ -1,10 +1,14 @@
+using MicroLog.Sink.Hub;
 using Microsoft.AspNetCore.ResponseCompression;
-using MircoLog.Lama.Server.Hubs;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Services
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
+
+builder.Services.Configure<HubConfig>(builder.Configuration.GetSection("HubConfig"));
 
 builder.Services.AddSignalR();
 builder.Services.AddResponseCompression(opts =>
@@ -13,6 +17,7 @@ builder.Services.AddResponseCompression(opts =>
         new[] { "application/octet-stream" });
 });
 
+// App configuraton
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -26,16 +31,15 @@ else
 }
 
 app.UseHttpsRedirection();
-
 app.UseBlazorFrameworkFiles();
 app.UseStaticFiles();
-
 app.UseRouting();
 
 app.UseEndpoints(endpoints =>
 {
-    endpoints.MapHub<LogHub>("/loghub");
+    HubConfig config = app.Services.GetRequiredService<IOptions<HubConfig>>().Value;
+    endpoints.MapHub<LogHub>($"/{config.Name}");
 });
-app.MapFallbackToFile("index.html");
 
+app.MapFallbackToFile("index.html");
 app.Run();

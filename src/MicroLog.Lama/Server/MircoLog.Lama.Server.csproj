@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\MicroLog.Sink.Hub\MicroLog.Sink.Hub.csproj" />
     <ProjectReference Include="..\Client\MircoLog.Lama.Client.csproj" />
     <ProjectReference Include="..\Shared\MircoLog.Lama.Shared.csproj" />
   </ItemGroup>

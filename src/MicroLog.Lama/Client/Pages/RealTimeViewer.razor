@@ -1,5 +1,6 @@
 ﻿@page "/realtimeviewer"
 
+@using MicroLog.Core
 @using Microsoft.AspNetCore.SignalR.Client
 
 @inherits BasePage
@@ -24,8 +25,8 @@
         @foreach (var log in logs)
         {
             <tr>
-                <td>@logs.IndexOf(log)</td>
-                <td>@log.Type</td>
+                <td>@log.Identity.EventId</td>
+                <td>@log.Level</td>
                 <td>@log.Message</td>
             </tr>
         }
@@ -33,10 +34,10 @@
 </MudSimpleTable>
 
 @code {
-    private string? messageInput;
-    private HubConnection? hubConnection;
-    private List<LogMessage> logs = new List<LogMessage>();
-    
+    private string messageInput;
+    private HubConnection hubConnection;
+    private List<LogEvent> logs = new List<LogEvent>();
+
     public bool IsConnected =>
         hubConnection?.State == HubConnectionState.Connected;
 
@@ -46,7 +47,7 @@
             .WithUrl(NavigationManager.ToAbsoluteUri("/loghub"))
             .Build();
 
-        hubConnection.On<LogMessage>("ReceiveLog", (log) =>
+        hubConnection.On<LogEvent>("ReceiveLog", (log) =>
         {
             logs.Add(log);
             StateHasChanged();
@@ -59,8 +60,9 @@
     {
         if (hubConnection is not null && messageInput is not null)
         {
-            var log = new LogMessage() { Type = "Warning", Message = messageInput };
-            await hubConnection.SendAsync("SendLog", log);
+            var log = new LogEvent();
+            log.Message = messageInput;
+            await hubConnection.SendAsync("Insert", log);
         }
     }
 

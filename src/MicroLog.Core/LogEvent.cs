@@ -41,6 +41,19 @@ namespace MicroLog.Core
             }
         }
 
+        public LogEvent(ILogEvent log)
+        {
+            Identity = log.Identity;
+            Message = log.Message;
+            Timestamp = log.Timestamp;
+            Level = log.Level;
+            Exception = log.Exception;
+            foreach (var prop in log.Properties)
+            {
+                _properties.Add(prop.Name, prop);
+            }
+        }
+
         /// <summary>
         /// If a property with this name does not exist,
         /// adds the given property to the log event.

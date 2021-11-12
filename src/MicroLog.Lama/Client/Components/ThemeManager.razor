@@ -2,7 +2,7 @@
 <MudThemeManager Open="_themeManagerOpen" OpenChanged="OpenThemeManager" Theme="_themeManager" ThemeChanged="UpdateTheme" />
 
 @code {
-    public event Action? OnUpdateTheme;
+    public event Action OnUpdateTheme;
     private bool _themeManagerOpen = true;
     private ThemeManagerTheme _themeManager = new ThemeManagerTheme() {
         Theme = AppTheme.Theme
