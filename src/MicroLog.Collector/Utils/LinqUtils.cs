@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿namespace MicroLog.Collector.Utils;
 
-namespace MicroLog.Collector.Utils
+internal static class LinqUtils
 {
-    internal static class LinqUtils
+    public static IEnumerable<T> OrEmptyIfNull<T>(this IEnumerable<T> source)
     {
-        public static IEnumerable<T> OrEmptyIfNull<T>(this IEnumerable<T> source)
-        {
-            return source ?? Enumerable.Empty<T>();
-        }
+        return source ?? Enumerable.Empty<T>();
     }
 }

@@ -1,32 +1,25 @@
-﻿using MicroLog.Core.Abstractions;
-using MicroLog.Sink.MongoDb.Config;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿namespace MicroLog.Collector.Config;
 
-namespace MicroLog.Collector.Config
+public class SinksConfig
 {
-    public class SinksConfig
+    public IEnumerable<MongoConfig> Mongo { get; set; }
+    public IEnumerable<HubConfig> Hub { get; set; }
+}
+
+public class PublisherConfig : IPublisherConfig
+{
+    public string Queues { get; set; } = string.Empty;
+
+    public bool IsPublisherSpecified
     {
-        public IEnumerable<MongoConfig> Mongo { get; set; }
+        get
+        {
+            return !string.IsNullOrEmpty(Queues);
+        }
     }
 
-    public class PublisherConfig : IPublisherConfig
+    public IEnumerable<string> GetQueues()
     {
-        public string Queues { get; set; } = string.Empty;
-
-        public bool IsPublisherSpecified
-        {
-            get
-            {
-                return !string.IsNullOrEmpty(Queues);
-            }
-        }
-
-        public IEnumerable<string> GetQueues()
-        {
-            return Queues.Split(',');
-        }
+        return Queues.Split(',');
     }
 }
