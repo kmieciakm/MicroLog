@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.SignalR.Client;
+using Polly;
 
 namespace MicroLog.Sink.Hub;
 
@@ -12,7 +13,7 @@ public class LogHubSink : ILogSink, IAsyncDisposable
     public LogHubSink(IOptions<HubConfig> config)
     {
         Config = _HubConfig = config.Value;
-        ConnectAsync().GetAwaiter().GetResult();
+        _ = ConnectAsync();
     }
 
     private async Task ConnectAsync()
@@ -21,7 +22,15 @@ public class LogHubSink : ILogSink, IAsyncDisposable
             .WithUrl(new Uri(_HubConfig.Url))
             .Build();
 
-        await _HubConnection.StartAsync();
+        var pauseBetweenFailures = TimeSpan.FromSeconds(30);
+        var retryPolicy = Policy
+             .Handle<Exception>()
+             .WaitAndRetryForeverAsync(_ => pauseBetweenFailures);
+
+        await retryPolicy.ExecuteAsync(async () =>
+        {
+            await _HubConnection.StartAsync();
+        });
     }
 
     public async Task InsertAsync(ILogEvent logEvent)

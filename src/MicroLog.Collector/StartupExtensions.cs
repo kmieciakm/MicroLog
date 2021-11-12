@@ -16,6 +16,12 @@ public static class StartupExtensions
             services.AddSingleton<ILogSink>(new MongoLogRepository(mongoSink));
         }
 
+        foreach (var hubSinkConfig in sinksConfig.Hub.OrEmptyIfNull())
+        {
+            var hubOptions = Options.Create(hubSinkConfig);
+            services.AddSingleton<ILogSink>(new LogHubSink(hubOptions));
+        }
+
         return services;
     }
 
