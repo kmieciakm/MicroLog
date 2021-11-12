@@ -1,7 +1,3 @@
-using MicroLog.Sink.Hub;
-using Microsoft.AspNetCore.ResponseCompression;
-using Microsoft.Extensions.Options;
-
 var builder = WebApplication.CreateBuilder(args);
 
 // Services
