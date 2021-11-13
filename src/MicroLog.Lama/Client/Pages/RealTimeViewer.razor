@@ -1,19 +1,36 @@
 ﻿@page "/realtimeviewer"
 
-@using MicroLog.Core
+@using BlazorDownloadFile
 @using Microsoft.AspNetCore.SignalR.Client
 
 @inherits BasePage
-@inject NavigationManager NavigationManager
 @implements IAsyncDisposable
 
-<MudTextField @bind-Value="messageInput" Label="Test message" Variant="Variant.Text"></MudTextField>
-<Spacer />
-<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Send" Disabled="!IsConnected">Test Hub</MudButton>
+@inject NavigationManager NavigationManager
+@inject ILogsStorage LogsStorage
+@inject IBlazorDownloadFileService BlazorDownloadFileService
+
+<MudGrid>
+    <MudItem xs="12" sm="6">
+        <MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="Connect" Disabled="IsConnected">Connect</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="Disconnect" Disabled="!IsConnected">Disconnect</MudButton>
+    </MudItem>
+    <MudItem xs="12" sm="6">
+        <div class="float-end">
+            <UtilityButton Icon="@Icons.Rounded.ClearAll" Tooltip="Clear All" Disabled="IsConnected" OnClick="Clear" />
+        </div>
+        <div class="float-end mr-2">
+            <UtilityButton Icon="@Icons.Rounded.Download" Tooltip="Export" Disabled="IsConnected" OnClick="Export" />
+        </div>
+        <div class="float-end mr-2">
+            <UtilityButton Icon="@Icons.Rounded.Message" Tooltip="Test Hub" Disabled="!IsConnected" OnClick="SendTestLog" />
+        </div>
+    </MudItem>
+</MudGrid>
 
 <Divider />
 
-<MudTable Items="@logs" FixedHeader="true" Dense="true" Virtualize="true" Height="400px">
+<MudTable Items="@LogsStorage" FixedHeader="true" Dense="true" Virtualize="true" Height="400px">
     <HeaderContent>
         <MudTh>Time</MudTh>
         <MudTh>Severity</MudTh>
@@ -22,7 +39,9 @@
     </HeaderContent>
     <RowTemplate>
         <MudTd DataLabel="Time">@context.Timestamp</MudTd>
-        <MudTd DataLabel="Severity">@context.LevelName</MudTd>
+        <MudTd DataLabel="Severity">
+            <MudChip Size="Size.Small" Color=@GetLogLevelColor(@context)>@context.LevelName</MudChip>
+        </MudTd>
         <MudTd DataLabel="Message">@context.Message</MudTd>
         @if (context.Exception is not null)
         {
@@ -39,44 +58,73 @@
 </MudTable>
 
 @code {
-    private string messageInput;
-    private HubConnection hubConnection;
-    private List<LogEvent> logs = new List<LogEvent>();
+    private HubConnection _hubConnection;
 
     public bool IsConnected =>
-        hubConnection?.State == HubConnectionState.Connected;
+        _hubConnection?.State == HubConnectionState.Connected;
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
-        hubConnection = new HubConnectionBuilder()
+        _hubConnection = new HubConnectionBuilder()
             .WithUrl(NavigationManager.ToAbsoluteUri("/loghub"))
             .Build();
 
-        hubConnection.On<LogEvent>("ReceiveLog", (log) =>
+        _hubConnection.On<LogEvent>("ReceiveLog", (log) =>
         {
-            logs.Add(log);
+            LogsStorage.Add(log);
             StateHasChanged();
         });
-
-        await hubConnection.StartAsync();
     }
 
-    private async Task Send()
+    private async Task Connect()
     {
-        if (hubConnection is not null && messageInput is not null)
+        await _hubConnection.StartAsync();
+    }
+
+    private async Task Disconnect()
+    {
+        await _hubConnection.StopAsync();
+    }
+
+    private async Task SendTestLog()
+    {
+        if (IsConnected)
         {
-            var log = new LogEvent();
-            log.Message = messageInput;
-            log.Exception = new LogException(new ArgumentNullException("connectionString", "Value cannot be null."));
-            await hubConnection.SendAsync("Insert", log);
+            var log = new LogEvent()
+                {
+                    Level = LogLevel.Trace,
+                    Message = "SignalR Hub connection test"
+                };
+            await _hubConnection.SendAsync("Insert", log);
         }
     }
 
+    private void Export()
+    {
+        BlazorDownloadFileService.DownloadFileFromText(
+            $"logs_{DateTime.Now.ToShortDateString()}.json",
+            LogsStorage.ToJson(),
+            "application/octet-stream");
+    }
+
+    private void Clear()
+    {
+        LogsStorage.Clear();
+    }
+
+    public static Color GetLogLevelColor(LogEvent logEvent) => logEvent.Level switch
+    {
+        >= LogLevel.Error => Color.Error,
+        LogLevel.Warning => Color.Warning,
+        LogLevel.Information => Color.Primary,
+        <= LogLevel.Debug => Color.Dark
+    };
+
     public async ValueTask DisposeAsync()
     {
-        if (hubConnection is not null)
+        if (_hubConnection is not null)
         {
-            await hubConnection.DisposeAsync();
+            await _hubConnection.DisposeAsync();
         }
     }
 }

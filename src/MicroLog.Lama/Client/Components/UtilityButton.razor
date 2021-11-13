@@ -1,0 +1,17 @@
+﻿<MudTooltip Text="@Tooltip" Color="Color.Dark" Arrow="true" Placement="Placement.Bottom">
+    <MudFab
+        Color="@BtnColor"
+        Icon="@Icon"
+        Disabled="@Disabled"
+        OnClick="@OnClick"
+        Size="Size.Small"
+        DisableElevation="true" />
+</MudTooltip>
+
+@code {
+    [Parameter] public bool Disabled { get; set; } = false;
+    [Parameter] public Color BtnColor { get; set; } = Color.Primary;
+    [Parameter, EditorRequired] public string Tooltip { get; set; }
+    [Parameter, EditorRequired] public string Icon { get; set; }
+    [Parameter, EditorRequired] public EventCallback<MouseEventArgs> OnClick { get; set; }
+}

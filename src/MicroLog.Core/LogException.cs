@@ -2,11 +2,26 @@
 
 namespace MicroLog.Core;
 
+/// <summary>
+/// Base exception model.
+/// </summary>
 public class LogException
 {
+    /// <summary>
+    /// A message that describes the current exception.
+    /// </summary>
     public string Message { get; set; }
+    /// <summary>
+    /// The type of the exception instance.
+    /// </summary>
     public string Type { get; set; }
+    /// <summary>
+    /// The name of the application or the object that causes the error.
+    /// </summary>
     public string Source { get; set; }
+    /// <summary>
+    /// An exception that caused the current exception.
+    /// </summary>
     public LogException InnerException { get; set; }
 
     [JsonConstructor]
@@ -18,15 +33,20 @@ public class LogException
         InnerException = innerException;
     }
 
-    public LogException(Exception exception)
+    /// <summary>
+    /// Initializes a new instance of the <see cref="LogException"/> based on the specified error.
+    /// </summary>
+    /// <param name="exception">Exception prototype.</param>
+    /// <returns><see cref="LogException"/> instance.</returns>
+    public static LogException Parse(Exception exception)
     {
-        Message = exception.Message;
-        Type = exception.GetType().Name;
-        Source = exception.Source;
-        if (exception.InnerException is not null)
-        {
-            InnerException = new LogException(exception.InnerException);
-        }
+        if (exception is null) return null;
+
+        return new LogException(
+            exception.Message,
+            exception.GetType().Name,
+            exception.Source,
+            Parse(exception.InnerException));
     }
 
     public override bool Equals(object obj)

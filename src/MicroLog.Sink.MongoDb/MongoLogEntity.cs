@@ -23,17 +23,17 @@ internal class MongoLogEntity : ILogEvent
             .Select(property =>
                 {
                     string json;
-                        // Before performing save to database _properties dictionary
-                        // stores BsonDocument objects, but when MongoLogEntity object
-                        // is recraeted from database the type of values in dictionary
-                        // is KeyValuePair<>
-                        if (property.Value is not BsonDocument bson)
+                    // Before performing save to database _properties dictionary
+                    // stores BsonDocument objects, but when MongoLogEntity object
+                    // is recraeted from database the type of values in dictionary
+                    // is KeyValuePair<>
+                    if (property.Value is not BsonDocument bson)
                     {
-                            // Create BsonDocument from KeyValuePair<> object
-                            bson = property.Value.ToBsonDocument();
-                            // BsonDocument contains the type as first value,
-                            // the second value stores saved object in json
-                            json = bson.ElementAt(1).Value.ToJson();
+                        // Create BsonDocument from KeyValuePair<> object
+                        bson = property.Value.ToBsonDocument();
+                        // BsonDocument contains the type as first value,
+                        // the second value stores saved object in json
+                        json = bson.ElementAt(1).Value.ToJson();
                     }
                     else
                     {

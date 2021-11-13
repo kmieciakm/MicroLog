@@ -16,6 +16,7 @@ public class AppTheme
             TextSecondary = new("eeeeee"),
             ActionDefault = new("ffffff"),
             Primary = new("#0f9aa7"),
+            Warning = new("#d4964e"),
             Error = new("#de2d6d"),
             Success = new("#009d81")
         }

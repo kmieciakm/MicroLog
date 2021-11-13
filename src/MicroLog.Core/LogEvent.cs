@@ -36,11 +36,6 @@ public class LogEvent : ILogEvent
         }
     }
 
-    public LogEvent(ILogEventIdentity identity, string message, DateTime timestamp, LogLevel level, Exception exception, IEnumerable<LogProperty> properties)
-        : this(identity, message, timestamp, level, new LogException(exception), properties)
-    {
-    }
-
     public LogEvent(ILogEventIdentity identity, string message, DateTime timestamp, LogLevel level, LogException exception, IEnumerable<LogProperty> properties)
     {
         Identity = identity;

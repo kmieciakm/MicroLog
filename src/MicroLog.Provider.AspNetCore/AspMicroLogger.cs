@@ -22,7 +22,7 @@ public class AspMicroLogger : ILogger
     public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
     {
         var level = ConvertLogLevel(logLevel);
-        _Logger.LogAsync(level, formatter(state, exception), new Core.LogException(exception));
+        _Logger.LogAsync(level, formatter(state, exception), Core.LogException.Parse(exception));
     }
 
     public bool IsEnabled(LogLevel logLevel)

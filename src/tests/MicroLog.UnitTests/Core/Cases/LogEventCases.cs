@@ -52,7 +52,7 @@ public class LogEventCases
             level: LogLevel.Information,
             message: "Works !!!",
             timestamp: now,
-            exception: new ArgumentNullException("Test exception"),
+            exception: LogException.Parse(new ArgumentNullException("Test exception")),
             properties: new List<LogProperty>() { new() { Name = "Test", Value = "Property" } }
         );
 
@@ -61,7 +61,7 @@ public class LogEventCases
             level: LogLevel.Information,
             message: "Works !!!",
             timestamp: now,
-            exception: new ArgumentNullException("Test exception"),
+            exception: LogException.Parse(new ArgumentNullException("Test exception")),
             properties: new List<LogProperty>() { new() { Name = "Test", Value = "Property" } }
         );
 
