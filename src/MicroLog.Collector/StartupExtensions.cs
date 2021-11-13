@@ -58,6 +58,11 @@ public static class StartupExtensions
             services.AddSingleton<ILogPublisher>(new RabbitLogPublisher(rabbitConfig, publisherConfig));
         }
 
+        if (publisherConfig.IsPublisherSpecified)
+        {
+            services.AddHostedService<LogPublisherWorker>();
+        }
+
         return services;
     }
 

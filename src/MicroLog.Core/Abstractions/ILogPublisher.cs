@@ -3,12 +3,16 @@
 /// <summary>
 /// Sends log events to the Message Queue.
 /// </summary>
-public interface ILogPublisher
+public interface ILogPublisher : IDisposable
 {
     /// <summary>
     /// Configuration of the publisher.
     /// </summary>
     IPublisherConfig Config { get; }
+    /// <summary>
+    /// Connects to Message Queue.
+    /// </summary>
+    void Connect();
     /// <summary>
     /// Publishes given log to queue.
     /// </summary>

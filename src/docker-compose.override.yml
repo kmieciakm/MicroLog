@@ -24,7 +24,7 @@ services:
       - "Collector__RabbitMq__Port=5672"
       - "Collector__RabbitMq__UserName=rabbit"
       - "Collector__RabbitMq__Password=rabbit"
-      - "Publisher__Queues=log-mongo,log-mongodb,log-hub"
+      - "Publisher__Queues=log-mongo,log-hub" #log-mongodb
       - "Sinks__Mongo__0__Name=mongo"
       - "Sinks__Mongo__0__DatabaseName=microlog"
       - "Sinks__Mongo__0__ConnectionString=mongodb://microlog.mongoDb:27017"

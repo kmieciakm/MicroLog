@@ -1,5 +1,6 @@
 ﻿using MicroLog.Sink.MongoDb.Config;
 using Microsoft.Extensions.Options;
+using Polly;
 
 namespace MicroLog.Sink.MongoDb;
 
@@ -49,12 +50,31 @@ public class MongoLogRepository : ILogSink, ILogRegistry
     async Task ILogSink.InsertAsync(ILogEvent logEvent)
     {
         var entity = MongoLogMapper.Map(logEvent);
-        await _Collection.InsertOneAsync(entity);
+        await GetInsertPolicy().ExecuteAsync(async () =>
+        {
+            await _Collection.InsertOneAsync(entity);
+        });
     }
 
     async Task ILogSink.InsertAsync(IEnumerable<ILogEvent> logEvents)
     {
         var entities = logEvents.Select(entity => MongoLogMapper.Map(entity));
-        await _Collection.InsertManyAsync(entities);
+        await GetInsertPolicy().ExecuteAsync(async () =>
+        {
+            await _Collection.InsertManyAsync(entities);
+        });
+    }
+
+    /// <summary>
+    /// Policy that prevents MongoWaitQueueFullException when excided WaitQueueSize.
+    /// </summary>
+    private IAsyncPolicy GetInsertPolicy()
+    {
+        var maxNumberOfRetry = 10;
+        var pauseBetweenFailures = TimeSpan.FromSeconds(1);
+        var retryPolicy = Policy
+             .Handle<Exception>()
+             .WaitAndRetryAsync(maxNumberOfRetry, _ => pauseBetweenFailures);
+        return retryPolicy;
     }
 }

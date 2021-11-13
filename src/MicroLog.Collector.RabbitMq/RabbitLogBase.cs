@@ -20,6 +20,7 @@ public abstract class RabbitLogBase
             UserName = rabbitConfig.UserName,
             Password = rabbitConfig.Password
         };
+        ConnectionFactory.AutomaticRecoveryEnabled = true;
     }
 
     /// <summary>
@@ -55,13 +56,13 @@ public abstract class RabbitLogBase
         properties.Persistent = true;
         properties.Priority = logEvent.Level switch
         {
-            Core.LogLevel.None => 1,
-            Core.LogLevel.Trace => 1,
-            Core.LogLevel.Debug => 1,
-            Core.LogLevel.Information => 1,
-            Core.LogLevel.Warning => 2,
-            Core.LogLevel.Error => 3,
-            Core.LogLevel.Critical => 4,
+            LogLevel.None => 1,
+            LogLevel.Trace => 1,
+            LogLevel.Debug => 1,
+            LogLevel.Information => 1,
+            LogLevel.Warning => 2,
+            LogLevel.Error => 3,
+            LogLevel.Critical => 4,
             _ => 1
         };
         return properties;

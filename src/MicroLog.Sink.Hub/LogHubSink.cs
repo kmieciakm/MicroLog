@@ -22,12 +22,7 @@ public class LogHubSink : ILogSink, IAsyncDisposable
             .WithUrl(new Uri(_HubConfig.Url))
             .Build();
 
-        var pauseBetweenFailures = TimeSpan.FromSeconds(30);
-        var retryPolicy = Policy
-             .Handle<Exception>()
-             .WaitAndRetryForeverAsync(_ => pauseBetweenFailures);
-
-        await retryPolicy.ExecuteAsync(async () =>
+        await GetConnectionPolicy().ExecuteAsync(async () =>
         {
             await _HubConnection.StartAsync();
         });
@@ -57,5 +52,14 @@ public class LogHubSink : ILogSink, IAsyncDisposable
         {
             await _HubConnection.DisposeAsync();
         }
+    }
+
+    private IAsyncPolicy GetConnectionPolicy()
+    {
+        var pauseBetweenFailures = TimeSpan.FromSeconds(30);
+        var retryPolicy = Policy
+             .Handle<Exception>()
+             .WaitAndRetryForeverAsync(_ => pauseBetweenFailures);
+        return retryPolicy;
     }
 }
