@@ -1,19 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace MicroLog.Core.Abstractions;
 
-namespace MicroLog.Core.Abstractions
+/// <summary>
+/// Configuration of ILogSink.
+/// </summary>
+public interface ISinkConfig
 {
     /// <summary>
-    /// Configuration of ILogSink.
+    /// Unique name, identification of the sink.
     /// </summary>
-    public interface ISinkConfig
-    {
-        /// <summary>
-        /// Unique name, identification of the sink.
-        /// </summary>
-        public string Name { get; set; }
-    }
+    public string Name { get; set; }
 }
+

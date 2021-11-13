@@ -1,59 +1,55 @@
 using MicroLog.Core;
-using System;
-using Xunit;
-using Shouldly;
 using MicroLog.Core.Enrichers;
 using MicroLog.IntegrationTests.MongoDb.Fixture;
 using MicroLog.Sink.MongoDb;
 
-namespace MicroLog.IntegrationTests.MongoDb.Cases
+namespace MicroLog.IntegrationTests.MongoDb.Cases;
+
+public class MongoLogRepositoryCases : MongoFixture
 {
-    public class MongoLogRepositoryCases : MongoFixture
+    [Fact]
+    public void Log_Save_Success()
     {
-        [Fact]
-        public void Log_Save_Success()
+        using var db = Container().Start();
+        var connectionString = GetConnectionString(db);
+
+        var logSink = CreateMongoLogSink(connectionString);
+        var logRegistry = CreateMongoLogRegistry(connectionString);
+
+        var logEvent = new MongoLogEntity()
         {
-            using var db = Container().Start();
-            var connectionString = GetConnectionString(db);
+            Level = LogLevel.Information,
+            Message = "Works !!!"
+        };
 
-            var logSink = CreateMongoLogSink(connectionString);
-            var logRegistry = CreateMongoLogRegistry(connectionString);
+        logSink.InsertAsync(logEvent).Wait();
+        var log = logRegistry.GetAsync(logEvent.Identity).GetAwaiter().GetResult();
 
-            var logEvent = new MongoLogEntity()
-            {
-                Level = LogLevel.Information,
-                Message = "Works !!!"
-            };
+        log.ShouldBe(logEvent);
+    }
 
-            logSink.InsertAsync(logEvent).Wait();
-            var log = logRegistry.GetAsync(logEvent.Identity).GetAwaiter().GetResult();
+    [Fact]
+    public void Log_Enrich_Success()
+    {
+        using var db = Container().Start();
+        var connectionString = GetConnectionString(db);
 
-            log.ShouldBe(logEvent);
-        }
+        var logSink = CreateMongoLogSink(connectionString);
+        var logRegistry = CreateMongoLogRegistry(connectionString);
 
-        [Fact]
-        public void Log_Enrich_Success()
+        var logEvent = new LogEvent()
         {
-            using var db = Container().Start();
-            var connectionString = GetConnectionString(db);
+            Level = LogLevel.Information,
+            Message = "Works !!!"
+        };
 
-            var logSink = CreateMongoLogSink(connectionString);
-            var logRegistry = CreateMongoLogRegistry(connectionString);
+        var enricher = new ValueEnricher("Test", "Value");
+        enricher.Enrich(logEvent);
 
-            var logEvent = new LogEvent()
-            {
-                Level = LogLevel.Information,
-                Message = "Works !!!"
-            };
+        logSink.InsertAsync(logEvent).Wait();
+        var log = logRegistry.GetAsync(logEvent.Identity).GetAwaiter().GetResult();
 
-            var enricher = new ValueEnricher("Test", "Value");
-            enricher.Enrich(logEvent);
-
-            logSink.InsertAsync(logEvent).Wait();
-            var log = logRegistry.GetAsync(logEvent.Identity).GetAwaiter().GetResult();
-
-            var mongoLogEvent = MongoLogMapper.Map(logEvent);
-            log.ShouldBe(mongoLogEvent);
-        }
+        var mongoLogEvent = MongoLogMapper.Map(logEvent);
+        log.ShouldBe(mongoLogEvent);
     }
 }

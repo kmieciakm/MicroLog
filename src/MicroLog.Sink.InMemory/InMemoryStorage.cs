@@ -5,54 +5,53 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
-namespace MicroLog.Sink.InMemory
+namespace MicroLog.Sink.InMemory;
+
+/// <summary>
+/// Dummy configuration for <see cref="InMemoryStorage"/>.
+/// </summary>
+public class InMemoryConfig : ISinkConfig
 {
-    /// <summary>
-    /// Dummy configuration for <see cref="InMemoryStorage"/>.
-    /// </summary>
-    public class InMemoryConfig : ISinkConfig
+    public string Name { get; set; } = "InMemory";
+}
+
+/// <summary>
+/// In-memory storage.
+/// </summary>
+public class InMemoryStorage : ILogSink, ILogRegistry
+{
+    public ISinkConfig Config { get; } = new InMemoryConfig();
+
+    private Dictionary<string, ILogEvent> Storage { get; set; }
+
+    public Task InsertAsync(ILogEvent logEvent)
     {
-        public string Name { get; set; } = "InMemory";
+        Storage.Add(logEvent.Identity.EventId, logEvent);
+        return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// In-memory storage.
-    /// </summary>
-    public class InMemoryStorage : ILogSink, ILogRegistry
+    public Task InsertAsync(IEnumerable<ILogEvent> logEvents)
     {
-        public ISinkConfig Config { get; } = new InMemoryConfig();
-
-        private Dictionary<string, ILogEvent> Storage { get; set; }
-
-        public Task InsertAsync(ILogEvent logEvent)
+        foreach(var logEntity in logEvents)
         {
-            Storage.Add(logEvent.Identity.EventId, logEvent);
-            return Task.CompletedTask;
+            Storage.Add(logEntity.Identity.EventId, logEntity);
         }
+        return Task.CompletedTask;
+    }
 
-        public Task InsertAsync(IEnumerable<ILogEvent> logEvents)
-        {
-            foreach(var logEntity in logEvents)
-            {
-                Storage.Add(logEntity.Identity.EventId, logEntity);
-            }
-            return Task.CompletedTask;
-        }
+    Task<ILogEvent> ILogRegistry.GetAsync(ILogEventIdentity identity)
+    {
+        return Task.FromResult(Storage[identity.EventId]);
+    }
 
-        Task<ILogEvent> ILogRegistry.GetAsync(ILogEventIdentity identity)
-        {
-            return Task.FromResult(Storage[identity.EventId]);
-        }
+    Task<IEnumerable<ILogEvent>> ILogRegistry.GetAsync(IEnumerable<ILogEventIdentity> identities)
+    {
+        var logs = Storage.Values.Where(log => identities.Any(id => log.Identity.Equals(id)));
+        return Task.FromResult(logs);
+    }
 
-        Task<IEnumerable<ILogEvent>> ILogRegistry.GetAsync(IEnumerable<ILogEventIdentity> identities)
-        {
-            var logs = Storage.Values.Where(log => identities.Any(id => log.Identity.Equals(id)));
-            return Task.FromResult(logs);
-        }
-
-        Task<IEnumerable<ILogEvent>> ILogRegistry.GetAsync(Expression<Func<ILogEvent, bool>> predicate)
-        {
-            throw new NotImplementedException();
-        }
+    Task<IEnumerable<ILogEvent>> ILogRegistry.GetAsync(Expression<Func<ILogEvent, bool>> predicate)
+    {
+        throw new NotImplementedException();
     }
 }

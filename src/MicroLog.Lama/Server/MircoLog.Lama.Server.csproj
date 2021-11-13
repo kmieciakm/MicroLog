@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <UserSecretsId>a3e26eea-fed9-4127-9d88-8e362e3a62e1</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <DockerfileContext>..\..</DockerfileContext>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="6.0.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.14.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\MicroLog.Sink.Hub\MicroLog.Sink.Hub.csproj" />
+    <ProjectReference Include="..\Client\MircoLog.Lama.Client.csproj" />
+    <ProjectReference Include="..\Shared\MircoLog.Lama.Shared.csproj" />
+  </ItemGroup>
+
+
+</Project>

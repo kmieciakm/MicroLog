@@ -1,40 +1,28 @@
-﻿using MicroLog.Core;
-using MicroLog.Core.Abstractions;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace MicroLog.Collector.Controllers;
 
-namespace MicroLog.Collector.Controllers
+[ApiController]
+[Route("api/[controller]")]
+public class Collector : ControllerBase
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class Collector : ControllerBase
+    private ILogPublisher _LogPublisher { get; set; }
+
+    public Collector(ILogPublisher logPublisher)
     {
-        private ILogPublisher _LogPublisher { get; set; }
+        _LogPublisher = logPublisher;
+    }
 
-        public Collector(ILogPublisher logPublisher)
+    [AllowAnonymous]
+    [HttpPost("insert")]
+    public async Task<IActionResult> Insert(LogEvent logEvent)
+    {
+        try
         {
-            _LogPublisher = logPublisher;
+            await _LogPublisher.PublishAsync(logEvent);
+            return Ok();
         }
-
-        [AllowAnonymous]
-        [HttpPost("insert")]
-        public async Task<IActionResult> Insert(LogEvent logEvent)
+        catch (Exception ex)
         {
-            try
-            {
-                await _LogPublisher.PublishAsync(logEvent);
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
         }
     }
 }

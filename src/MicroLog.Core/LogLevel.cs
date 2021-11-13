@@ -1,22 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace MicroLog.Core;
 
-namespace MicroLog.Core
+/// <summary>
+/// Specifies the relative importance of a log event.
+/// </summary>
+public enum LogLevel
 {
-    /// <summary>
-    /// Specifies the relative importance of a log event.
-    /// </summary>
-    public enum LogLevel
-    {
-        Trace = 0,
-        Debug = 1,
-        Information = 2,
-        Warning = 3,
-        Error = 4,
-        Critical = 5,
-        None = 6
-    }
+    Trace = 0,
+    Debug = 1,
+    Information = 2,
+    Warning = 3,
+    Error = 4,
+    Critical = 5,
+    None = 6
 }

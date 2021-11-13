@@ -1,31 +1,25 @@
 ﻿using MicroLog.Core.Abstractions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace MicroLog.Core.Enrichers
+namespace MicroLog.Core.Enrichers;
+
+/// <summary>
+/// Composite log enricher.
+/// </summary>
+public class AggregateEnricher : ILogEnricher
 {
-    /// <summary>
-    /// Composite log enricher.
-    /// </summary>
-    public class AggregateEnricher : ILogEnricher
+    public IEnumerable<ILogEnricher> _Enrichers { get; set; }
+
+    public AggregateEnricher(IEnumerable<ILogEnricher> enrichers)
     {
-        public IEnumerable<ILogEnricher> _Enrichers { get; set; }
+        _Enrichers = enrichers;
+    }
 
-        public AggregateEnricher(IEnumerable<ILogEnricher> enrichers)
+    /// <inheritdoc />
+    public void Enrich(LogEvent log)
+    {
+        foreach (var enricher in _Enrichers)
         {
-            _Enrichers = enrichers;
-        }
-
-        /// <inheritdoc />
-        public void Enrich(LogEvent log)
-        {
-            foreach (var enricher in _Enrichers)
-            {
-                enricher.Enrich(log);
-            }
+            enricher.Enrich(log);
         }
     }
 }

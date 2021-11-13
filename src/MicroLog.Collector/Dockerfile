@@ -1,14 +1,15 @@
-FROM mcr.microsoft.com/dotnet/aspnet:5.0 AS base
+FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
 WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
-FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
 COPY ["MicroLog.Collector/MicroLog.Collector.csproj", "MicroLog.Collector/"]
-COPY ["MicroLog.Registry.MongoDb/MicroLog.Sink.MongoDb.csproj", "MicroLog.Registry.MongoDb/"]
+COPY ["MicroLog.Collector.RabbitMq/MicroLog.Collector.RabbitMq.csproj", "MicroLog.Collector.RabbitMq/"]
 COPY ["MicroLog.Core/MicroLog.Core.csproj", "MicroLog.Core/"]
-COPY ["MicroLog.Driver.RabbitMq/MicroLog.Collector.RabbitMq.csproj", "MicroLog.Driver.RabbitMq/"]
+COPY ["MicroLog.Sink.MongoDb/MicroLog.Sink.MongoDb.csproj", "MicroLog.Sink.MongoDb/"]
+COPY ["MicroLog.Sink.Hub/MicroLog.Sink.Hub.csproj", "MicroLog.Sink.Hub/"]
 RUN dotnet restore "MicroLog.Collector/MicroLog.Collector.csproj"
 COPY . .
 WORKDIR "/src/MicroLog.Collector"

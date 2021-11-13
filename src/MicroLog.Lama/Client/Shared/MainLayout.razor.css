@@ -1,0 +1,19 @@
+.page {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.mud-container-maxwidth-lg {
+    max-width: 1280px;
+}
+
+.centered {
+    display: flex;
+    justify-content: center;
+}
+
+img {
+    width: 40px;
+    height: 40px;
+}
