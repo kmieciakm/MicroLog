@@ -1,3 +1,5 @@
+using IMicroLogger = MicroLog.Core.Abstractions.ILogger;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();

@@ -1,23 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Diagnostics.CodeAnalysis;
 
-namespace MicroLog.Sink.MongoDb.Utils
+namespace MicroLog.Sink.MongoDb.Utils;
+
+internal class DateComparer : IEqualityComparer<DateTime>
 {
-    internal class DateComparer : IEqualityComparer<DateTime>
+    public bool Equals(DateTime x, DateTime y)
     {
-        public bool Equals(DateTime x, DateTime y)
-        {
-            return x.ToLongTimeString() == y.ToLongTimeString() &&
-                x.ToLongDateString() == y.ToLongDateString();
-        }
+        return x.ToLongTimeString() == y.ToLongTimeString() &&
+            x.ToLongDateString() == y.ToLongDateString();
+    }
 
-        public int GetHashCode([DisallowNull] DateTime obj)
-        {
-            return obj.GetHashCode();
-        }
+    public int GetHashCode([DisallowNull] DateTime obj)
+    {
+        return obj.GetHashCode();
     }
 }

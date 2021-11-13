@@ -1,12 +1,4 @@
 ﻿using MicroLog.Collector.RabbitMq.Config;
-using MicroLog.Core.Abstractions;
-using Microsoft.Extensions.Options;
-using RabbitMQ.Client;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace MicroLog.Collector.RabbitMq
 {

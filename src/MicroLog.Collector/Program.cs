@@ -1,16 +1,9 @@
-namespace MicroLog.Collector;
+using MicroLog.Collector;
 
-public class Program
-{
-    public static void Main(string[] args)
+IHostBuilder host = Host.CreateDefaultBuilder(args)
+    .ConfigureWebHostDefaults(webBuilder =>
     {
-        CreateHostBuilder(args).Build().Run();
-    }
+        webBuilder.UseStartup<Startup>();
+    });
 
-    public static IHostBuilder CreateHostBuilder(string[] args) =>
-        Host.CreateDefaultBuilder(args)
-            .ConfigureWebHostDefaults(webBuilder =>
-            {
-                webBuilder.UseStartup<Startup>();
-            });
-}
+host.Build().Run();

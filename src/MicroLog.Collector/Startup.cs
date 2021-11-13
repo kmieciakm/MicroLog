@@ -1,3 +1,5 @@
+using Microsoft.OpenApi.Models;
+
 namespace MicroLog.Collector;
 
 public class Startup

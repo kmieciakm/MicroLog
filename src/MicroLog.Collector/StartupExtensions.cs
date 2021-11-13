@@ -1,4 +1,9 @@
-﻿namespace MicroLog.Collector;
+﻿using MicroLog.Collector.Config;
+using MicroLog.Collector.Middleware;
+using MicroLog.Collector.Utils;
+using MicroLog.Collector.Workers;
+
+namespace MicroLog.Collector;
 
 public static class StartupExtensions
 {
