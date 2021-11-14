@@ -32,7 +32,7 @@ public class LogHubSink : ILogSink, IAsyncDisposable
     {
         if (IsConnected)
         {
-            var log = new LogEvent(logEvent);
+            var log = LogEvent.Parse(logEvent);
             await _HubConnection.SendAsync("Insert", log);
         }
     }
@@ -41,7 +41,7 @@ public class LogHubSink : ILogSink, IAsyncDisposable
     {
         if (IsConnected)
         {
-            List<LogEvent> logs = logEvents.Select(log => new LogEvent(log)).ToList();
+            List<LogEvent> logs = logEvents.Select(log => LogEvent.Parse(log)).ToList();
             await _HubConnection.SendAsync("InsertMany", logs);
         }
     }

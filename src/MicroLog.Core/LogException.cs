@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-namespace MicroLog.Core;
+﻿namespace MicroLog.Core;
 
 /// <summary>
 /// Base exception model.
@@ -24,15 +22,6 @@ public class LogException
     /// </summary>
     public LogException InnerException { get; set; }
 
-    [JsonConstructor]
-    public LogException(string message, string type, string source, LogException innerException)
-    {
-        Message = message;
-        Type = type;
-        Source = source;
-        InnerException = innerException;
-    }
-
     /// <summary>
     /// Initializes a new instance of the <see cref="LogException"/> based on the specified error.
     /// </summary>
@@ -42,11 +31,13 @@ public class LogException
     {
         if (exception is null) return null;
 
-        return new LogException(
-            exception.Message,
-            exception.GetType().Name,
-            exception.Source,
-            Parse(exception.InnerException));
+        return new LogException()
+        {
+            Message = exception.Message,
+            Type = exception.GetType().Name,
+            Source = exception.Source,
+            InnerException = Parse(exception.InnerException)
+        };
     }
 
     public override bool Equals(object obj)

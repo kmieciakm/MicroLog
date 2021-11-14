@@ -19,6 +19,11 @@ public class LogIdentity : ILogEventIdentity
         EventId = eventId;
     }
 
+    /// <summary>
+    /// Creates new <see cref="LogIdentity"/> based on prototype.
+    /// </summary>
+    /// <param name="log">Propotype</param>
+    /// <returns>New instace of a LogIdentity.</returns>
     public static LogIdentity Parse(ILogEventIdentity identity)
         =>  new LogIdentity(identity.EventId);
 

@@ -2,14 +2,16 @@
 
 internal static class MongoLogMapper
 {
-    public static MongoLogEntity Map(ILogEvent log) => new MongoLogEntity(
-            identity: new MongoLogIdentity(log.Identity.EventId),
-            message: log.Message,
-            timestamp: log.Timestamp,
-            level: log.Level,
-            exception: log.Exception,
-            properties: log.Properties.Select(prop => new MongoLogProperty(prop))
-        );
+    public static MongoLogEntity Map(ILogEvent log)
+        => new()
+        {
+            Identity = new MongoLogIdentity(log.Identity.EventId),
+            Message = log.Message,
+            Timestamp = log.Timestamp,
+            Level = log.Level,
+            Exception = log.Exception,
+            Properties = log.Properties.Select(prop => new MongoLogProperty(prop))
+        };
 
     public static IEnumerable<MongoLogProperty> MapProperties(IEnumerable<ILogProperty> properties)
     {

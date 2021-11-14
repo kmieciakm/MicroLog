@@ -60,19 +60,6 @@ internal class MongoLogEntity : ILogEvent
         Timestamp = DateTime.Now;
     }
 
-    public MongoLogEntity(MongoLogIdentity identity, string message, DateTime timestamp, LogLevel level, LogException exception, IEnumerable<MongoLogProperty> properties)
-    {
-        Identity = identity;
-        Message = message;
-        Timestamp = timestamp;
-        Level = level;
-        Exception = exception;
-        foreach (var prop in properties)
-        {
-            _properties.Add(prop.Name, prop.BsonValue);
-        }
-    }
-
     public override bool Equals(object obj)
     {
         return obj is ILogEvent entity &&
