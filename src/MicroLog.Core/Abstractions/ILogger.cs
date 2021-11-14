@@ -5,6 +5,7 @@
 /// </summary>
 public interface ILogger
 {
+    void AddEnricher(ILogEnricher enricher);
     bool ShouldLog(LogLevel level);
     Task LogAsync(LogLevel level, string message, LogException exception = null);
     Task LogTraceAsync(string message);

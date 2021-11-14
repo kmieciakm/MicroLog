@@ -10,3 +10,4 @@ global using Microsoft.Extensions.Options;
 
 global using MicroLog.Core;
 global using MicroLog.Core.Abstractions;
+global using MicroLog.Core.Enrichers;

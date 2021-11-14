@@ -10,6 +10,7 @@ public class LogCollectorClient : ILogger
 
     private LogCollectorConfig _Config { get; }
     private LogCollectorRoutes _Routes { get; }
+    private AggregateEnricher _Enrichers { get; } = new();
 
     public LogCollectorClient(IOptions<LogCollectorConfig> configOptions)
         : this(configOptions.Value)
@@ -35,6 +36,8 @@ public class LogCollectorClient : ILogger
                 Message = message,
                 Exception = exception
             };
+            _Enrichers.Enrich(logEvent);
+
             var content = JsonSerializer.Serialize(logEvent);
             var body = new StringContent(content, Encoding.UTF8, "application/json");
             await _httpClient.PostAsync(_Routes.Insert, body);
@@ -58,4 +61,7 @@ public class LogCollectorClient : ILogger
 
     public async Task LogCriticalAsync(string message, LogException exception = null)
         => await LogAsync(LogLevel.Critical, message, exception);
+
+    public void AddEnricher(ILogEnricher enricher)
+        => _Enrichers.Add(enricher);
 }
