@@ -8,7 +8,7 @@ namespace MicroLog.Sink.MongoDb;
 internal class MongoLogEntity : ILogEvent
 {
     [BsonId]
-    public ILogEventIdentity Identity { get; private set; }
+    public ILogEventIdentity Identity { get; init; }
     public string Message { get; set; }
     [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
     public DateTime Timestamp { get; init; }
@@ -17,10 +17,13 @@ internal class MongoLogEntity : ILogEvent
 
     [BsonExtraElements]
     private Dictionary<string, object> _properties { get; set; } = new();
+
     [BsonIgnore]
-    public IReadOnlyCollection<ILogProperty> Properties
-        => _properties
-            .Select(property =>
+    public IEnumerable<ILogProperty> Properties
+    {
+        get
+        {
+            return _properties.Select(property =>
                 {
                     string json;
                     // Before performing save to database _properties dictionary
@@ -40,9 +43,16 @@ internal class MongoLogEntity : ILogEvent
                         json = bson.ToJson();
                     }
                     return new LogProperty { Name = property.Key, Value = json };
-                })
-            .ToList()
-            .AsReadOnly();
+                });
+        }
+        init
+        {
+            foreach (var prop in MongoLogMapper.MapProperties(value))
+            {
+                _properties.Add(prop.Name, prop.BsonValue);
+            };
+        }
+    }
 
     public MongoLogEntity()
     {

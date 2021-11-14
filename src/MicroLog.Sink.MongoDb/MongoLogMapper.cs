@@ -10,4 +10,14 @@ internal static class MongoLogMapper
             exception: log.Exception,
             properties: log.Properties.Select(prop => new MongoLogProperty(prop))
         );
+
+    public static IEnumerable<MongoLogProperty> MapProperties(IEnumerable<ILogProperty> properties)
+    {
+        List<MongoLogProperty> mongoLogProperties = new();
+        foreach (var property in properties)
+        {
+            mongoLogProperties.Add(new MongoLogProperty(property));
+        }
+        return mongoLogProperties;
+    }
 }

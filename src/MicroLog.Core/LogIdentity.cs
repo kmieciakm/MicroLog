@@ -19,6 +19,9 @@ public class LogIdentity : ILogEventIdentity
         EventId = eventId;
     }
 
+    public static LogIdentity Parse(ILogEventIdentity identity)
+        =>  new LogIdentity(identity.EventId);
+
     public override bool Equals(object obj)
     {
         return obj is ILogEventIdentity identity &&

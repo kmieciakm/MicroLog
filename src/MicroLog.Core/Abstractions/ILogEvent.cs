@@ -8,7 +8,7 @@ public interface ILogEvent
     /// <summary>
     /// Identification of event log.
     /// </summary>
-    ILogEventIdentity Identity { get; }
+    ILogEventIdentity Identity { get; init; }
     /// <summary>
     /// The message describing the event.
     /// </summary>
@@ -28,5 +28,5 @@ public interface ILogEvent
     /// <summary>
     /// All additional information assosisaated with the event.
     /// </summary>
-    IReadOnlyCollection<ILogProperty> Properties { get; }
+    IEnumerable<ILogProperty> Properties { get; init; }
 }
