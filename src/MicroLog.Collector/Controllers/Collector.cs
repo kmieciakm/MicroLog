@@ -1,4 +1,6 @@
-﻿namespace MicroLog.Collector.Controllers;
+﻿using MicroLog.Core.Extensions;
+
+namespace MicroLog.Collector.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -17,8 +19,15 @@ public class Collector : ControllerBase
     {
         try
         {
-            await _LogPublisher.PublishAsync(logEvent);
-            return Ok();
+            if (logEvent.IsValid(out string error))
+            {
+                await _LogPublisher.PublishAsync(logEvent);
+                return Ok();
+            }
+            else
+            {
+                return BadRequest(error);
+            }
         }
         catch (Exception ex)
         {
