@@ -6,8 +6,8 @@ public class WeatherForecastController : ControllerBase
 {
     private static readonly string[] Summaries = new[]
     {
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
+        "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
+    };
 
     private readonly ILogger<WeatherForecastController> _logger;
 
@@ -27,6 +27,12 @@ public class WeatherForecastController : ControllerBase
             Summary = Summaries[Random.Shared.Next(Summaries.Length)]
         })
         .ToArray();
+    }
+
+    [HttpGet("/GenerateError")]
+    public IActionResult GenerateError()
+    {
+        return StatusCode(StatusCodes.Status500InternalServerError, "Expected error has occurred.");
     }
 }
 

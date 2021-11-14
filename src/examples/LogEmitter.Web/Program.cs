@@ -21,6 +21,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+// TODO: Craete extension method.
+app.UseMiddleware<LogEmitter.Web.HttpContextEnricherMiddleware>();
+
 app.UseHttpsRedirection();
 
 app.UseAuthorization();

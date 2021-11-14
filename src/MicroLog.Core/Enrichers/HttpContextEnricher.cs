@@ -11,18 +11,38 @@ public class HttpContextEnricher : ILogEnricher
 {
     private const string PROPERTY_NAME = "HttpContext";
 
-    private HttpContextProperty _HttpContextProperty { get; set; }
+    private IHttpContextAccessor _HttpContextAccessor { get; set; }
 
     public HttpContextEnricher(IHttpContextAccessor httpAccessor)
-        : this(httpAccessor.HttpContext)
     {
+        _HttpContextAccessor = httpAccessor;
     }
 
-    private HttpContextEnricher(HttpContext httpContext)
+    /// <summary>
+    /// Adds information about an individual HTTP request / response to log event.
+    /// </summary>
+    /// <param name="log"></param>
+    public void Enrich(LogEvent log)
     {
-        if (httpContext is null) return;
+        if (_HttpContextAccessor is not null)
+        {
+            var httpProperty = BuildProperty(_HttpContextAccessor.HttpContext);
+            if (httpProperty is not null)
+            {
+                LogProperty property = new()
+                {
+                    Name = PROPERTY_NAME,
+                    Value = JsonSerializer.Serialize(httpProperty)
+                };
+                log.AddProperty(property);
+            }
+        }
+    }
 
-        _HttpContextProperty = new()
+    private HttpContextProperty BuildProperty(HttpContext httpContext)
+    {
+        if (httpContext is null) return null;
+        return new HttpContextProperty()
         {
             Request = new()
             {
@@ -34,23 +54,6 @@ public class HttpContextEnricher : ILogEnricher
                 StatusCode = httpContext.Response.StatusCode.ToString()
             }
         };
-    }
-
-    /// <summary>
-    /// Adds information about an individual HTTP request / response to log event.
-    /// </summary>
-    /// <param name="log"></param>
-    public void Enrich(LogEvent log)
-    {
-        if (_HttpContextProperty is not null)
-        {
-            LogProperty property = new()
-            {
-                Name = PROPERTY_NAME,
-                Value = JsonSerializer.Serialize(_HttpContextProperty)
-            };
-            log.AddProperty(property);
-        }
     }
 
     private class HttpContextProperty

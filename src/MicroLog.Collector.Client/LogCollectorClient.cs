@@ -26,7 +26,7 @@ public class LogCollectorClient : ILogger
     public bool ShouldLog(LogLevel level)
         => level >= _Config.MinimumLevel;
 
-    public async Task LogAsync(LogLevel level, string message, LogException exception = null)
+    public async Task LogAsync(LogLevel level, string message, LogException exception = null, ILogEnricher enricher = null)
     {
         if (ShouldLog(level))
         {
@@ -37,6 +37,10 @@ public class LogCollectorClient : ILogger
                 Exception = exception
             };
             _Enrichers.Enrich(logEvent);
+
+            // TODO: Rename
+            if (enricher is not null)
+                enricher.Enrich(logEvent);
 
             var content = JsonSerializer.Serialize(logEvent);
             var body = new StringContent(content, Encoding.UTF8, "application/json");
@@ -53,6 +57,9 @@ public class LogCollectorClient : ILogger
     public async Task LogInformationAsync(string message)
         => await LogAsync(LogLevel.Information, message);
 
+    public async Task LogInformationAsync(string message, ILogEnricher enricher)
+        => await LogAsync(LogLevel.Information, message, null, enricher);
+
     public async Task LogWarningAsync(string message, LogException exception = null)
         => await LogAsync(LogLevel.Warning, message, exception);
 
@@ -64,4 +71,5 @@ public class LogCollectorClient : ILogger
 
     public void AddEnricher(ILogEnricher enricher)
         => _Enrichers.Add(enricher);
+
 }
