@@ -92,7 +92,7 @@
         {
             var log = new LogEvent()
                 {
-                    Level = LogLevel.Trace,
+                    Level = LogLevel.Debug,
                     Message = "SignalR Hub connection test"
                 };
             await _hubConnection.SendAsync("Insert", log);

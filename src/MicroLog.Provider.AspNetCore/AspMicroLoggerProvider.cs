@@ -10,7 +10,11 @@ namespace MicroLog.Provider.AspNetCore;
 public sealed class AspMicroLoggerProvider : ILoggerProvider
 {
     private IMicroLogger _Logger { get; }
-    private readonly ConcurrentDictionary<string, AspMicroLogger> _loggers = new();
+
+    // Internally, the ConcurrentDictionary uses locking to make it thread safe
+    // for most methods, but GetOrAdd does not lock while valueFactory is running. 
+    // Lazy<T> solves the problem.
+    private readonly ConcurrentDictionary<string, Lazy<AspMicroLogger>> _loggers = new();
 
     public AspMicroLoggerProvider(IMicroLogger logger)
     {
@@ -18,8 +22,10 @@ public sealed class AspMicroLoggerProvider : ILoggerProvider
     }
 
     public ILogger CreateLogger(string categoryName)
-        => _loggers.GetOrAdd(categoryName, name => new AspMicroLogger(name, _Logger));
-
+    {
+        return _loggers.GetOrAdd(categoryName, name =>
+                new Lazy<AspMicroLogger>(new AspMicroLogger(name, _Logger))).Value;
+    }
     public void Dispose()
     {
         _loggers.Clear();
