@@ -31,6 +31,9 @@ public abstract class CollectorFixture
             MinimumLevel = Core.LogLevel.Trace
         };
 
+    protected static LogCollectorClient GetMicroLogClient(LogCollectorConfig config)
+        => new LogCollectorClient(config);
+
     [Fact]
     public void Services_Running()
     {

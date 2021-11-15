@@ -22,7 +22,7 @@ public class MongoLogRepositoryCases : MongoFixture
             Message = "Works !!!"
         };
 
-        logSink.InsertAsync(logEvent).Wait();
+        logSink.InsertAsync(logEvent).GetAwaiter().GetResult();
         var log = logRegistry.GetAsync(logEvent.Identity).GetAwaiter().GetResult();
 
         log.ShouldBe(logEvent);
@@ -46,7 +46,7 @@ public class MongoLogRepositoryCases : MongoFixture
         var enricher = new ValueEnricher("Test", "Value");
         enricher.Enrich(logEvent);
 
-        logSink.InsertAsync(logEvent).Wait();
+        logSink.InsertAsync(logEvent).GetAwaiter().GetResult();
         var log = logRegistry.GetAsync(logEvent.Identity).GetAwaiter().GetResult();
 
         var mongoLogEvent = MongoLogMapper.Map(logEvent);

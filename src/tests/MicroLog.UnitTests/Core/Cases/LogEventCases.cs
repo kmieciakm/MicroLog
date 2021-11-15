@@ -12,7 +12,7 @@ public class LogEventCases
     }
 
     [Fact]
-    public void LogIdentity_Constructor_Ok()
+    public void LogIdentity_Constructor()
     {
         var id = new LogIdentity();
         id.EventId.Should().NotBeNullOrEmpty();
@@ -26,12 +26,13 @@ public class LogEventCases
     {
         var id = new LogIdentity("1111-1111-1111");
         var id2 = new LogIdentity("1111-1111-1111");
+
         id.Should().Be(id2);
         id.Should().NotBeSameAs(id2);
     }
 
     [Fact]
-    public void LogEvent_Constructor_Ok()
+    public void LogEvent_Constructor()
     {
         var logEvent = new LogEvent()
         {
@@ -44,7 +45,7 @@ public class LogEventCases
     }
 
     [Fact]
-    public void LogEvent_Equals_Ok()
+    public void LogEvent_Equals()
     {
         var now = DateTime.Now;
 
