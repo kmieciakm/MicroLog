@@ -10,7 +10,7 @@ public class LogCollectorClient : ILogger
 
     private LogCollectorConfig _Config { get; }
     private LogCollectorRoutes _Routes { get; }
-    private AggregateEnricher _Enrichers { get; } = new();
+    private AggregateEnricher _EmbeddedEnrichers { get; } = new();
 
     public LogCollectorClient(IOptions<LogCollectorConfig> configOptions)
         : this(configOptions.Value)
@@ -36,11 +36,12 @@ public class LogCollectorClient : ILogger
                 Message = message,
                 Exception = exception
             };
-            _Enrichers.Enrich(logEvent);
+            _EmbeddedEnrichers.Enrich(logEvent);
 
-            // TODO: Rename
             if (enricher is not null)
+            {
                 enricher.Enrich(logEvent);
+            }
 
             var content = JsonSerializer.Serialize(logEvent);
             var body = new StringContent(content, Encoding.UTF8, "application/json");
@@ -50,9 +51,15 @@ public class LogCollectorClient : ILogger
 
     public async Task LogTraceAsync(string message)
         => await LogAsync(LogLevel.Trace, message);
+    
+    public async Task LogTraceAsync(string message, ILogEnricher enricher)
+        => await LogAsync(LogLevel.Trace, message, null, enricher);
 
     public async Task LogDebugAsync(string message)
         => await LogAsync(LogLevel.Debug, message);
+    
+    public async Task LogDebugAsync(string message, ILogEnricher enricher)
+        => await LogAsync(LogLevel.Debug, message, null, enricher);
 
     public async Task LogInformationAsync(string message)
         => await LogAsync(LogLevel.Information, message);
@@ -63,13 +70,21 @@ public class LogCollectorClient : ILogger
     public async Task LogWarningAsync(string message, LogException exception = null)
         => await LogAsync(LogLevel.Warning, message, exception);
 
+    public async Task LogWarningAsync(string message, ILogEnricher enricher, LogException exception = null)
+        => await LogAsync(LogLevel.Warning, message, exception, enricher);
+
     public async Task LogErrorAsync(string message, LogException exception = null)
         => await LogAsync(LogLevel.Error, message, exception);
+
+    public async Task LogErrorAsync(string message, ILogEnricher enricher, LogException exception = null)
+        => await LogAsync(LogLevel.Error, message, exception, enricher);
 
     public async Task LogCriticalAsync(string message, LogException exception = null)
         => await LogAsync(LogLevel.Critical, message, exception);
 
-    public void AddEnricher(ILogEnricher enricher)
-        => _Enrichers.Add(enricher);
+    public async Task LogCriticalAsync(string message, ILogEnricher enricher, LogException exception = null)
+        => await LogAsync(LogLevel.Critical, message, exception, enricher);
 
+    public void AddEnricher(ILogEnricher enricher)
+        => _EmbeddedEnrichers.Add(enricher);
 }
