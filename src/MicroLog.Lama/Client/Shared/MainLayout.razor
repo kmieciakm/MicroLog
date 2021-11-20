@@ -1,4 +1,9 @@
-﻿@inherits LayoutComponentBase
+﻿@using Polly
+
+@inherits LayoutComponentBase
+
+@inject IAlertService AlertService
+@inject ISnackbar Snackbar
 
 <MudThemeProvider Theme="AppTheme.Theme" />
 <MudDialogProvider />
@@ -39,6 +44,20 @@
 {
     private bool showThemeManager = false;
     private ThemeManager ThemeManager { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await AlertService.Run();
+        AlertService.OnAlert += ShowAlertPopup;
+    }
+
+    public void ShowAlertPopup(AlertArgs args)
+    {
+        Snackbar.Add(args.Log.Message, Severity.Error, options =>
+        {
+            options.RequireInteraction = true;
+        });
+    }
 
     protected override void OnAfterRender(bool firstRender)
     {

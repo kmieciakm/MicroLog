@@ -32,6 +32,7 @@ public class WeatherForecastController : ControllerBase
     [HttpGet("/GenerateError")]
     public IActionResult GenerateError()
     {
+        _logger.LogError("Error");
         return StatusCode(StatusCodes.Status500InternalServerError, "Expected error has occurred.");
     }
 }

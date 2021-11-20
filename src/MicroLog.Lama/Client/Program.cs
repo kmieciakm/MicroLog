@@ -18,5 +18,6 @@ builder.Services.AddMudBlazorServices();
 builder.Services.AddBlazorDownloadFile();
 
 builder.Services.AddSingleton<ILogsStorage, LogsStorage>();
+builder.Services.AddSingleton<IAlertService, AlertService>();
 
 await builder.Build().RunAsync();

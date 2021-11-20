@@ -21,6 +21,10 @@ public class LogHub : Hub<ILogHubClient>
 
     protected async Task BroadcastLog(LogEvent logEvent)
     {
+        if (logEvent.Level >= LogLevel.Error)
+        {
+            await Clients.All.ReceiveAlert(logEvent);
+        }
         await Clients.All.ReceiveLog(logEvent);
     }
 }
