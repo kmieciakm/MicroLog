@@ -31,14 +31,25 @@ public class RabbitLogConsumer : RabbitLogBase, ILogConsumer
         var consumer = new EventingBasicConsumer(_Channel);
         consumer.Received += async (sender, e) =>
         {
-            var body = e.Body.ToArray();
-            var message = Encoding.UTF8.GetString(body);
-            LogEvent log = JsonSerializer.Deserialize<LogEvent>(message);
-            _SourceEnricher.Enrich(log);
-            await _Sink.InsertAsync(log);
+            try
+            {
+                var body = e.Body.ToArray();
+                var message = Encoding.UTF8.GetString(body);
+                var log = JsonSerializer.Deserialize<LogEvent>(message);
+
+                _SourceEnricher.Enrich(log);
+                await _Sink.InsertAsync(log);
+
+                _Channel.BasicAck(e.DeliveryTag, false);
+            }
+            catch (Exception)
+            {
+                _Channel.BasicNack(e.DeliveryTag, false, true);
+            }
         };
 
-        _Channel.BasicConsume(_Queue, true, consumer);
+        _Channel.BasicQos(0, 1000, false);
+        _Channel.BasicConsume(_Queue, false, consumer);
     }
 
     public void Dispose()

@@ -24,15 +24,26 @@ services:
       - "Collector__RabbitMq__Port=5672"
       - "Collector__RabbitMq__UserName=rabbit"
       - "Collector__RabbitMq__Password=rabbit"
-      - "Publisher__Queues=log-mongo,log-hub" #log-mongodb
       - "Sinks__Mongo__0__Name=mongo"
       - "Sinks__Mongo__0__DatabaseName=microlog"
       - "Sinks__Mongo__0__ConnectionString=mongodb://microlog.mongoDb:27017"
       - "Sinks__Hub__0__Name=hub"
       - "Sinks__Hub__0__Url=http://microlog.lama/loghub"
-      #- "Sinks__Mongo__1__Name=mongodb"
-      #- "Sinks__Mongo__1__DatabaseName=microlog"
-      #- "Sinks__Mongo__1__ConnectionString=mongodb://microlog.mongoDb:27017"
+    ports:
+      - "3003:443"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+
+  microlog.publisher:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - "Collector__RabbitMq__HostName=rabbit-log-collector"
+      - "Collector__RabbitMq__Port=5672"
+      - "Collector__RabbitMq__UserName=rabbit"
+      - "Collector__RabbitMq__Password=rabbit"
+      - "Publisher__Queues=log-mongo,log-hub"
     ports:
       - "3001:443"
     volumes:

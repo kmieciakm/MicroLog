@@ -10,6 +10,8 @@ namespace MicroLog.Sink.MongoDb;
 public class MongoLogRepository : ILogSink, ILogRegistry
 {
     private const string COLLECTION_NAME = "logs";
+    private const int MAX_CONNECTION_POOL_SIZE = 1000;
+
     public ISinkConfig Config { get; }
     private IMongoDatabase _Database { get; }
     private IMongoCollection<MongoLogEntity> _Collection { get; }
@@ -22,7 +24,9 @@ public class MongoLogRepository : ILogSink, ILogRegistry
     public MongoLogRepository(MongoConfig config)
     {
         Config = config;
-        var client = new MongoClient(config.ConnectionString);
+        var settings = MongoClientSettings.FromConnectionString(config.ConnectionString);
+        settings.MaxConnectionPoolSize = MAX_CONNECTION_POOL_SIZE;
+        var client = new MongoClient(settings);
         _Database = client.GetDatabase(config.DatabaseName);
         _Collection = _Database.GetCollection<MongoLogEntity>(COLLECTION_NAME);
     }
@@ -50,23 +54,17 @@ public class MongoLogRepository : ILogSink, ILogRegistry
     async Task ILogSink.InsertAsync(ILogEvent logEvent)
     {
         var entity = MongoLogMapper.Map(logEvent);
-        await GetInsertPolicy().ExecuteAsync(async () =>
-        {
-            await _Collection.InsertOneAsync(entity);
-        });
+        await _Collection.InsertOneAsync(entity);
     }
 
     async Task ILogSink.InsertAsync(IEnumerable<ILogEvent> logEvents)
     {
         var entities = logEvents.Select(entity => MongoLogMapper.Map(entity));
-        await GetInsertPolicy().ExecuteAsync(async () =>
-        {
-            await _Collection.InsertManyAsync(entities);
-        });
+        await _Collection.InsertManyAsync(entities);
     }
 
     /// <summary>
-    /// Policy that prevents MongoWaitQueueFullException when excided WaitQueueSize.
+    /// Insert retry policy.
     /// </summary>
     private IAsyncPolicy GetInsertPolicy()
     {

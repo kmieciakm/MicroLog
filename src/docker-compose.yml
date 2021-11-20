@@ -24,6 +24,16 @@ services:
       - microlog.rabbitmq
       - microlog.mongoDb
 
+  microlog.publisher:
+    image: ${DOCKER_REGISTRY-}micrologcollector
+    container_name: microlog.publisher
+    build:
+      context: .
+      dockerfile: MicroLog.Collector/Dockerfile
+    depends_on:
+      - microlog.rabbitmq
+      - microlog.mongoDb
+
   microlog.lama:
     image: ${DOCKER_REGISTRY-}microloglama
     container_name: microlog.lama
