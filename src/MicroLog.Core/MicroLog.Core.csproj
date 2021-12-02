@@ -4,6 +4,14 @@
     <TargetFramework>net6.0</TargetFramework>
 	<Nullable>disable</Nullable>
 	<ImplicitUsings>disable</ImplicitUsings>
+	<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+	<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+	<Authors>Mateusz Kmieciak</Authors>
+	<Product>MicroLog</Product>
+	<Description>The core abstractions and features of MicroLog.</Description>
+	<PackageLicenseExpression>MIT</PackageLicenseExpression>
+	<Copyright>Copyright (c) 2021 Mateusz Kmieciak</Copyright>
+	<PackageTags>Logging, Logs, Distributed, Asynchronous</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
