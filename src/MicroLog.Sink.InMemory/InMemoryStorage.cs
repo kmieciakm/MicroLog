@@ -39,6 +39,12 @@ public class InMemoryStorage : ILogSink, ILogRegistry
         return Task.CompletedTask;
     }
 
+    Task<IEnumerable<ILogEvent>> ILogRegistry.GetAsync()
+    {
+        IEnumerable<ILogEvent> logs = Storage.Values.ToList();
+        return Task.FromResult(logs);
+    }
+
     Task<ILogEvent> ILogRegistry.GetAsync(ILogEventIdentity identity)
     {
         return Task.FromResult(Storage[identity.EventId]);

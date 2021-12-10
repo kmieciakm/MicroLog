@@ -5,6 +5,7 @@
 /// </summary>
 public interface ILogRegistry
 {
+    Task<IEnumerable<ILogEvent>> GetAsync();
     /// <summary>
     /// Returns the log matching the identity.
     /// </summary>

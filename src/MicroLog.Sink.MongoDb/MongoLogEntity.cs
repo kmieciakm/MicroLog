@@ -1,4 +1,5 @@
 ﻿using MicroLog.Sink.MongoDb.Utils;
+using MongoDB.Bson.Serialization.Serializers;
 
 namespace MicroLog.Sink.MongoDb;
 
@@ -8,6 +9,7 @@ namespace MicroLog.Sink.MongoDb;
 internal class MongoLogEntity : ILogEvent
 {
     [BsonId]
+    [BsonSerializer(typeof(ImpliedImplementationInterfaceSerializer<ILogEventIdentity, MongoLogIdentity>))]
     public ILogEventIdentity Identity { get; init; }
     public string Message { get; set; }
     [BsonDateTimeOptions(Kind = DateTimeKind.Local)]

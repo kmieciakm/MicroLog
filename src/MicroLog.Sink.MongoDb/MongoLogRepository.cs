@@ -31,6 +31,12 @@ public class MongoLogRepository : ILogSink, ILogRegistry
         _Collection = _Database.GetCollection<MongoLogEntity>(COLLECTION_NAME);
     }
 
+    async Task<IEnumerable<ILogEvent>> ILogRegistry.GetAsync()
+    {
+        var entities = await _Collection.FindAsync(_ => true);
+        return entities.ToEnumerable();
+    }
+
     async Task<ILogEvent> ILogRegistry.GetAsync(ILogEventIdentity identity)
     {
         var id = new MongoLogIdentity(identity.EventId);
