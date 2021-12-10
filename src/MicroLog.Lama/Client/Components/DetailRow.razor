@@ -1,0 +1,11 @@
+﻿<MudItem xs="12" sm="3">
+    <MudText Class="text-uppercase" Typo="Typo.body1" Color="Color.Warning">@PropertyName</MudText>
+</MudItem>
+<MudItem xs="12" sm="9">
+    <MudText Typo="Typo.body1" Style="white-space: pre-wrap">@Value</MudText>
+</MudItem>
+
+@code {
+    [Parameter, EditorRequired] public string PropertyName { get; set; }
+    [Parameter, EditorRequired] public string Value { get; set; }
+}

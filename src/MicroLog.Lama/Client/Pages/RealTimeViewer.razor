@@ -36,6 +36,7 @@
         <MudTh>Severity</MudTh>
         <MudTh>Message</MudTh>
         <MudTh>Exception</MudTh>
+        <MudTh></MudTh>
     </HeaderContent>
     <RowTemplate>
         <MudTd DataLabel="Time">@context.Timestamp</MudTd>
@@ -54,6 +55,9 @@
         {
             <MudTd DataLabel="Exception">-</MudTd>
         }
+        <MudTd DataLabel="Action">
+            <MudIconButton Icon="@Icons.Rounded.Search" Color="Color.Primary" OnClick="() => ShowLogDetails(context)"></MudIconButton>
+        </MudTd>
     </RowTemplate>
 </MudTable>
 
@@ -93,8 +97,17 @@
             var log = new LogEvent()
                 {
                     Level = LogLevel.Error,
-                    Message = "SignalR Hub connection test"
+                    Message = "SignalR Hub connection test",
+                    Exception = new LogException()
+                    {
+                        Source = "LAMA",
+                        Type = "LogException",
+                        Message = "Test exception message"
+                    }
                 };
+            var enricher = new ValueEnricher("Platform", "Windows 10");
+            enricher.Enrich(log);
+
             await _hubConnection.SendAsync("Insert", log);
         }
     }
