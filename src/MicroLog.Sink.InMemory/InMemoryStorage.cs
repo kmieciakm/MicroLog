@@ -1,4 +1,5 @@
-﻿using MicroLog.Core.Abstractions;
+﻿using MicroLog.Core;
+using MicroLog.Core.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,10 +40,20 @@ public class InMemoryStorage : ILogSink, ILogRegistry
         return Task.CompletedTask;
     }
 
-    Task<IEnumerable<ILogEvent>> ILogRegistry.GetAsync()
+    Task<PaginationResult<ILogEvent>> ILogRegistry.GetAsync(int skip, int take)
     {
-        IEnumerable<ILogEvent> logs = Storage.Values.ToList();
-        return Task.FromResult(logs);
+        IEnumerable<ILogEvent> logs = Storage.Values
+            .Skip(skip)
+            .Take(take)
+            .ToList();
+
+        var result = new PaginationResult<ILogEvent>()
+        {
+            Items = logs,
+            TotalCount = logs.Count()
+        };
+
+        return Task.FromResult(result);
     }
 
     Task<ILogEvent> ILogRegistry.GetAsync(ILogEventIdentity identity)

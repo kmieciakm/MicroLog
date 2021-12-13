@@ -5,7 +5,13 @@
 /// </summary>
 public interface ILogRegistry
 {
-    Task<IEnumerable<ILogEvent>> GetAsync();
+    /// <summary>
+    /// Returnes the logs from a range.
+    /// </summary>
+    /// <param name="skip">The number of logs to ommit.</param>
+    /// <param name="take">The number of logs to take.</param>
+    /// <returns>A task whose result is desired log collection.</returns>
+    Task<PaginationResult<ILogEvent>> GetAsync(int skip, int take);
     /// <summary>
     /// Returns the log matching the identity.
     /// </summary>

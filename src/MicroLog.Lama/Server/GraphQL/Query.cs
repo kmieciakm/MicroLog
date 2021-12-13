@@ -1,10 +1,26 @@
-﻿namespace MircoLog.Lama.Server.GraphQL;
+﻿using HotChocolate.Types;
+using HotChocolate.Types.Pagination;
+
+namespace MircoLog.Lama.Server.GraphQL;
 
 public class Query
 {
-    public async Task<IEnumerable<Log>> GetLogs([Service] ILogRegistry registry)
+    [UseOffsetPaging(MaxPageSize = 1000, IncludeTotalCount = true)]
+    public async Task<CollectionSegment<Log>> GetLogs([Service] ILogRegistry registry, int skip, int take)
     {
-        var logs = await registry.GetAsync();
-        return Log.Parse(logs);
+        var logsCollection = await registry.GetAsync(skip, take);
+        var items = Log
+            .Parse(logsCollection.Items)
+            .ToList()
+            .AsReadOnly();
+
+        var info = new CollectionSegmentInfo(false, false);
+        var totalCount = logsCollection.TotalCount;
+
+        return new CollectionSegment<Log>(
+            items,
+            info,
+            _ => ValueTask.FromResult(totalCount)
+        );
     }
 }
