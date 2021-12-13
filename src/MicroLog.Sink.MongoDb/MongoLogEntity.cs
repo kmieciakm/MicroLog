@@ -1,5 +1,7 @@
 ﻿using MicroLog.Sink.MongoDb.Utils;
+using MongoDB.Bson.IO;
 using MongoDB.Bson.Serialization.Serializers;
+using System.Text.Json;
 
 namespace MicroLog.Sink.MongoDb;
 
@@ -18,7 +20,7 @@ internal class MongoLogEntity : ILogEvent
     public LogException Exception { get; set; }
 
     [BsonExtraElements]
-    private Dictionary<string, object> _properties { get; set; } = new();
+    private BsonDocument _properties { get; set; } = new();
 
     [BsonIgnore]
     public IEnumerable<ILogProperty> Properties
@@ -26,26 +28,12 @@ internal class MongoLogEntity : ILogEvent
         get
         {
             return _properties.Select(property =>
-                {
-                    string json;
-                    // Before performing save to database _properties dictionary
-                    // stores BsonDocument objects, but when MongoLogEntity object
-                    // is recraeted from database the type of values in dictionary
-                    // is KeyValuePair<>
-                    if (property.Value is not BsonDocument bson)
-                    {
-                        // Create BsonDocument from KeyValuePair<> object
-                        bson = property.Value.ToBsonDocument();
-                        // BsonDocument contains the type as first value,
-                        // the second value stores saved object in json
-                        json = bson.ElementAt(1).Value.ToJson();
-                    }
-                    else
-                    {
-                        json = bson.ToJson();
-                    }
-                    return new LogProperty { Name = property.Key, Value = json };
-                });
+            {
+                return new LogProperty {
+                    Name = property.Name,
+                    Value = property.Value.ToBsonDocument().ToJson()
+                };
+            });
         }
         init
         {
