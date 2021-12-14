@@ -1,12 +1,9 @@
-﻿using HotChocolate.Types;
-using HotChocolate.Types.Pagination;
-
-namespace MircoLog.Lama.Server.GraphQL;
+﻿namespace MircoLog.Lama.Server.GraphQL;
 
 public class Query
 {
     [UseOffsetPaging(MaxPageSize = 1000, IncludeTotalCount = true)]
-    public async Task<CollectionSegment<Log>> GetLogs([Service] ILogRegistry registry, int skip, int take)
+    public async Task<CollectionSegment<Log>> GetLogsFromRepo([Service] ILogRegistry registry, int skip, int take)
     {
         var logsCollection = await registry.GetAsync(skip, take);
         var items = Log
@@ -22,5 +19,13 @@ public class Query
             info,
             _ => ValueTask.FromResult(totalCount)
         );
+    }
+
+    [UseOffsetPaging(MaxPageSize = 100, IncludeTotalCount = true)]
+    [UseSorting]
+    [UseFiltering]
+    public IExecutable<Log> GetLogs([Service] IMongoCollection<Log> collection)
+    {
+        return collection.AsExecutable();
     }
 }

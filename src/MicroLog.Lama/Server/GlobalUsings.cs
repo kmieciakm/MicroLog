@@ -15,7 +15,17 @@ global using Microsoft.Extensions.Logging;
 global using Microsoft.Extensions.Options;
 
 global using HotChocolate;
+global using HotChocolate.Data;
+global using HotChocolate.Types;
+global using HotChocolate.Types.Pagination;
+
+global using MongoDB.Bson;
+global using MongoDB.Bson.Serialization.Attributes;
+global using MongoDB.Bson.Serialization.Serializers;
+global using MongoDB.Driver;
+global using MongoDB.Driver.Core.Events;
 
 global using MicroLog.Core;
 global using MicroLog.Core.Abstractions;
 global using MicroLog.Sink.Hub;
+global using MicroLog.Sink.MongoDb.Config;

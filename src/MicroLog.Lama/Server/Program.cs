@@ -32,10 +32,35 @@ void ConfigureServices(IServiceCollection services)
 
     services.AddLogRegistry(builder.Configuration);
 
+    services.AddSingleton(sp =>
+    {
+        const string COLLECTION_NAME = "logs";
+        var registryConfig = sp
+            .GetRequiredService<IOptions<MongoConfig>>()
+            .Value;
+        var mongoConnectionUrl = new MongoUrl(registryConfig.ConnectionString);
+        var mongoClientSettings = MongoClientSettings.FromUrl(mongoConnectionUrl);
+        mongoClientSettings.ClusterConfigurator = cb =>
+        {
+            // This will print the executed command to the console
+            cb.Subscribe<CommandStartedEvent>(e =>
+            {
+                Console.WriteLine($"{e.CommandName} - {e.Command.ToJson()}");
+            });
+        };
+        var client = new MongoClient(mongoClientSettings);
+        var database = client.GetDatabase(registryConfig.DatabaseName);
+        return database.GetCollection<Log>(COLLECTION_NAME);
+    });
+
     services
         .AddGraphQLServer()
-        .AddQueryType<Query>();
-}
+        .AddQueryType<Query>()
+        .AddMongoDbFiltering()
+        .AddMongoDbSorting()
+        .AddMongoDbProjections()
+        .AddMongoDbPagingProviders();
+    }
 
 void ConfigureApplication(WebApplication app)
 {

@@ -1,7 +1,5 @@
 ﻿using MicroLog.Sink.MongoDb.Utils;
-using MongoDB.Bson.IO;
 using MongoDB.Bson.Serialization.Serializers;
-using System.Text.Json;
 
 namespace MicroLog.Sink.MongoDb;
 
