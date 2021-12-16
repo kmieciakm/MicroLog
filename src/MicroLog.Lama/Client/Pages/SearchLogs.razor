@@ -1,6 +1,13 @@
 ﻿@page "/search"
 
+@using GraphQL
+@using GraphQL.Client.Http
+@using GraphQL.Client.Serializer.Newtonsoft
+@using System.Text.Json
+
 @inherits BasePage
+
+@inject NavigationManager NavigationManager
 
 <div class="d-flex flex-column" style="height: 100%">
     <div class="w-100">
@@ -22,7 +29,7 @@
              </MudItem>
             <MudItem sm="12" md="4">
                 <MudPaper Width="100%" Height="100%">
-                    <ContentEditable @ref="queryContentField" Value="@currentFilter.Query" CSSClass="editable" />
+                    <ContentEditable @ref="queryContentField" Value="@CurrentFilter.Query" CSSClass="editable" />
                 </MudPaper>
                 <div>
                     <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="e => ExecuteQuery()">Run</MudButton>
@@ -30,6 +37,10 @@
             </MudItem>
             <MudItem sm="12" md="6">
                 <MudPaper Width="100%" Height="100%">
+                    @foreach(var log in Logs)
+                    {
+                        <div>@log.Message</div>
+                    }
                 </MudPaper>
             </MudItem>
         </MudGrid>
@@ -37,15 +48,16 @@
 </div>
 
 @code {
-    ContentEditable queryContentField;
-    Filter currentFilter { get; set; } = new Filter() { Query = string.Empty };
-    IEnumerable<Filter> Filters { get; set; } = new List<Filter>()
+    private IEnumerable<LogItem> Logs { get; set; } = new List<LogItem>();
+    private ContentEditable queryContentField;
+    private Filter CurrentFilter { get; set; } = new Filter() { Query = string.Empty };
+    private IEnumerable<Filter> Filters { get; set; } = new List<Filter>()
     {
         new()
         {
             Name = "Last 3 errors",
             Query = @"query {
-    logs(
+    logs (
         take: 3
         order: { level: DESC }
         where: {
@@ -79,16 +91,30 @@
         }
     };
 
-    void LoadFilter(Filter filter)
+    private void LoadFilter(Filter filter)
     {
         queryContentField.SetValue(filter.Query);
-        currentFilter = filter;
+        CurrentFilter = filter;
     }
 
-    void ExecuteQuery()
+    private async Task ExecuteQuery()
     {
         var query = queryContentField.Value;
+        var graphQLOptions = new GraphQLHttpClientOptions
+        {
+            EndPoint = NavigationManager.ToAbsoluteUri("/api")
+        };
+        var graphQLClient = new GraphQLHttpClient(graphQLOptions, new NewtonsoftJsonSerializer());
+
+        var request = new GraphQLRequest
+        {
+            Query = query.Replace("\n", " ")
+        };
+
+        var graphQLResponse = await graphQLClient
+            .SendQueryAsync<FilterResponse>(request)
+            .ConfigureAwait(false);
+
+        Logs = graphQLResponse.Data.Logs.Items;
     }
 }
-
-
