@@ -1,0 +1,94 @@
+﻿@page "/search"
+
+@inherits BasePage
+
+<div class="d-flex flex-column" style="height: 100%">
+    <div class="w-100">
+        <MudText Typo="Typo.h2">Filters</MudText>
+        <Divider />
+    </div>
+    <div class="flex-grow-1">
+        <MudGrid Style="height: 100%; min-height: 600px">
+            <MudItem sm="12" md="2" Style="height: 100%;">
+                <MudPaper Width="100%" Height="100%">
+                    <MudList Clickable="true">
+                        @foreach(var filter in Filters)
+                        {
+                            <MudListItem Text="@filter.Name" OnClick="e => LoadFilter(filter)" />
+                            <MudDivider />
+                        }
+                    </MudList>
+                </MudPaper>
+             </MudItem>
+            <MudItem sm="12" md="4">
+                <MudPaper Width="100%" Height="100%">
+                    <ContentEditable @ref="queryContentField" Value="@currentFilter.Query" CSSClass="editable" />
+                </MudPaper>
+                <div>
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="e => ExecuteQuery()">Run</MudButton>
+                </div>
+            </MudItem>
+            <MudItem sm="12" md="6">
+                <MudPaper Width="100%" Height="100%">
+                </MudPaper>
+            </MudItem>
+        </MudGrid>
+    </div>
+</div>
+
+@code {
+    ContentEditable queryContentField;
+    Filter currentFilter { get; set; } = new Filter() { Query = string.Empty };
+    IEnumerable<Filter> Filters { get; set; } = new List<Filter>()
+    {
+        new()
+        {
+            Name = "Last 3 errors",
+            Query = @"query {
+    logs(
+        take: 3
+        order: { level: DESC }
+        where: {
+            level: { in: [CRITICAL, ERROR] }
+        }
+    ) {
+        totalCount,
+        items {
+            identity {
+                eventId
+            },
+            timestamp,
+            message,
+            level,
+            levelName,
+            exception {
+                type,
+                source,
+                message,
+                innerException {
+                    message
+                }
+            },
+            properties {
+                name,
+                value
+            }
+        }
+    }
+}"
+        }
+    };
+
+    void LoadFilter(Filter filter)
+    {
+        queryContentField.SetValue(filter.Query);
+        currentFilter = filter;
+    }
+
+    void ExecuteQuery()
+    {
+        var query = queryContentField.Value;
+    }
+}
+
+

@@ -2,6 +2,7 @@
     position: relative;
     display: flex;
     flex-direction: column;
+    height: 100vh;
 }
 
 .mud-container-maxwidth-lg {
@@ -11,6 +12,7 @@
 .centered {
     display: flex;
     justify-content: center;
+    height: 100%;
 }
 
 img {
