@@ -17,27 +17,33 @@
     <div class="flex-grow-1">
         <MudGrid Style="height: 100%; min-height: 600px">
             <MudItem sm="12" md="2" Style="height: 100%;">
-                <MudPaper Width="100%" Height="100%">
-                    <MudList Clickable="true">
-                        @foreach(var filter in Filters)
+                <MudPaper Width="100%" Height="100%" Class="d-flex flex-column">
+                    <MudList Clickable="true" Class="flex-grow-1">
+                        @foreach (var filter in Filters)
                         {
-                            <MudListItem Text="@filter.Name" OnClick="e => LoadFilter(filter)" />
+                            <MudListItem Text="@filter.Name" Class="@(CurrentFilterName == filter.Name ? "mud-primary" : "")"
+                                            OnClick="e => LoadFilter(filter)" />
                             <MudDivider />
                         }
                     </MudList>
+                    <MudButton Class="rounded-0 rounded-sm-b p-3" Variant="Variant.Filled" Color="Color.Primary" FullWidth="true"
+                               OnClick="e => newFilterDialog.OpenDialog()">Create new</MudButton>
                 </MudPaper>
-             </MudItem>
-            <MudItem sm="12" md="4">
-                <MudPaper Width="100%" Height="100%">
-                    <ContentEditable @ref="queryContentField" Value="@CurrentFilter.Query" CSSClass="editable" />
-                </MudPaper>
-                <div>
-                    <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="e => ExecuteQuery()">Run</MudButton>
-                </div>
             </MudItem>
-            <MudItem sm="12" md="6">
+            <MudItem sm="12" md="4" Style="height: 100%;">
+                <MudPaper Width="100%" Height="100%" Class="d-flex flex-column">
+                    <ContentEditable @ref="queryContentField" CSSClass="editable flex-grow-1" ValueChanged="() => StateHasChanged()" />
+                    <div class="d-flex">
+                        <MudButton Class="rounded-0 p-3 w-50" Variant="Variant.Filled" Color="Color.Primary"
+                                   OnClick="e => SaveFilter()">Save</MudButton>
+                        <MudButton Class="rounded-0 p-3 w-50" Variant="Variant.Filled" Color="Color.Success"
+                                   OnClick="e => ExecuteQuery()">Run</MudButton>
+                    </div>
+                </MudPaper>
+            </MudItem>
+            <MudItem sm="12" md="6" Style="height: 100%;">
                 <MudPaper Width="100%" Height="100%">
-                    @foreach(var log in Logs)
+                    @foreach (var log in Logs)
                     {
                         <div>@log.Message</div>
                     }
@@ -45,18 +51,29 @@
             </MudItem>
         </MudGrid>
     </div>
+
+    <FormDialog @ref="newFilterDialog" ButtonText="Create" HeaderText="Create new Filter"
+                OnSubmit="() => CreateFilter()">
+        <MudForm>
+            <MudTextField Label="Name" @bind-Value="NewFilter.Name" Variant="Variant.Text"></MudTextField>
+        </MudForm>
+    </FormDialog>
 </div>
 
 @code {
-    private IEnumerable<LogItem> Logs { get; set; } = new List<LogItem>();
     private ContentEditable queryContentField;
-    private Filter CurrentFilter { get; set; } = new Filter() { Query = string.Empty };
-    private IEnumerable<Filter> Filters { get; set; } = new List<Filter>()
+    private FormDialog newFilterDialog;
+    private string CurrentFilterName { get; set; }
+    private Filter NewFilter { get; set; } = new Filter();
+    private List<Filter> Filters { get; set; } = new List<Filter>();
+    private List<LogItem> Logs { get; set; } = new List<LogItem>();
+
+    protected override void OnInitialized()
     {
-        new()
-        {
-            Name = "Last 3 errors",
-            Query = @"query {
+        Filters.Add(new()
+            {
+                Name = "Last 3 errors",
+                Query = @"query {
     logs (
         take: 3
         order: { level: DESC }
@@ -88,28 +105,52 @@
         }
     }
 }"
-        }
-    };
+            });
+        base.OnInitialized();
+    }
 
     private void LoadFilter(Filter filter)
     {
+        CurrentFilterName = filter.Name;
         queryContentField.SetValue(filter.Query);
-        CurrentFilter = filter;
+        StateHasChanged();
+    }
+
+    private void CreateFilter()
+    {
+        Filters.Add(new Filter()
+            {
+                Name = NewFilter.Name,
+                Query = NewFilter.Query
+            });
+        NewFilter = new Filter();
+        StateHasChanged();
+    }
+
+    private void SaveFilter()
+    {
+        var query = queryContentField.Value;
+        var oldFilter = Filters.FirstOrDefault(f => f.Name == CurrentFilterName);
+        if (oldFilter is not null)
+        {
+            oldFilter.Query = query;
+        }
+        StateHasChanged();
     }
 
     private async Task ExecuteQuery()
     {
         var query = queryContentField.Value;
         var graphQLOptions = new GraphQLHttpClientOptions
-        {
-            EndPoint = NavigationManager.ToAbsoluteUri("/api")
-        };
+            {
+                EndPoint = NavigationManager.ToAbsoluteUri("/api")
+            };
         var graphQLClient = new GraphQLHttpClient(graphQLOptions, new NewtonsoftJsonSerializer());
 
         var request = new GraphQLRequest
-        {
-            Query = query.Replace("\n", " ")
-        };
+            {
+                Query = query.Replace("\n", " ")
+            };
 
         var graphQLResponse = await graphQLClient
             .SendQueryAsync<FilterResponse>(request)

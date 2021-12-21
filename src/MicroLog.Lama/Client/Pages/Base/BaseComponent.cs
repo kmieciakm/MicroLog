@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
-using MircoLog.Lama.Client.Components;
+using MircoLog.Lama.Client.Components.Dialogs;
 using MudBlazor;
 using System;
 

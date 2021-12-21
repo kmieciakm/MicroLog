@@ -10,8 +10,8 @@
 }
 
 function SetText(DivID, Instance, TextToDisplay) {
-    document.getElementById(DivID).innerHTML = TextToDisplay;
-    Instance.invokeMethodAsync("GetUpdatedText", document.getElementById(DivID).value);
+    document.getElementById(DivID).value = TextToDisplay;
+    Instance.invokeMethodAsync("GetUpdatedText", TextToDisplay);
     SetHeight(DivID);
 }
 

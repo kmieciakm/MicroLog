@@ -54,10 +54,7 @@
 
     public void ShowAlertPopup(AlertArgs args)
     {
-        Snackbar.Add(args.Log.Message, Severity.Error, options =>
-        {
-            options.RequireInteraction = true;
-        });
+        Snackbar.Add(args.Log.Message, Severity.Error);
     }
 
     protected override void OnAfterRender(bool firstRender)

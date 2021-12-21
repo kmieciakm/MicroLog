@@ -7,7 +7,7 @@ namespace MircoLog.Lama.Client.Services;
 class Filter
 {
     public string Name { get; set; }
-    public string Query { get; set; }
+    public string Query { get; set; } = string.Empty;
 }
 
 public class FilterResponse

@@ -1,0 +1,32 @@
+﻿<MudDialog @bind-IsVisible="visible" Options="Options" Style="min-width: 200px">
+    <TitleContent>
+        <MudText>@HeaderText</MudText>
+    </TitleContent>
+    <DialogContent>
+        @ChildContent
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="CloseDialog">Cancel</MudButton>
+        <MudButton Color="@Color" Variant="Variant.Filled" OnClick="Submit">@ButtonText</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [Parameter] [EditorRequired] public Action OnSubmit { get; set; }
+    [Parameter] [EditorRequired] public RenderFragment ChildContent { get; set; }
+    [Parameter] [EditorRequired] public string HeaderText { get; set; }
+    [Parameter] [EditorRequired] public string ButtonText { get; set; }
+    [Parameter] public Color Color { get; set; } = Color.Primary;
+    [Parameter] public DialogOptions Options { get; set; } = new DialogOptions();
+
+
+    private bool visible;
+    public void OpenDialog() => visible = true;
+    public void CloseDialog() => visible = false;
+
+    protected void Submit()
+    {
+        OnSubmit?.Invoke();
+        CloseDialog();
+    }
+}

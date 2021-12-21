@@ -45,7 +45,6 @@
     protected override void OnInitialized()
     {
         AttributesList.Add("rows", Rows == 0 ? 1 : Rows);
-        CSSStyle = CSSStyle + "overflow:scroll;";
 
         // Set width
         if (!string.IsNullOrWhiteSpace(Width))

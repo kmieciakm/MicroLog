@@ -18,7 +18,7 @@ public class LogsStorage : ILogsStorage
 
     public void Add(LogEvent log) => _logs.Add(log);
     public void Clear() => _logs.Clear();
-    public string ToJson() => JsonSerializer.Serialize(_logs);
+    public string ToJson() => JsonSerializer.Serialize(_logs, new JsonSerializerOptions { WriteIndented = true });
 
     public IEnumerator<LogEvent> GetEnumerator() => _logs.GetEnumerator();
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
