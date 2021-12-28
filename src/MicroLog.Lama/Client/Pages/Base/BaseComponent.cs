@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MircoLog.Lama.Client.Components.Dialogs;
+using MircoLog.Lama.Client.Services;
 using MudBlazor;
 using System;
 
@@ -36,5 +37,19 @@ public abstract class BaseComponent : ComponentBase
         var options = new DialogOptions() { CloseButton = true, MaxWidth = MaxWidth.Small };
 
         DialogService.Show<ConfirmationDialog>(title, parameters, options);
+    }
+
+    public void ShowLogDetails(LogItem log)
+    {
+        var parameters = new DialogParameters();
+        parameters.Add("Log", log);
+        var options = new DialogOptions()
+        {
+            CloseButton = true,
+            MaxWidth = MaxWidth.Large,
+            Position = DialogPosition.Center
+        };
+
+        DialogService.Show<LogDetailsDialog>("Log Details", parameters, options);
     }
 }

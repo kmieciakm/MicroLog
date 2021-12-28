@@ -1,0 +1,29 @@
+﻿@inherits BasePage
+
+<MudTable Items="@Logs" Virtualize="true" Dense="true" Style="max-height: 100%; overflow: auto;">
+    <ColGroup>
+        <col style="width: 50px; border-right: 1px solid #333" />
+        <col style="width: 20px;" />
+        <col />
+        <col />
+        <col />
+    </ColGroup>
+    <RowTemplate>
+        <MudTd DataLabel="Nr">@Logs.IndexOf(@context)</MudTd>
+        <MudTd DataLabel="Severity" Class="p-2">
+            <div class="d-flex align-content-center justify-content-center">
+                <MudAvatar Color=@context.GetSeverityColor() Style="width: 15px; height: 15px"></MudAvatar>
+            </div>
+        </MudTd>
+        <MudTd DataLabel="Date">@context.Timestamp</MudTd>
+        <MudTd DataLabel="Message">@context.ShortMessage</MudTd>
+        <MudTd DataLabel="Action">
+            <MudIconButton Icon="@Icons.Rounded.Search" Size="Size.Small" Color="Color.Primary" OnClick="() => ShowLogDetails(context)"></MudIconButton>
+        </MudTd>
+    </RowTemplate>
+</MudTable>
+
+@code {
+    [Parameter, EditorRequired]
+    public List<LogItem> Logs { get; set; } = new List<LogItem>();
+}

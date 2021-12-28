@@ -11,14 +11,14 @@
 
 <div class="d-flex flex-column" style="height: 100%">
     <div class="w-100">
-        <MudText Typo="Typo.h2">Filters</MudText>
+        <MudText Typo="Typo.h3">Filters</MudText>
         <Divider />
     </div>
     <div class="flex-grow-1">
-        <MudGrid Style="height: 100%; min-height: 600px">
-            <MudItem sm="12" md="2" Style="height: 100%;">
+        <MudGrid Style="height: 100%; min-height: 600px; max-height: 85vh;">
+            <MudItem xs="12" md="2" Style="height: 100%;">
                 <MudPaper Width="100%" Height="100%" Class="d-flex flex-column">
-                    <MudList Clickable="true" Class="flex-grow-1">
+                    <MudList Clickable="true" Class="flex-grow-1" Style="overflow: auto;">
                         @foreach (var filter in Filters)
                         {
                             <MudListItem Text="@filter.Name" Class="@(CurrentFilterName == filter.Name ? "mud-primary" : "")"
@@ -30,7 +30,7 @@
                                OnClick="e => newFilterDialog.OpenDialog()">Create new</MudButton>
                 </MudPaper>
             </MudItem>
-            <MudItem sm="12" md="4" Style="height: 100%;">
+            <MudItem xs="12" md="4" Style="height: 100%;">
                 <MudPaper Width="100%" Height="100%" Class="d-flex flex-column">
                     <ContentEditable @ref="queryContentField" CSSClass="editable flex-grow-1" ValueChanged="() => StateHasChanged()" />
                     <div class="d-flex">
@@ -41,12 +41,9 @@
                     </div>
                 </MudPaper>
             </MudItem>
-            <MudItem sm="12" md="6" Style="height: 100%;">
+            <MudItem xs="12" md="6" Style="height: 100%;">
                 <MudPaper Width="100%" Height="100%">
-                    @foreach (var log in Logs)
-                    {
-                        <div>@log.Message</div>
-                    }
+                    <LogsTable Logs="@Logs"></LogsTable>
                 </MudPaper>
             </MudItem>
         </MudGrid>
@@ -66,11 +63,18 @@
     private string CurrentFilterName { get; set; }
     private Filter NewFilter { get; set; } = new Filter();
     private List<Filter> Filters { get; set; } = new List<Filter>();
-    private List<LogItem> Logs { get; set; } = new List<LogItem>();
+    private List<LogItem> Logs { get; set; } = new List<LogItem>()
+    {
+        new LogItem() { Level = LogLevel.Critical.ToString(), Message = "SERVER DOWN", Timestamp = DateTime.Now },
+        new LogItem() { Level = LogLevel.Error.ToString(), Message = "Request https://google.pl 505 status", Timestamp = DateTime.Now },
+        new LogItem() { Level = LogLevel.Warning.ToString(), Message = "Request https://google.pl taked longer then 10 s", Timestamp = DateTime.Now },
+        new LogItem() { Level = LogLevel.Information.ToString(), Message = "Order processed correctly. Order response id: 51-132-1342-21", Timestamp = DateTime.Now },
+        new LogItem() { Level = LogLevel.Debug.ToString(), Message = "Entering IOrderProcessingService", Timestamp = DateTime.Now }
+    };
 
     protected override void OnInitialized()
     {
-        Filters.Add(new()
+        Filter defaultFilter = new()
             {
                 Name = "Last 3 errors",
                 Query = @"query {
@@ -105,7 +109,8 @@
         }
     }
 }"
-            });
+            };
+        Filters.Add(defaultFilter);
         base.OnInitialized();
     }
 

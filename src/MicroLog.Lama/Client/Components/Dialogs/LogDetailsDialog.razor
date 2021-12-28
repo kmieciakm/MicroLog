@@ -6,12 +6,12 @@
     <DialogContent>
         <MudContainer Style="max-height: 500px; overflow-y: scroll">
             <MudGrid>
-                <DetailRow PropertyName="Event Id" Value="@Log.Identity.EventId" />
-                <DetailRow PropertyName="Date" Value="@Log.Timestamp.ToString()" />
+                <DetailRow PropertyName="Event Id" Value="@Log.Identity?.EventId" />
+                <DetailRow PropertyName="Date" Value="@Log.Timestamp?.ToString()" />
                 <DetailRow PropertyName="Message" Value="@Log.Message" />
-                <DetailRow PropertyName="Severity" Value="@Log.LevelName" />
-                <DetailRow PropertyName="Error" Value="@FormatException(Log.Exception)" />
-                @foreach (var property in Log.Properties)
+                <DetailRow PropertyName="Severity" Value="@Enum.GetName(Enum.Parse<LogLevel>(Log.Level, true))" />
+                <DetailRow PropertyName="Error" Value="@(Log.Exception is null ? null : FormatException(Log.Exception))" />
+                @foreach (var property in Log.Properties.OrEmptyIfNull())
                 {
                     <DetailRow PropertyName="@property.Name" Value="@FormatProperty(property)" />
                 }
@@ -25,7 +25,7 @@
 
 @code {
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
-    [Parameter] public LogEvent Log { get; set; }
+    [Parameter] public LogItem Log { get; set; }
 
     void Close() => MudDialog.Cancel();
 
