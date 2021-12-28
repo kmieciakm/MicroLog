@@ -78,4 +78,20 @@ public class FiltersController : ControllerBase
             return StatusCode(StatusCodes.Status500InternalServerError, "Save failed unexpectedly.");
         }
     }
+
+    [HttpDelete("{filterName}")]
+    public async Task<IActionResult> Delete(string filterName)
+    {
+        try
+        {
+            var filterDefinition = new FilterDefinitionBuilder<Filter>().Where(f => f.Name == filterName);
+            await _Collection.DeleteOneAsync(filterDefinition);
+            return StatusCode(StatusCodes.Status204NoContent);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("Filter - Delete failed unexpectedly.", ex);
+            return StatusCode(StatusCodes.Status500InternalServerError, "Delete failed unexpectedly.");
+        }
+    }
 }

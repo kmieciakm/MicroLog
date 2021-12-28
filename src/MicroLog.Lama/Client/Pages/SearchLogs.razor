@@ -35,10 +35,20 @@
                 <MudPaper Width="100%" Height="100%" Class="d-flex flex-column">
                     <ContentEditable @ref="queryContentField" CSSClass="editable flex-grow-1" ValueChanged="() => StateHasChanged()" />
                     <div class="d-flex">
-                        <MudButton Class="rounded-0 p-3 w-50" Variant="Variant.Filled" Color="Color.Primary"
+                        <MudGrid Class="m-0">
+                            <MudItem xs="12" md="2" Class="p-0">
+                                <MudButton Class="rounded-0 p-3 w-100" Variant="Variant.Filled" Color="Color.Error"
+                                   OnClick="async (e) => await DeleteFilter()">X</MudButton>
+                            </MudItem>
+                            <MudItem xs="12" md="5" Class="p-0">
+                                <MudButton Class="rounded-0 p-3 w-100" Variant="Variant.Filled" Color="Color.Primary"
                                    OnClick="async (e) => await SaveFilter()">Save</MudButton>
-                        <MudButton Class="rounded-0 p-3 w-50" Variant="Variant.Filled" Color="Color.Success"
+                            </MudItem>
+                            <MudItem xs="12" md="5" Class="p-0">
+                                <MudButton Class="rounded-0 p-3 w-100" Variant="Variant.Filled" Color="Color.Success"
                                    OnClick="e => ExecuteQuery()">Run</MudButton>
+                            </MudItem>
+                        </MudGrid>
                     </div>
                 </MudPaper>
             </MudItem>
@@ -84,7 +94,8 @@
         try
         {
             var filters = await FilterService.GetAsync();
-            Filters.AddRange(filters);
+            Filters = filters.ToList();
+            StateHasChanged();
         }
         catch (ServiceException ex)
         {
@@ -111,7 +122,6 @@
             await FilterService.CreateAsync(filter);
             await RefreshFilters();
             NewFilter = new Filter();
-            StateHasChanged();
         }
         catch (ServiceException ex) when (ex.Cause is ExceptionCause.BAD_REQUEST)
         {
@@ -134,7 +144,20 @@
                 oldFilter.Query = query;
             }
             await FilterService.EditAsync(oldFilter);
-            StateHasChanged();
+        }
+        catch (ServiceException ex)
+        {
+            ShowError(ex.Message);
+        }
+    }
+
+    private async Task DeleteFilter()
+    {
+        try
+        {
+            var filter = Filters.FirstOrDefault(f => f.Name == CurrentFilterName);
+            await FilterService.DeleteAsync(filter);
+            await RefreshFilters();
         }
         catch (ServiceException ex)
         {
@@ -144,24 +167,20 @@
 
     private async Task ExecuteQuery()
     {
-        /* TODO: Move to dedicated service */
-
-        var query = queryContentField.Value;
-        var graphQLOptions = new GraphQLHttpClientOptions
-            {
-                EndPoint = NavigationManager.ToAbsoluteUri("/api")
-            };
-        var graphQLClient = new GraphQLHttpClient(graphQLOptions, new NewtonsoftJsonSerializer());
-
-        var request = new GraphQLRequest
-            {
-                Query = query.Replace("\n", " ")
-            };
-
-        var graphQLResponse = await graphQLClient
-            .SendQueryAsync<FilterResponse>(request)
-            .ConfigureAwait(false);
-
-        Logs = graphQLResponse.Data.Logs.Items;
+        try
+        {
+            var logs = await FilterService.Execute(
+                new Filter()
+                    {
+                        Name = "Execute",
+                        Query = queryContentField.Value
+                    }
+            );
+            Logs = logs.Items.ToList();
+        }
+        catch (ServiceException ex)
+        {
+            ShowError(ex.Message);
+        }
     }
 }

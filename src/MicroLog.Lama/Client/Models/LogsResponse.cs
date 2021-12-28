@@ -2,12 +2,7 @@
 
 namespace MircoLog.Lama.Client.Models;
 
-public class FilterResponse
-{
-    public Logs Logs { get; set; }
-}
-
-public class Logs
+public class LogsResponse
 {
     public long? TotalCount { get; set; }
     public List<LogItem> Items { get; set; }
