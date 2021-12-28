@@ -1,7 +1,4 @@
-﻿using MicroLog.Sink.MongoDb;
-using MicroLog.Sink.MongoDb.Config;
-
-namespace MircoLog.Lama.Server;
+﻿namespace MircoLog.Lama.Server;
 
 public static class ProgramExtensions
 {

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MircoLog.Lama.Client.Components.Dialogs;
-using MircoLog.Lama.Client.Services;
+using MircoLog.Lama.Client.Models;
 using MudBlazor;
 using System;
 

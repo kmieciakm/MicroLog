@@ -4,31 +4,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace MircoLog.Lama.Client.Services;
-
-class Filter
-{
-    public string Name { get; set; }
-    public string Query { get; set; } = string.Empty;
-}
-
-public class FilterResponse
-{
-    public Logs Logs { get; set; }
-}
-
-public class Logs
-{
-    public long? TotalCount { get; set; }
-    public List<LogItem> Items { get; set; }
-}
+namespace MircoLog.Lama.Client.Models;
 
 public class LogItem
 {
     public LogIdentity Identity { get; set; }
     public DateTime? Timestamp { get; set; }
     public string Message { get; set; }
-    public string ShortMessage {
+    public string ShortMessage
+    {
         get
         {
             if (Message.Length >= 97)

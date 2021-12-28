@@ -7,6 +7,7 @@
 
 @inherits BasePage
 
+@inject IFilterService FilterService
 @inject NavigationManager NavigationManager
 
 <div class="d-flex flex-column" style="height: 100%">
@@ -22,7 +23,7 @@
                         @foreach (var filter in Filters)
                         {
                             <MudListItem Text="@filter.Name" Class="@(CurrentFilterName == filter.Name ? "mud-primary" : "")"
-                                            OnClick="e => LoadFilter(filter)" />
+                                     OnClick="e => LoadFilter(filter)" />
                             <MudDivider />
                         }
                     </MudList>
@@ -35,7 +36,7 @@
                     <ContentEditable @ref="queryContentField" CSSClass="editable flex-grow-1" ValueChanged="() => StateHasChanged()" />
                     <div class="d-flex">
                         <MudButton Class="rounded-0 p-3 w-50" Variant="Variant.Filled" Color="Color.Primary"
-                                   OnClick="e => SaveFilter()">Save</MudButton>
+                                   OnClick="async (e) => await SaveFilter()">Save</MudButton>
                         <MudButton Class="rounded-0 p-3 w-50" Variant="Variant.Filled" Color="Color.Success"
                                    OnClick="e => ExecuteQuery()">Run</MudButton>
                     </div>
@@ -50,7 +51,7 @@
     </div>
 
     <FormDialog @ref="newFilterDialog" ButtonText="Create" HeaderText="Create new Filter"
-                OnSubmit="() => CreateFilter()">
+                OnSubmit="async () => await CreateFilter()">
         <MudForm>
             <MudTextField Label="Name" @bind-Value="NewFilter.Name" Variant="Variant.Text"></MudTextField>
         </MudForm>
@@ -72,46 +73,23 @@
         new LogItem() { Level = LogLevel.Debug.ToString(), Message = "Entering IOrderProcessingService", Timestamp = DateTime.Now }
     };
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        Filter defaultFilter = new()
-            {
-                Name = "Last 3 errors",
-                Query = @"query {
-    logs (
-        take: 3
-        order: { level: DESC }
-        where: {
-            level: { in: [CRITICAL, ERROR] }
-        }
-    ) {
-        totalCount,
-        items {
-            identity {
-                eventId
-            },
-            timestamp,
-            message,
-            level,
-            levelName,
-            exception {
-                type,
-                source,
-                message,
-                innerException {
-                    message
-                }
-            },
-            properties {
-                name,
-                value
-            }
-        }
-    }
-}"
-            };
-        Filters.Add(defaultFilter);
+        await RefreshFilters();
         base.OnInitialized();
+    }
+
+    private async Task RefreshFilters()
+    {
+        try
+        {
+            var filters = await FilterService.GetAsync();
+            Filters.AddRange(filters);
+        }
+        catch (ServiceException ex)
+        {
+            ShowError(ex.Message);
+        }
     }
 
     private void LoadFilter(Filter filter)
@@ -121,30 +99,53 @@
         StateHasChanged();
     }
 
-    private void CreateFilter()
+    private async Task CreateFilter()
     {
-        Filters.Add(new Filter()
-            {
-                Name = NewFilter.Name,
-                Query = NewFilter.Query
-            });
-        NewFilter = new Filter();
-        StateHasChanged();
+        try
+        {
+            var filter = new Filter()
+                {
+                    Name = NewFilter.Name,
+                    Query = NewFilter.Query
+                };
+            await FilterService.CreateAsync(filter);
+            await RefreshFilters();
+            NewFilter = new Filter();
+            StateHasChanged();
+        }
+        catch (ServiceException ex) when (ex.Cause is ExceptionCause.BAD_REQUEST)
+        {
+            ShowMessage(ex.Message);
+        }
+        catch (ServiceException ex) when (ex.Cause is ExceptionCause.UNKNOWN)
+        {
+            ShowError(ex.Message);
+        }
     }
 
-    private void SaveFilter()
+    private async Task SaveFilter()
     {
-        var query = queryContentField.Value;
-        var oldFilter = Filters.FirstOrDefault(f => f.Name == CurrentFilterName);
-        if (oldFilter is not null)
+        try
         {
-            oldFilter.Query = query;
+            var query = queryContentField.Value;
+            var oldFilter = Filters.FirstOrDefault(f => f.Name == CurrentFilterName);
+            if (oldFilter is not null)
+            {
+                oldFilter.Query = query;
+            }
+            await FilterService.EditAsync(oldFilter);
+            StateHasChanged();
         }
-        StateHasChanged();
+        catch (ServiceException ex)
+        {
+            ShowError(ex.Message);
+        }
     }
 
     private async Task ExecuteQuery()
     {
+        /* TODO: Move to dedicated service */
+
         var query = queryContentField.Value;
         var graphQLOptions = new GraphQLHttpClientOptions
             {

@@ -92,5 +92,7 @@ void ConfigureEndpoints(WebApplication app)
         endpoints.MapGraphQL("/api");
     });
 
+    app.MapControllers();
+
     app.MapFallbackToFile("index.html");
 }
