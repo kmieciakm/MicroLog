@@ -60,13 +60,6 @@ public class MongoLogRepository : ILogSink, ILogRegistry
         return entity.ToEnumerable();
     }
 
-    async Task<IEnumerable<ILogEvent>> ILogRegistry.GetAsync(Expression<Func<ILogEvent, bool>> predicate)
-    {
-        Func<MongoLogEntity, bool> func = predicate.Compile();
-        using var entities = await _Collection.FindAsync(entity => func.Invoke(entity));
-        return entities.ToEnumerable();
-    }
-
     async Task ILogSink.InsertAsync(ILogEvent logEvent)
     {
         var entity = MongoLogMapper.Map(logEvent);
@@ -77,18 +70,5 @@ public class MongoLogRepository : ILogSink, ILogRegistry
     {
         var entities = logEvents.Select(entity => MongoLogMapper.Map(entity));
         await _Collection.InsertManyAsync(entities);
-    }
-
-    /// <summary>
-    /// Insert retry policy.
-    /// </summary>
-    private IAsyncPolicy GetInsertPolicy()
-    {
-        var maxNumberOfRetry = 10;
-        var pauseBetweenFailures = TimeSpan.FromSeconds(1);
-        var retryPolicy = Policy
-             .Handle<Exception>()
-             .WaitAndRetryAsync(maxNumberOfRetry, _ => pauseBetweenFailures);
-        return retryPolicy;
     }
 }
