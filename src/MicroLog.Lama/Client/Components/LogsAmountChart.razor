@@ -1,0 +1,30 @@
+﻿<MudChart ChartType="ChartType.Donut" Width="@Width" Height="@Height" ChartOptions="@ChartOptions"
+			InputData="@Data" InputLabels="Enum.GetNames<LogLevel>()">
+	<CustomGraphics>
+		<text class="donut-inner-text" x="47%" y="35%" dominant-baseline="middle" text-anchor="middle"
+				fill="white" font-family="Helvetica" font-size="2">Total</text>
+		<text class="donut-inner-text" x="47%" y="50%" dominant-baseline="middle" text-anchor="middle"
+				fill="white" font-family="Helvetica" font-size="5">@(Stats is null ? 0 : Stats.TotalCount.ToString())</text>
+	</CustomGraphics>
+</MudChart>
+
+@code {
+	[Parameter] public string Width { get; set; } = "300px";
+	[Parameter] public string Height { get; set; } = "300px";
+	[Parameter, EditorRequired] public LogsStatistics Stats { get; set; }
+
+	protected ChartOptions ChartOptions { get; set; } = new ChartOptions()
+	{
+		ChartPalette = new string[] { "#0f0f0f", "#424242", "#0f9aa7", "#d4964e", "#de2d6d", "#911d47", "#ffffff" }
+	};
+	private double[] Data {
+		get
+		{
+			if (Stats is null)
+				return new double[7];
+			return Stats.LogsCount
+				.Select(logCount => Convert.ToDouble(logCount.Count))
+				.ToArray();
+		}
+	}
+}

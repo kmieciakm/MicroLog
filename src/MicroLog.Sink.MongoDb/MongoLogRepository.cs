@@ -1,9 +1,6 @@
-﻿using MicroLog.Core.Abstractions;
-using MicroLog.Core.Statistics;
+﻿using MicroLog.Core.Statistics;
 using MicroLog.Sink.MongoDb.Config;
-using MicroLog.Sink.MongoDb.Utils;
 using Microsoft.Extensions.Options;
-using Polly;
 
 namespace MicroLog.Sink.MongoDb;
 
@@ -95,7 +92,12 @@ public class MongoLogRepository : ILogSink, ILogRegistry, ILogStatsProvider
             totalCount += count;
             logsCount.Add(new LogsCount(logLevel, count));
         }
-        return new LogsStatistics(logsCount, totalCount);
+
+        return new LogsStatistics()
+        {
+            LogsCount = logsCount,
+            TotalCount = totalCount
+        };
     }
 
     public LogsStatistics GetTotalStatistics()
@@ -110,6 +112,11 @@ public class MongoLogRepository : ILogSink, ILogRegistry, ILogStatsProvider
             totalCount += count;
             logsCount.Add(new LogsCount(logLevel, count));
         }
-        return new LogsStatistics(logsCount, totalCount);
+
+        return new LogsStatistics()
+        {
+            LogsCount = logsCount,
+            TotalCount = totalCount
+        };
     }
 }
