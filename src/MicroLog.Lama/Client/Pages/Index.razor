@@ -1,30 +1,40 @@
 ﻿@page "/"
 @inherits BasePage
 
+@inject IFilterService FilterService
 @inject IStatisticsService StatsService
+@inject HttpClient Http
 
 <PageTitle>MircoLog LAMA</PageTitle>
 
-<MudGrid>
-	<MudItem sm="12" md="6" Style="height: 300px;">
-		<MudPaper Class="pa-16 ma-2" Elevation="3"></MudPaper>
-	</MudItem>
-    <MudItem sm="12" md="3">
-		<LogsAmountChart Stats="@DailyStats"></LogsAmountChart>
-	</MudItem>
-	<MudItem sm="12" md="3" Style="height: 300px;">
-		<MudPaper Class="pa-16 ma-2" Elevation="3"></MudPaper>
-	</MudItem>
-	<MudItem sm="12">
-		<MudPaper Class="pa-16 ma-2" Elevation="3"></MudPaper>
-	</MudItem>
-</MudGrid>
+<div class="d-flex flex-column" style="height: 100%">
+    <div class="w-100" Style="height: 350px;">
+        <MudGrid>
+			<MudItem sm="12" md="6" Style="height: 250px;">
+				<MudPaper Class="pa-16 ma-2" Elevation="3"></MudPaper>
+			</MudItem>
+			<MudItem sm="12" md="3" Style="height: 250px;">
+				<LogsAmountChart Stats="@DailyStats"></LogsAmountChart>
+			</MudItem>
+			<MudItem sm="12" md="3" Style="height: 250px;">
+				<MudPaper Class="pa-16 ma-2" Elevation="3"></MudPaper>
+			</MudItem>
+		</MudGrid>
+    </div>
+    <div class="flex-grow-1 w-100 mb-2">
+		<MudPaper Width="100%" Height="100%">
+            <LogsTable Logs="@Logs"></LogsTable>
+        </MudPaper>
+	</div>
+</div>
 
 @code {
-	public LogsStatistics DailyStats { get; set; }
+    public LogsStatistics DailyStats { get; set; }
+    private List<LogItem> Logs { get; set; } = new List<LogItem>();
 
-	protected override async Task OnInitializedAsync()
-	{
-		DailyStats = await StatsService.GetDailyStatisticsAsync();
-	}
+    protected override async Task OnInitializedAsync()
+    {
+        DailyStats = await StatsService.GetDailyStatisticsAsync();
+        Logs = (await StatsService.GetLastErrorsAsync()).ToList();
+    }
 }

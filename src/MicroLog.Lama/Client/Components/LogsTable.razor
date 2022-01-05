@@ -1,6 +1,6 @@
 ﻿@inherits BasePage
 
-<MudTable Items="@Logs" Virtualize="true" Dense="true" Style="max-height: 100%; overflow: auto;">
+<MudTable Items="@(Logs ?? new List<LogItem>())" Virtualize="true" Dense="true" Style="max-height: 100%; overflow: auto;">
     <ColGroup>
         <col style="width: 50px; border-right: 1px solid #333" />
         <col style="width: 20px;" />

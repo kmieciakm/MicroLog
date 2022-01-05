@@ -1,4 +1,4 @@
-﻿<MudChart ChartType="ChartType.Donut" Width="@Width" Height="@Height" ChartOptions="@ChartOptions"
+﻿<MudChart ChartType="ChartType.Donut" Width="@Width" Height="@Height" ChartOptions="@ChartOptions" LegendPosition="Position.Bottom"
 			InputData="@Data" InputLabels="Enum.GetNames<LogLevel>()">
 	<CustomGraphics>
 		<text class="donut-inner-text" x="47%" y="35%" dominant-baseline="middle" text-anchor="middle"
@@ -9,8 +9,8 @@
 </MudChart>
 
 @code {
-	[Parameter] public string Width { get; set; } = "300px";
-	[Parameter] public string Height { get; set; } = "300px";
+	[Parameter] public string Width { get; set; } = "250px";
+	[Parameter] public string Height { get; set; } = "250px";
 	[Parameter, EditorRequired] public LogsStatistics Stats { get; set; }
 
 	protected ChartOptions ChartOptions { get; set; } = new ChartOptions()

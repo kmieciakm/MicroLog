@@ -1,0 +1,31 @@
+﻿query {
+    logs (
+        order: { timestamp: DESC, level: DESC }
+        where: {
+            level: { in: [CRITICAL, ERROR, WARNING] }
+            timestamp: { gte: @STARTDATE }
+        }
+    ) {
+        items {
+            identity {
+                eventId
+            },
+            timestamp,
+            message,
+            level,
+            levelName,
+            exception {
+                type,
+                source,
+                message,
+                innerException {
+                    message
+                }
+            },
+            properties {
+                name,
+                value
+            }
+        }
+    }
+}
