@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Http;
+using MircoLog.Lama.Server.ActionFilters;
 using MircoLog.Lama.Shared.Models;
 
 namespace MircoLog.Lama.Server.Controllers;
@@ -7,7 +8,7 @@ namespace MircoLog.Lama.Server.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class FiltersController : ControllerBase
+public class FiltersController : FilterControllerBase
 {
     private const string COLLECTION_NAME = "filters";
     private readonly ILogger<FiltersController> _logger;
@@ -34,6 +35,7 @@ public class FiltersController : ControllerBase
             .ToList();
     }
 
+    [FilterExists]
     [HttpPatch("edit")]
     public async Task<IActionResult> Edit([FromBody] Filter filter)
     {
@@ -43,11 +45,11 @@ public class FiltersController : ControllerBase
             var updateDefinition = new UpdateDefinitionBuilder<Filter>().Set("Query", filter.Query);
             var result = await _Collection.UpdateOneAsync(filterDefinition, updateDefinition);
 
-            if (result.ModifiedCount >= 1)
+            if (result.MatchedCount >= 1)
             {
                 return Ok();
             }
-            return BadRequest($"Filter of name {filter.Name} does not exists.");
+            return StatusCode(StatusCodes.Status500InternalServerError, "Unexpected error - No such filter found.");
         }
         catch
         {

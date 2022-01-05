@@ -142,8 +142,13 @@
             if (oldFilter is not null)
             {
                 oldFilter.Query = query;
+                await FilterService.EditAsync(oldFilter);
+                ShowSuccess("Filter saved.");
             }
-            await FilterService.EditAsync(oldFilter);
+            else
+            {
+                ShowMessage("No filter is selected.");
+            }
         }
         catch (ServiceException ex)
         {
@@ -156,8 +161,16 @@
         try
         {
             var filter = Filters.FirstOrDefault(f => f.Name == CurrentFilterName);
-            await FilterService.DeleteAsync(filter);
-            await RefreshFilters();
+            if (filter is not null)
+            {
+                await FilterService.DeleteAsync(filter);
+                await RefreshFilters();
+                ShowSuccess("Filter deleted.");
+            }
+            else
+            {
+                ShowMessage("No filter is selected.");
+            }
         }
         catch (ServiceException ex)
         {
