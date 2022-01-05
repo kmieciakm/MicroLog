@@ -31,6 +31,7 @@ void ConfigureServices(IServiceCollection services)
     });
 
     services.AddLogRegistry(builder.Configuration);
+    services.AddLogStatsProvider(builder.Configuration);
 
     services.AddSingleton(sp =>
     {

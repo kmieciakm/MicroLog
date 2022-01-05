@@ -1,4 +1,7 @@
-﻿using MicroLog.Sink.MongoDb.Config;
+﻿using MicroLog.Core.Abstractions;
+using MicroLog.Core.Statistics;
+using MicroLog.Sink.MongoDb.Config;
+using MicroLog.Sink.MongoDb.Utils;
 using Microsoft.Extensions.Options;
 using Polly;
 
@@ -7,7 +10,7 @@ namespace MicroLog.Sink.MongoDb;
 /// <summary>
 /// A MongoDb data access point of logs.
 /// </summary>
-public class MongoLogRepository : ILogSink, ILogRegistry
+public class MongoLogRepository : ILogSink, ILogRegistry, ILogStatsProvider
 {
     private const string COLLECTION_NAME = "logs";
     private const int MAX_CONNECTION_POOL_SIZE = 1000;
@@ -70,5 +73,43 @@ public class MongoLogRepository : ILogSink, ILogRegistry
     {
         var entities = logEvents.Select(entity => MongoLogMapper.Map(entity));
         await _Collection.InsertManyAsync(entities);
+    }
+
+    public LogsStatistics GetDailyStatistics()
+    {
+        long totalCount = 0;
+        var logsCount = new List<LogsCount>();
+
+        DateTime currentDayStart = DateTime.Now.Date;
+        DateTime currentDayEnds = DateTime.Now.Date.AddDays(1);
+
+        foreach (var logLevel in Enum.GetValues<LogLevel>())
+        {
+            var count = _Collection
+                .AsQueryable()
+                .Count(entity =>
+                    entity.Level == logLevel &&
+                    entity.Timestamp >= currentDayStart &&
+                    entity.Timestamp < currentDayEnds);
+
+            totalCount += count;
+            logsCount.Add(new LogsCount(logLevel, count));
+        }
+        return new LogsStatistics(logsCount, totalCount);
+    }
+
+    public LogsStatistics GetTotalStatistics()
+    {
+        long totalCount = 0;
+        var logsCount = new List<LogsCount>();
+        foreach (var logLevel in Enum.GetValues<LogLevel>())
+        {
+            var count = _Collection
+                .AsQueryable()
+                .Count(entity => entity.Level == logLevel);
+            totalCount += count;
+            logsCount.Add(new LogsCount(logLevel, count));
+        }
+        return new LogsStatistics(logsCount, totalCount);
     }
 }
