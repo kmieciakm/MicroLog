@@ -1,0 +1,199 @@
+﻿@page "/search"
+
+@using GraphQL
+@using GraphQL.Client.Http
+@using GraphQL.Client.Serializer.Newtonsoft
+@using System.Text.Json
+
+@inherits BasePage
+
+@inject IFilterService FilterService
+@inject NavigationManager NavigationManager
+
+<div class="d-flex flex-column" style="height: 100%">
+    <div class="w-100">
+        <MudText Typo="Typo.h3">Filters</MudText>
+        <Divider />
+    </div>
+    <div class="flex-grow-1">
+        <MudGrid Style="height: 100%; min-height: 600px; max-height: 85vh;">
+            <MudItem xs="12" md="2" Style="height: 100%;">
+                <MudPaper Width="100%" Height="100%" Class="d-flex flex-column">
+                    <MudList Clickable="true" Class="flex-grow-1" Style="overflow: auto;">
+                        @foreach (var filter in Filters)
+                        {
+                            <MudListItem Text="@filter.Name" Class="@(CurrentFilterName == filter.Name ? "mud-primary" : "")"
+                                     OnClick="e => LoadFilter(filter)" />
+                            <MudDivider />
+                        }
+                    </MudList>
+                    <MudButton Class="rounded-0 rounded-sm-b p-3" Variant="Variant.Filled" Color="Color.Primary" FullWidth="true"
+                               OnClick="e => newFilterDialog.OpenDialog()">Create new</MudButton>
+                </MudPaper>
+            </MudItem>
+            <MudItem xs="12" md="4" Style="height: 100%;">
+                <MudPaper Width="100%" Height="100%" Class="d-flex flex-column">
+                    <ContentEditable @ref="queryContentField" CSSClass="editable flex-grow-1" ValueChanged="() => StateHasChanged()" />
+                    <div class="d-flex">
+                        <MudGrid Class="m-0">
+                            <MudItem xs="12" md="2" Class="p-0">
+                                <MudButton Class="rounded-0 p-3 w-100" Variant="Variant.Filled" Color="Color.Error"
+                                   OnClick="async (e) => await DeleteFilter()">X</MudButton>
+                            </MudItem>
+                            <MudItem xs="12" md="5" Class="p-0">
+                                <MudButton Class="rounded-0 p-3 w-100" Variant="Variant.Filled" Color="Color.Primary"
+                                   OnClick="async (e) => await SaveFilter()">Save</MudButton>
+                            </MudItem>
+                            <MudItem xs="12" md="5" Class="p-0">
+                                <MudButton Class="rounded-0 p-3 w-100" Variant="Variant.Filled" Color="Color.Success"
+                                   OnClick="e => ExecuteQuery()">Run</MudButton>
+                            </MudItem>
+                        </MudGrid>
+                    </div>
+                </MudPaper>
+            </MudItem>
+            <MudItem xs="12" md="6" Style="height: 100%;">
+                <MudPaper Width="100%" Height="100%">
+                    <LogsTable Logs="@Logs"></LogsTable>
+                </MudPaper>
+            </MudItem>
+        </MudGrid>
+    </div>
+
+    <FormDialog @ref="newFilterDialog" ButtonText="Create" HeaderText="Create new Filter"
+                OnSubmit="async () => await CreateFilter()">
+        <MudForm>
+            <MudTextField Label="Name" @bind-Value="NewFilter.Name" Variant="Variant.Text"></MudTextField>
+        </MudForm>
+    </FormDialog>
+</div>
+
+@code {
+    private ContentEditable queryContentField;
+    private FormDialog newFilterDialog;
+    private string CurrentFilterName { get; set; }
+    private Filter NewFilter { get; set; } = new Filter();
+    private List<Filter> Filters { get; set; } = new List<Filter>();
+    private List<LogItem> Logs { get; set; } = new List<LogItem>()
+    {
+        new LogItem() { Level = LogLevel.Critical.ToString(), Message = "SERVER DOWN", Timestamp = DateTime.Now },
+        new LogItem() { Level = LogLevel.Error.ToString(), Message = "Request https://google.pl 505 status", Timestamp = DateTime.Now },
+        new LogItem() { Level = LogLevel.Warning.ToString(), Message = "Request https://google.pl taked longer then 10 s", Timestamp = DateTime.Now },
+        new LogItem() { Level = LogLevel.Information.ToString(), Message = "Order processed correctly. Order response id: 51-132-1342-21", Timestamp = DateTime.Now },
+        new LogItem() { Level = LogLevel.Debug.ToString(), Message = "Entering IOrderProcessingService", Timestamp = DateTime.Now }
+    };
+
+    protected override async Task OnInitializedAsync()
+    {
+        await RefreshFilters();
+        base.OnInitialized();
+    }
+
+    private async Task RefreshFilters()
+    {
+        try
+        {
+            var filters = await FilterService.GetAsync();
+            Filters = filters.ToList();
+            StateHasChanged();
+        }
+        catch (ServiceException ex)
+        {
+            ShowError(ex.Message);
+        }
+    }
+
+    private void LoadFilter(Filter filter)
+    {
+        CurrentFilterName = filter.Name;
+        queryContentField.SetValue(filter.Query);
+        StateHasChanged();
+    }
+
+    private async Task CreateFilter()
+    {
+        try
+        {
+            var filter = new Filter()
+                {
+                    Name = NewFilter.Name,
+                    Query = NewFilter.Query
+                };
+            await FilterService.CreateAsync(filter);
+            await RefreshFilters();
+            NewFilter = new Filter();
+        }
+        catch (ServiceException ex) when (ex.Cause is ExceptionCause.BAD_REQUEST)
+        {
+            ShowMessage(ex.Message);
+        }
+        catch (ServiceException ex) when (ex.Cause is ExceptionCause.UNKNOWN)
+        {
+            ShowError(ex.Message);
+        }
+    }
+
+    private async Task SaveFilter()
+    {
+        try
+        {
+            var query = queryContentField.Value;
+            var oldFilter = Filters.FirstOrDefault(f => f.Name == CurrentFilterName);
+            if (oldFilter is not null)
+            {
+                oldFilter.Query = query;
+                await FilterService.EditAsync(oldFilter);
+                ShowSuccess("Filter saved.");
+            }
+            else
+            {
+                ShowMessage("No filter is selected.");
+            }
+        }
+        catch (ServiceException ex)
+        {
+            ShowError(ex.Message);
+        }
+    }
+
+    private async Task DeleteFilter()
+    {
+        try
+        {
+            var filter = Filters.FirstOrDefault(f => f.Name == CurrentFilterName);
+            if (filter is not null)
+            {
+                await FilterService.DeleteAsync(filter);
+                await RefreshFilters();
+                ShowSuccess("Filter deleted.");
+            }
+            else
+            {
+                ShowMessage("No filter is selected.");
+            }
+        }
+        catch (ServiceException ex)
+        {
+            ShowError(ex.Message);
+        }
+    }
+
+    private async Task ExecuteQuery()
+    {
+        try
+        {
+            var logs = await FilterService.Execute(
+                new Filter()
+                    {
+                        Name = "Execute",
+                        Query = queryContentField.Value
+                    }
+            );
+            Logs = logs.Items.ToList();
+        }
+        catch (ServiceException ex)
+        {
+            ShowError(ex.Message);
+        }
+    }
+}

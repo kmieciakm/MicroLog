@@ -54,6 +54,8 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=https://+:443;http://+:80
+      - "Registry__DatabaseName=microlog"
+      - "Registry__ConnectionString=mongodb://microlog.mongoDb:27017"
     ports:
       - "3000:443"
     volumes:

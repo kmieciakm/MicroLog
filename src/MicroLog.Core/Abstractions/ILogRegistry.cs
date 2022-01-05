@@ -6,6 +6,13 @@
 public interface ILogRegistry
 {
     /// <summary>
+    /// Returnes the logs from a range.
+    /// </summary>
+    /// <param name="skip">The number of logs to ommit.</param>
+    /// <param name="take">The number of logs to take.</param>
+    /// <returns>A task whose result is desired log collection.</returns>
+    Task<PaginationResult<ILogEvent>> GetAsync(int skip, int take);
+    /// <summary>
     /// Returns the log matching the identity.
     /// </summary>
     /// <param name="identity">Log event identification.</param>

@@ -2,15 +2,13 @@
     position: relative;
     display: flex;
     flex-direction: column;
-}
-
-.mud-container-maxwidth-lg {
-    max-width: 1280px;
+    height: 100vh;
 }
 
 .centered {
     display: flex;
     justify-content: center;
+    height: 100%;
 }
 
 img {

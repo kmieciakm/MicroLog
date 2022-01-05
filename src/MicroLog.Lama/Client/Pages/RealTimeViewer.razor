@@ -10,6 +10,9 @@
 @inject ILogsStorage LogsStorage
 @inject IBlazorDownloadFileService BlazorDownloadFileService
 
+<MudText Typo="Typo.h3">Real time monitor</MudText>
+<Divider />
+
 <MudGrid>
     <MudItem xs="12" sm="6">
         <MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="Connect" Disabled="IsConnected">Connect</MudButton>
@@ -30,7 +33,7 @@
 
 <Divider />
 
-<MudTable Items="@LogsStorage" FixedHeader="true" Dense="true" Virtualize="true" Height="400px">
+<MudTable Items="@LogsStorage" FixedHeader="true" Dense="true" Virtualize="true" Height="600px">
     <HeaderContent>
         <MudTh>Time</MudTh>
         <MudTh>Severity</MudTh>
@@ -56,7 +59,7 @@
             <MudTd DataLabel="Exception">-</MudTd>
         }
         <MudTd DataLabel="Action">
-            <MudIconButton Icon="@Icons.Rounded.Search" Color="Color.Primary" OnClick="() => ShowLogDetails(context)"></MudIconButton>
+            <MudIconButton Icon="@Icons.Rounded.Search" Color="Color.Primary" OnClick="() => ShowLogDetails(LogItem.Parse(context))"></MudIconButton>
         </MudTd>
     </RowTemplate>
 </MudTable>

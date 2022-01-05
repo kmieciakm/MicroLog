@@ -31,6 +31,22 @@ public class MongoLogRepository : ILogSink, ILogRegistry
         _Collection = _Database.GetCollection<MongoLogEntity>(COLLECTION_NAME);
     }
 
+    async Task<PaginationResult<ILogEvent>> ILogRegistry.GetAsync(int skip, int take)
+    {
+        var cursor = _Collection.Find(_ => true);
+        var totalEntities = await cursor.CountDocumentsAsync();
+        var entities = cursor
+            .Skip(skip)
+            .Limit(take)
+            .ToEnumerable();
+
+        return new PaginationResult<ILogEvent>()
+        {
+            Items = entities,
+            TotalCount = (int)totalEntities
+        };
+    }
+
     async Task<ILogEvent> ILogRegistry.GetAsync(ILogEventIdentity identity)
     {
         var id = new MongoLogIdentity(identity.EventId);

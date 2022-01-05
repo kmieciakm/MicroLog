@@ -1,0 +1,100 @@
+﻿@inject IJSRuntime JSRuntime
+
+<textarea id="@DivID" @attributes="AttributesList"></textarea>
+
+@code {
+    private string _value;
+
+    [Parameter]
+    public string Value {
+        get
+        {
+            return _value;
+        }
+        set
+        {
+            _value = value;
+        }
+    }
+
+    [Parameter]
+    public bool Enabled { get; set; } = true;
+
+    [Parameter]
+    public string CSSClass { get; set; }
+
+    [Parameter]
+    public string CSSStyle { get; set; }
+
+    [Parameter]
+    public int Rows { get; set; }
+
+    [Parameter]
+    public int Columns { get; set; }
+
+    [Parameter]
+    public string Width { get; set; }
+
+    [Parameter]
+    public EventCallback<string> ValueChanged { get; set; }
+
+    private Random RandomNumberGenerator { get; set; } = new Random();
+    private int DivID { get; set; } = new Random().Next();
+    private Dictionary<string, object> AttributesList = new Dictionary<string, object>();
+
+    protected override void OnInitialized()
+    {
+        AttributesList.Add("rows", Rows == 0 ? 1 : Rows);
+
+        // Set width
+        if (!string.IsNullOrWhiteSpace(Width))
+        {
+            CSSStyle = CSSStyle + Width;
+        }
+        else if (Columns != 0)
+        {
+            AttributesList.Add("columns", Columns);
+        }
+        else
+        {
+            CSSStyle = CSSStyle + "width:100%;";
+        }
+
+        if (!Enabled)
+        {
+            AttributesList.Add("disabled", "disabled");
+        }
+
+        // Add CSSClass if supplied
+        if (!string.IsNullOrWhiteSpace(CSSClass))
+        {
+            AttributesList.Add("class", CSSClass);
+        }
+
+        // Add CSSStyle
+        AttributesList.Add("style", CSSStyle);
+    }
+
+    public void SetValue(string value)
+    {
+        Value = value;
+        JSRuntime.InvokeAsync<string>("SetText", DivID, DotNetObjectReference.Create(this), Value);
+    }
+
+    // Send initial text (if supplied) to javascript to place in the div
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JSRuntime.InvokeAsync<string>("ContentEditable", DivID, DotNetObjectReference.Create(this), Value);
+        }
+    }
+
+    // Receive input text from javascript and invoke callback to parent component
+    [JSInvokable]
+    public void GetUpdatedText(string updatedText)
+    {
+        Value = updatedText;
+        ValueChanged.InvokeAsync(updatedText);
+    }
+}
