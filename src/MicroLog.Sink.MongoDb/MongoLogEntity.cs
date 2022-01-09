@@ -45,7 +45,7 @@ internal class MongoLogEntity : ILogEvent
     public MongoLogEntity()
     {
         Identity = new MongoLogIdentity();
-        Timestamp = DateTime.Now;
+        Timestamp = DateTime.UtcNow;
     }
 
     public override bool Equals(object obj)

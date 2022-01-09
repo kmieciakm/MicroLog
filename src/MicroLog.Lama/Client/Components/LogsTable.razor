@@ -9,7 +9,7 @@
         <col />
     </ColGroup>
     <RowTemplate>
-        <MudTd DataLabel="Nr">@Logs.IndexOf(@context)</MudTd>
+        <MudTd DataLabel="Nr">@(Logs.IndexOf(@context) + 1)</MudTd>
         <MudTd DataLabel="Severity" Class="p-2">
             <div class="d-flex align-content-center justify-content-center">
                 <MudAvatar Color=@context.GetSeverityColor() Style="width: 15px; height: 15px"></MudAvatar>

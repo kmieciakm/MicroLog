@@ -11,7 +11,7 @@ namespace MircoLog.Lama.Client.Services;
 
 interface IStatisticsService
 {
-    Task<LogsStatistics> GetDailyStatisticsAsync();
+    Task<DailyStatistics> GetDailyStatisticsAsync();
     Task<LogsStatistics> GetTotalStatisticsAsync();
     Task<IEnumerable<LogItem>> GetLastErrorsAsync();
 }
@@ -27,9 +27,9 @@ class StatisticsService : IStatisticsService
         _FilterService = filterService;
     }
 
-    public async Task<LogsStatistics> GetDailyStatisticsAsync()
+    public async Task<DailyStatistics> GetDailyStatisticsAsync()
     {
-        return await _HttpClient.GetFromJsonAsync<LogsStatistics>("api/statistics/daily");
+        return await _HttpClient.GetFromJsonAsync<DailyStatistics>("api/statistics/daily");
     }
 
     public async Task<LogsStatistics> GetTotalStatisticsAsync()
@@ -40,7 +40,7 @@ class StatisticsService : IStatisticsService
     public async Task<IEnumerable<LogItem>> GetLastErrorsAsync()
     {
         var basicQuery = await _HttpClient.GetStringAsync("queries/errorsQuery.txt");
-        var today = $"\"{DateTime.Now.Year}-{DateTime.Now.Month}-{DateTime.Now.Day}\"";
+        var today = $"\"{DateTime.UtcNow.Year}-{DateTime.UtcNow.Month}-{DateTime.UtcNow.Day}\"";
         var query = basicQuery.Replace("@STARTDATE", today);
         var logs = await _FilterService.Execute(
             new Filter()

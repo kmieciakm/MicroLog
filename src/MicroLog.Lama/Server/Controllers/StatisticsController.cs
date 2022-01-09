@@ -14,7 +14,7 @@ public class StatisticsController : ControllerBase
     }
 
     [HttpGet("daily")]
-    public ActionResult<LogsStatistics> GetDailyStatistics()
+    public ActionResult<DailyStatistics> GetDailyStatistics()
     {
         return _StatsProvider.GetDailyStatistics();
     }

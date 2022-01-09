@@ -1,5 +1,10 @@
 ﻿namespace MicroLog.Core.Statistics;
 
+public class DailyStatistics : LogsStatistics
+{
+    public Dictionary<DateTime, int> LogsInterval { get; set; }
+}
+
 public class LogsStatistics
 {
     public IEnumerable<LogsCount> LogsCount { get; set; }

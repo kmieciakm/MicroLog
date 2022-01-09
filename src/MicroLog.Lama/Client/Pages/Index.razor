@@ -8,28 +8,35 @@
 <PageTitle>MircoLog LAMA</PageTitle>
 
 <div class="d-flex flex-column" style="height: 100%">
-    <div class="w-100" Style="height: 350px;">
+    <div class="w-100" Style="display: contents;">
         <MudGrid>
-			<MudItem sm="12" md="6" Style="height: 250px;">
-				<MudPaper Class="pa-16 ma-2" Elevation="3"></MudPaper>
+			<MudItem sm="12" md="6" Style="display: inline-table;">
+				<LogsFlowChart Stats="@DailyStats"></LogsFlowChart>
 			</MudItem>
-			<MudItem sm="12" md="3" Style="height: 250px;">
+			<MudItem sm="12" md="3" Style="display: inline-table;">
 				<LogsAmountChart Stats="@DailyStats"></LogsAmountChart>
 			</MudItem>
-			<MudItem sm="12" md="3" Style="height: 250px;">
+			<MudItem sm="12" md="3" Style="display: inline-table;">
 				<MudPaper Class="pa-16 ma-2" Elevation="3"></MudPaper>
 			</MudItem>
 		</MudGrid>
     </div>
-    <div class="flex-grow-1 w-100 mb-2">
+    <div class="flex-grow-1 w-100 mt-2 mb-2" style="height: 50vh;">
 		<MudPaper Width="100%" Height="100%">
-            <LogsTable Logs="@Logs"></LogsTable>
+            @if (Logs.Count > 0)
+            {
+                <LogsTable Logs="@Logs"></LogsTable>
+            }
+            else
+            {
+                <MudText Class="" Typo="Typo.subtitle1">No error occurred today.</MudText>
+            }
         </MudPaper>
 	</div>
 </div>
 
 @code {
-    public LogsStatistics DailyStats { get; set; }
+    public DailyStatistics DailyStats { get; set; }
     private List<LogItem> Logs { get; set; } = new List<LogItem>();
 
     protected override async Task OnInitializedAsync()

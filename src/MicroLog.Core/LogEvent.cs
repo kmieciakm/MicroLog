@@ -37,7 +37,7 @@ public class LogEvent : ILogEvent
     public LogEvent()
     {
         Identity = new LogIdentity();
-        Timestamp = DateTime.Now;
+        Timestamp = DateTime.UtcNow;
     }
 
     /// <summary>

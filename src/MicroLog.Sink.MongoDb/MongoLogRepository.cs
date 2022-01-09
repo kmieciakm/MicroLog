@@ -72,13 +72,26 @@ public class MongoLogRepository : ILogSink, ILogRegistry, ILogStatsProvider
         await _Collection.InsertManyAsync(entities);
     }
 
-    public LogsStatistics GetDailyStatistics()
+    public DailyStatistics GetDailyStatistics()
     {
-        long totalCount = 0;
+        (var totalCount, var logsCount) = GetDailyLogCount();
+        var intervals = GetLastMinuteLogsInterval();
+
+        return new DailyStatistics()
+        {
+            LogsCount = logsCount,
+            TotalCount = totalCount,
+            LogsInterval = intervals
+        };
+    }
+
+    private (long totalCount, List<LogsCount> logsCount) GetDailyLogCount()
+    {
+        var totalCount = 0;
         var logsCount = new List<LogsCount>();
 
-        DateTime currentDayStart = DateTime.Now.Date;
-        DateTime currentDayEnds = DateTime.Now.Date.AddDays(1);
+        var currentDayStart = DateTime.UtcNow.Date;
+        var currentDayEnds = DateTime.UtcNow.Date.AddDays(1);
 
         foreach (var logLevel in Enum.GetValues<LogLevel>())
         {
@@ -93,11 +106,33 @@ public class MongoLogRepository : ILogSink, ILogRegistry, ILogStatsProvider
             logsCount.Add(new LogsCount(logLevel, count));
         }
 
-        return new LogsStatistics()
+        return (totalCount, logsCount);
+    }
+
+    private Dictionary<DateTime, int> GetLastMinuteLogsInterval()
+    {
+        var lastMinuteEnd = DateTime.UtcNow;
+        var lastMinuteStart = lastMinuteEnd.AddMinutes(-1);
+
+        var lastMinuteLogs = _Collection
+                .AsQueryable()
+                .Where(entity =>
+                    entity.Timestamp >= lastMinuteStart &&
+                    entity.Timestamp < lastMinuteEnd)
+                .ToList();
+
+        int secondsInInterval = 10;
+        Dictionary<DateTime, int> intervals = new();
+
+        for (var intervalStart = lastMinuteStart; intervalStart < lastMinuteEnd; intervalStart = intervalStart.AddSeconds(secondsInInterval))
         {
-            LogsCount = logsCount,
-            TotalCount = totalCount
-        };
+            var logsInInterval = lastMinuteLogs.Count(entity =>
+                    entity.Timestamp >= intervalStart &&
+                    entity.Timestamp < intervalStart.AddSeconds(secondsInInterval));
+            intervals.Add(intervalStart, logsInInterval);
+        }
+
+        return intervals;
     }
 
     public LogsStatistics GetTotalStatistics()

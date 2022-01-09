@@ -10,59 +10,66 @@
 @inject ILogsStorage LogsStorage
 @inject IBlazorDownloadFileService BlazorDownloadFileService
 
-<MudText Typo="Typo.h3">Real time monitor</MudText>
-<Divider />
+<div class="d-flex flex-column" style="height: 100%">
+    <div class="w-100" Style="display: contents;">
+        <MudText Typo="Typo.h3">Real time monitor</MudText>
+        <Divider />
 
-<MudGrid>
-    <MudItem xs="12" sm="6">
-        <MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="Connect" Disabled="IsConnected">Connect</MudButton>
-        <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="Disconnect" Disabled="!IsConnected">Disconnect</MudButton>
-    </MudItem>
-    <MudItem xs="12" sm="6">
-        <div class="float-end">
-            <UtilityButton Icon="@Icons.Rounded.ClearAll" Tooltip="Clear All" Disabled="IsConnected" OnClick="Clear" />
-        </div>
-        <div class="float-end mr-2">
-            <UtilityButton Icon="@Icons.Rounded.Download" Tooltip="Export" Disabled="IsConnected" OnClick="Export" />
-        </div>
-        <div class="float-end mr-2">
-            <UtilityButton Icon="@Icons.Rounded.Message" Tooltip="Test Hub" Disabled="!IsConnected" OnClick="SendTestLog" />
-        </div>
-    </MudItem>
-</MudGrid>
+        <MudGrid>
+            <MudItem xs="12" sm="6">
+                <MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="Connect" Disabled="IsConnected">Connect</MudButton>
+                <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="Disconnect" Disabled="!IsConnected">Disconnect</MudButton>
+            </MudItem>
+            <MudItem xs="12" sm="6">
+                <div class="float-end">
+                    <UtilityButton Icon="@Icons.Rounded.ClearAll" Tooltip="Clear All" Disabled="IsConnected" OnClick="Clear" />
+                </div>
+                <div class="float-end mr-2">
+                    <UtilityButton Icon="@Icons.Rounded.Download" Tooltip="Export" Disabled="IsConnected" OnClick="Export" />
+                </div>
+                <div class="float-end mr-2">
+                    <UtilityButton Icon="@Icons.Rounded.Message" Tooltip="Test Hub" Disabled="!IsConnected" OnClick="SendTestLog" />
+                </div>
+            </MudItem>
+        </MudGrid>
 
-<Divider />
-
-<MudTable Items="@LogsStorage" FixedHeader="true" Dense="true" Virtualize="true" Height="600px">
-    <HeaderContent>
-        <MudTh>Time</MudTh>
-        <MudTh>Severity</MudTh>
-        <MudTh>Message</MudTh>
-        <MudTh>Exception</MudTh>
-        <MudTh></MudTh>
-    </HeaderContent>
-    <RowTemplate>
-        <MudTd DataLabel="Time">@context.Timestamp</MudTd>
-        <MudTd DataLabel="Severity">
-            <MudChip Size="Size.Small" Color=@GetLogLevelColor(@context)>@context.LevelName</MudChip>
-        </MudTd>
-        <MudTd DataLabel="Message">@context.Message</MudTd>
-        @if (context.Exception is not null)
-        {
-            <MudTd DataLabel="Exception">
-                <MudText Typo="Typo.subtitle2">@context.Exception.Type</MudText>
-                <MudText Typo="Typo.body1">@context.Exception.Message</MudText>
-            </MudTd>
-        }
-        else
-        {
-            <MudTd DataLabel="Exception">-</MudTd>
-        }
-        <MudTd DataLabel="Action">
-            <MudIconButton Icon="@Icons.Rounded.Search" Color="Color.Primary" OnClick="() => ShowLogDetails(LogItem.Parse(context))"></MudIconButton>
-        </MudTd>
-    </RowTemplate>
-</MudTable>
+        <Divider />
+    </div>
+    <div class="flex-grow-1 w-100 mt-2 mb-2" style="height: 70vh;">
+		<MudPaper Width="100%" Height="100%">
+            <MudTable Items="@LogsStorage" FixedHeader="true" Dense="true" Virtualize="true" Style="max-height: 100%; overflow: auto;">
+                <HeaderContent>
+                    <MudTh>Time</MudTh>
+                    <MudTh>Severity</MudTh>
+                    <MudTh>Message</MudTh>
+                    <MudTh>Exception</MudTh>
+                    <MudTh></MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd DataLabel="Time">@context.Timestamp</MudTd>
+                    <MudTd DataLabel="Severity">
+                        <MudChip Size="Size.Small" Color=@GetLogLevelColor(@context)>@context.LevelName</MudChip>
+                    </MudTd>
+                    <MudTd DataLabel="Message">@context.Message</MudTd>
+                    @if (context.Exception is not null)
+                    {
+                        <MudTd DataLabel="Exception">
+                            <MudText Typo="Typo.subtitle2">@context.Exception.Type</MudText>
+                            <MudText Typo="Typo.body1">@context.Exception.Message</MudText>
+                        </MudTd>
+                    }
+                    else
+                    {
+                        <MudTd DataLabel="Exception">-</MudTd>
+                    }
+                    <MudTd DataLabel="Action">
+                        <MudIconButton Icon="@Icons.Rounded.Search" Color="Color.Primary" OnClick="() => ShowLogDetails(LogItem.Parse(context))"></MudIconButton>
+                    </MudTd>
+                </RowTemplate>
+            </MudTable>
+        </MudPaper>
+	</div>
+</div>
 
 @code {
     private HubConnection _hubConnection;
