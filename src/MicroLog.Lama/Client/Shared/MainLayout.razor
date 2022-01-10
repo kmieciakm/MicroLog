@@ -3,6 +3,7 @@
 @inherits LayoutComponentBase
 
 @inject IAlertService AlertService
+@inject IRealTimeStatisticsService RealTimeStatsService
 @inject ISnackbar Snackbar
 
 <MudThemeProvider Theme="AppTheme.Theme" />
@@ -48,6 +49,7 @@
 
     protected override async Task OnInitializedAsync()
     {
+        await RealTimeStatsService.Run();
         await AlertService.Run();
         AlertService.OnAlert += ShowAlertPopup;
     }

@@ -1,5 +1,6 @@
 using MircoLog.Lama.Server;
 using MircoLog.Lama.Server.GraphQL;
+using MircoLog.Lama.Server.Workers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -61,7 +62,9 @@ void ConfigureServices(IServiceCollection services)
         .AddMongoDbSorting()
         .AddMongoDbProjections()
         .AddMongoDbPagingProviders();
-    }
+
+    services.AddHostedService<StatisticsSender>();
+}
 
 void ConfigureApplication(WebApplication app)
 {
@@ -90,6 +93,7 @@ void ConfigureEndpoints(WebApplication app)
     app.UseEndpoints(endpoints =>
     {
         endpoints.MapHub<LogHub>($"/{config.Name}");
+        endpoints.MapHub<StatisticsHub>($"/hub/statistics");
         endpoints.MapGraphQL("/api");
     });
 

@@ -5,14 +5,14 @@ using System.Text.Json;
 
 namespace MircoLog.Lama.Client.Services;
 
-public interface ILogsStorage : IEnumerable<LogEvent>
+interface ILogsStorage : IEnumerable<LogEvent>
 {
     void Add(LogEvent log);
     void Clear();
     string ToJson();
 }
 
-public class LogsStorage : ILogsStorage
+class LogsStorage : ILogsStorage
 {
     private List<LogEvent> _logs = new();
 

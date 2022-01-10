@@ -3,7 +3,7 @@
 
 @inject IFilterService FilterService
 @inject IStatisticsService StatsService
-@inject HttpClient Http
+@inject IRealTimeStatisticsService RealTimeStatsService
 
 <PageTitle>MircoLog LAMA</PageTitle>
 
@@ -43,5 +43,11 @@
     {
         DailyStats = await StatsService.GetDailyStatisticsAsync();
         Logs = (await StatsService.GetLastErrorsAsync()).ToList();
+
+        RealTimeStatsService.OnStatisticsRefreshed += (args) =>
+        {
+            DailyStats = args.DailyStatistics;
+            StateHasChanged();
+        };
     }
 }

@@ -1,7 +1,6 @@
 ﻿using MicroLog.Core.Statistics;
 using MircoLog.Lama.Client.Models;
 using MircoLog.Lama.Shared.Models;
-using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Json;
