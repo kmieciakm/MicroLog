@@ -7,36 +7,62 @@
 
 <PageTitle>MircoLog LAMA</PageTitle>
 
-<div class="d-flex flex-column" style="height: 100%">
-    <div class="w-100" Style="display: contents;">
-        <MudGrid>
-			<MudItem sm="12" md="6" Style="display: inline-table;">
-				<LogsFlowChart Stats="@DailyStats"></LogsFlowChart>
-			</MudItem>
-			<MudItem sm="12" md="3" Style="display: inline-table;">
-				<LogsAmountChart Stats="@DailyStats"></LogsAmountChart>
-			</MudItem>
-			<MudItem sm="12" md="3" Style="display: inline-table;">
-				<MudPaper Class="pa-16 ma-2" Elevation="3"></MudPaper>
-			</MudItem>
-		</MudGrid>
+@if (Loading)
+{
+    <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7"></MudProgressLinear>
+    <div class="d-flex flex-column" style="height: 100%">
+        <div class="w-100" Style="display: contents;">
+            <MudGrid>
+			    <MudItem sm="12" md="6" Style="display: inline-table;">
+				    <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="100%" Height="300px" Class="p-2 rounded"/>
+			    </MudItem>
+			    <MudItem sm="12" md="3" Style="display: inline-table;">
+				    <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="100%" Height="300px" Class="p-2 rounded"/>
+			    </MudItem>
+			    <MudItem sm="12" md="3" Style="display: inline-table;">
+				    <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="100%" Height="300px" Class="p-2 rounded"/>
+			    </MudItem>
+		    </MudGrid>
+        </div>
+        <div class="flex-grow-1 w-100 mt-2 mb-2" style="height: 50vh; min-height: 400px;">
+		    <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="100%" Height="100%" Class="p-2 rounded"/>
+	    </div>
     </div>
-    <div class="flex-grow-1 w-100 mt-2 mb-2" style="height: 50vh; min-height: 400px;">
-		<MudPaper Width="100%" Height="100%">
-            @if (Logs.Count > 0)
-            {
-                <LogsTable Logs="@Logs"></LogsTable>
-            }
-            else
-            {
-                <MudText Class="" Typo="Typo.subtitle1">No error occurred today.</MudText>
-            }
-        </MudPaper>
-	</div>
-</div>
+}
+else
+{
+    <div class="d-flex flex-column" style="height: 100%">
+        <div class="w-100" Style="display: contents;">
+            <MudGrid>
+			    <MudItem sm="12" md="6" Style="display: inline-table;">
+				    <LogsFlowChart Stats="@DailyStats"></LogsFlowChart>
+			    </MudItem>
+			    <MudItem sm="12" md="3" Style="display: inline-table;">
+				    <LogsAmountChart Stats="@DailyStats"></LogsAmountChart>
+			    </MudItem>
+			    <MudItem sm="12" md="3" Style="display: inline-table;">
+				    <MudPaper Class="pa-16 ma-2" Elevation="3"></MudPaper>
+			    </MudItem>
+		    </MudGrid>
+        </div>
+        <div class="flex-grow-1 w-100 mt-2 mb-2" style="height: 50vh; min-height: 400px;">
+		    <MudPaper Width="100%" Height="100%">
+                @if (Logs.Count > 0)
+                {
+                    <LogsTable Logs="@Logs"></LogsTable>
+                }
+                else
+                {
+                    <MudText Class="" Typo="Typo.subtitle1">No error occurred today.</MudText>
+                }
+            </MudPaper>
+	    </div>
+    </div>
+}
 
 @code {
-    public DailyStatistics DailyStats { get; set; }
+    private bool Loading { get; set; } = true;
+    private DailyStatistics DailyStats { get; set; }
     private List<LogItem> Logs { get; set; } = new List<LogItem>();
 
     protected override async Task OnInitializedAsync()
@@ -50,5 +76,6 @@
             Logs = (await StatsService.GetLastErrorsAsync()).ToList();
             StateHasChanged();
         };
+        Loading = false;
     }
 }

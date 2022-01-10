@@ -45,6 +45,7 @@
 
 @code
 {
+    private bool alertShown { get; set; } = false;
     private bool showThemeManager = false;
     private ThemeManager ThemeManager { get; set; }
 
@@ -57,19 +58,25 @@
 
     public void ShowAlertPopup(AlertArgs args)
     {
-        Snackbar.Add(
-            "Application error has occured. Check logs.",
-            Severity.Warning,
-            config =>
-            {
-                config.Onclick = snakbar =>
+        if (!alertShown)
+        {
+            alertShown = true;
+            Snackbar.Add(
+                "Application error has occured. Check logs.",
+                Severity.Warning,
+                config =>
                 {
-                    NavigationManager.NavigateTo("/");
-                    Snackbar.Clear();
-                    return Task.CompletedTask;
-                };
-            }
-        );
+                    config.Onclick = snakbar =>
+                    {
+                        NavigationManager.NavigateTo("/");
+                        alertShown = false;
+                        return Task.CompletedTask;
+                    };
+                    config.RequireInteraction = true;
+                    config.ShowCloseIcon = false;
+                }
+            );
+        }
     }
 
     protected override void OnAfterRender(bool firstRender)

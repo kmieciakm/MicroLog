@@ -129,7 +129,7 @@ public class MongoLogRepository : ILogSink, ILogRegistry, ILogStatsProvider
             var logsInInterval = lastMinuteLogs.Count(entity =>
                     entity.Timestamp >= intervalStart &&
                     entity.Timestamp < intervalStart.AddSeconds(secondsInInterval));
-            intervals.Add(intervalStart, logsInInterval);
+            intervals.Add(intervalStart, logsInInterval / secondsInInterval);
         }
 
         return intervals;
