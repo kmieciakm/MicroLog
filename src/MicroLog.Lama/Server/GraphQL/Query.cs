@@ -28,4 +28,19 @@ public class Query
     {
         return collection.AsExecutable();
     }
+
+    [UseOffsetPaging(MaxPageSize = 1000, DefaultPageSize = 100, IncludeTotalCount = true)]
+    [UseSorting]
+    [UseFiltering]
+    public IExecutable<Log> GetDailyLogs([Service] IMongoCollection<Log> collection)
+    {
+        var currentDayStart = DateTime.UtcNow.Date;
+        var currentDayEnds = DateTime.UtcNow.Date.AddDays(1);
+
+        return collection
+            .Find(log =>
+                log.Timestamp >= currentDayStart &&
+                log.Timestamp < currentDayEnds)
+            .AsExecutable();
+    }
 }

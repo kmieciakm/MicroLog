@@ -1,9 +1,8 @@
 ﻿query {
-    logs (
+    dailyLogs (
         order: { timestamp: DESC, level: DESC }
         where: {
             level: { in: [CRITICAL, ERROR, WARNING] }
-            timestamp: { gte: @STARTDATE }
         }
     ) {
         items {

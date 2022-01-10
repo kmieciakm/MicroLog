@@ -39,9 +39,7 @@ class StatisticsService : IStatisticsService
 
     public async Task<IEnumerable<LogItem>> GetLastErrorsAsync()
     {
-        var basicQuery = await _HttpClient.GetStringAsync("queries/errorsQuery.txt");
-        var today = $"\"{DateTime.UtcNow.Year}-{DateTime.UtcNow.Month}-{DateTime.UtcNow.Day}\"";
-        var query = basicQuery.Replace("@STARTDATE", today);
+        var query = await _HttpClient.GetStringAsync("queries/errorsQuery.txt");
         var logs = await _FilterService.Execute(
             new Filter()
             {

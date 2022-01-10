@@ -16,7 +16,7 @@
         <Divider />
     </div>
     <div class="flex-grow-1">
-        <MudGrid Style="height: 100%; min-height: 600px; max-height: 85vh;">
+        <MudGrid Style="height: 100%; min-height: 500px; max-height: 85vh;">
             <MudItem xs="12" md="2" Style="height: 100%;">
                 <MudPaper Width="100%" Height="100%" Class="d-flex flex-column">
                     <MudList Clickable="true" Class="flex-grow-1" Style="overflow: auto;">
@@ -189,7 +189,7 @@
                         Query = queryContentField.Value
                     }
             );
-            Logs = logs.Items.ToList();
+            Logs = logs?.Items.ToList() ?? new();
         }
         catch (ServiceException ex)
         {

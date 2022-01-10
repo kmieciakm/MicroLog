@@ -102,7 +102,7 @@ class FilterService : IFilterService
                 .SendQueryAsync<FilterResponse>(request)
                 .ConfigureAwait(false);
 
-            return graphQLResponse.Data.Logs;
+            return graphQLResponse.Data.Logs ?? graphQLResponse.Data.DailyLogs;
         }
         catch (Exception ex)
         {
@@ -113,5 +113,6 @@ class FilterService : IFilterService
     private class FilterResponse
     {
         public LogsResponse Logs { get; set; }
+        public LogsResponse DailyLogs { get; set; }
     }
 }
