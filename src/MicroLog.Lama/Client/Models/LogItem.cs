@@ -15,11 +15,11 @@ public class LogItem
     {
         get
         {
-            if (Message.Length >= 97)
+            if (Message?.Length >= 97)
             {
                 return $"{Message.Substring(0, 96)} ...";
             }
-            return Message;
+            return Message ?? "";
         }
     }
     public string Level { get; set; }
@@ -29,14 +29,17 @@ public class LogItem
 
     public Color GetSeverityColor()
     {
-        var level = Enum.Parse<LogLevel>(Level, true);
-        return level switch
+        if (Enum.TryParse(Level, true, out LogLevel level))
         {
-            >= LogLevel.Error => Color.Error,
-            LogLevel.Warning => Color.Warning,
-            LogLevel.Information => Color.Primary,
-            <= LogLevel.Debug => Color.Dark
-        };
+            return level switch
+            {
+                >= LogLevel.Error => Color.Error,
+                LogLevel.Warning => Color.Warning,
+                LogLevel.Information => Color.Primary,
+                <= LogLevel.Debug => Color.Dark
+            };
+        }
+        return Color.Transparent;
     }
 
     public static LogItem Parse(LogEvent logEvent)

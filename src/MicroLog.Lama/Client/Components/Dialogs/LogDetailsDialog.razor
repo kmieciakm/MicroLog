@@ -9,7 +9,7 @@
                 <DetailRow PropertyName="Event Id" Value="@Log.Identity?.EventId" />
                 <DetailRow PropertyName="Date" Value="@Log.Timestamp?.ToString()" />
                 <DetailRow PropertyName="Message" Value="@Log.Message" />
-                <DetailRow PropertyName="Severity" Value="@Enum.GetName(Enum.Parse<LogLevel>(Log.Level, true))" />
+                <DetailRow PropertyName="Severity" Value="@GetSeverityString(Log)" />
                 <DetailRow PropertyName="Error" Value="@(Log.Exception is null ? null : FormatException(Log.Exception))" />
                 @foreach (var property in Log.Properties.OrEmptyIfNull())
                 {
@@ -27,14 +27,23 @@
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
     [Parameter] public LogItem Log { get; set; }
 
-    void Close() => MudDialog.Cancel();
+    public void Close() => MudDialog.Cancel();
 
-    string FormatException(LogException exception)
+    private string FormatException(LogException exception)
         => JsonSerializer.Serialize(exception,
             new JsonSerializerOptions { WriteIndented = true });
 
-    string FormatProperty(ILogProperty property)
+    private string FormatProperty(ILogProperty property)
         => JsonValue
             .Parse(property.Value)
             .ToString(JsonFormatting.Indented);
+
+    private string GetSeverityString(LogItem log)
+    {   
+        if (Enum.TryParse(log.Level, true, out LogLevel level))
+        {
+            return Enum.GetName<LogLevel>(level);
+        }
+        return "";
+    }
 }
