@@ -11,7 +11,7 @@ public static class StartupExtensions
         services.AddMudServices(config =>
         {
             config.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.BottomEnd;
-            config.SnackbarConfiguration.PreventDuplicates = false;
+            config.SnackbarConfiguration.PreventDuplicates = true;
             config.SnackbarConfiguration.NewestOnTop = false;
             config.SnackbarConfiguration.ShowCloseIcon = true;
             config.SnackbarConfiguration.VisibleStateDuration = 10000;

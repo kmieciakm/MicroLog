@@ -44,9 +44,10 @@
         DailyStats = await StatsService.GetDailyStatisticsAsync();
         Logs = (await StatsService.GetLastErrorsAsync()).ToList();
 
-        RealTimeStatsService.OnStatisticsRefreshed += (args) =>
+        RealTimeStatsService.OnStatisticsRefreshed += async (args) =>
         {
             DailyStats = args.DailyStatistics;
+            Logs = (await StatsService.GetLastErrorsAsync()).ToList();
             StateHasChanged();
         };
     }

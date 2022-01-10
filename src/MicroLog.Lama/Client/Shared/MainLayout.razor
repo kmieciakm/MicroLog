@@ -2,6 +2,7 @@
 
 @inherits LayoutComponentBase
 
+@inject NavigationManager NavigationManager
 @inject IAlertService AlertService
 @inject IRealTimeStatisticsService RealTimeStatsService
 @inject ISnackbar Snackbar
@@ -56,7 +57,19 @@
 
     public void ShowAlertPopup(AlertArgs args)
     {
-        Snackbar.Add(args.Log.Message, Severity.Error);
+        Snackbar.Add(
+            "Application error has occured. Check logs.",
+            Severity.Warning,
+            config =>
+            {
+                config.Onclick = snakbar =>
+                {
+                    NavigationManager.NavigateTo("/");
+                    Snackbar.Clear();
+                    return Task.CompletedTask;
+                };
+            }
+        );
     }
 
     protected override void OnAfterRender(bool firstRender)
