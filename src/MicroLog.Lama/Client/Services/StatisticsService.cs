@@ -11,7 +11,7 @@ namespace MircoLog.Lama.Client.Services;
 interface IStatisticsService
 {
     Task<DailyStatistics> GetDailyStatisticsAsync();
-    Task<LogsStatistics> GetTotalStatisticsAsync();
+    Task<TotalStatistics> GetTotalStatisticsAsync();
     Task<IEnumerable<LogItem>> GetLastErrorsAsync();
 }
 
@@ -31,9 +31,9 @@ class StatisticsService : IStatisticsService
         return await _HttpClient.GetFromJsonAsync<DailyStatistics>("api/statistics/daily");
     }
 
-    public async Task<LogsStatistics> GetTotalStatisticsAsync()
+    public async Task<TotalStatistics> GetTotalStatisticsAsync()
     {
-        return await _HttpClient.GetFromJsonAsync<LogsStatistics>("api/statistics/total");
+        return await _HttpClient.GetFromJsonAsync<TotalStatistics>("api/statistics/total");
     }
 
     public async Task<IEnumerable<LogItem>> GetLastErrorsAsync()

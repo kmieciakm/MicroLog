@@ -8,5 +8,5 @@ namespace MicroLog.Core.Abstractions;
 public interface ILogStatsProvider
 {
     DailyStatistics GetDailyStatistics();
-    LogsStatistics GetTotalStatistics();
+    TotalStatistics GetTotalStatistics();
 }

@@ -2,7 +2,7 @@
 			InputData="@Data" InputLabels="Enum.GetNames<LogLevel>()">
 	<CustomGraphics>
 		<text class="donut-inner-text" x="47%" y="35%" dominant-baseline="middle" text-anchor="middle"
-				fill="white" font-family="Helvetica" font-size="2">Total</text>
+				fill="white" font-family="Helvetica" font-size="2">Today</text>
 		<text class="donut-inner-text" x="47%" y="50%" dominant-baseline="middle" text-anchor="middle"
 				fill="white" font-family="Helvetica" font-size="5">@(Stats is null ? 0 : Stats.TotalCount.ToString())</text>
 	</CustomGraphics>
@@ -17,6 +17,7 @@
 	{
 		ChartPalette = new string[] { "#0f0f0f", "#424242", "#0f9aa7", "#d4964e", "#de2d6d", "#911d47", "#ffffff" }
 	};
+
 	private double[] Data {
 		get
 		{

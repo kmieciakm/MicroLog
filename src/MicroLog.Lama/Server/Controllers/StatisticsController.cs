@@ -20,7 +20,7 @@ public class StatisticsController : ControllerBase
     }
 
     [HttpGet("total")]
-    public ActionResult<LogsStatistics> GetTotalStatistics()
+    public ActionResult<TotalStatistics> GetTotalStatistics()
     {
         return _StatsProvider.GetTotalStatistics();
     }

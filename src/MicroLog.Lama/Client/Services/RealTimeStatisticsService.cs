@@ -17,9 +17,9 @@ class RealTimeStatisticsService : RealTimeService, IRealTimeStatisticsService
     public RealTimeStatisticsService(NavigationManager navigationManager)
         : base(navigationManager.ToAbsoluteUri("/hub/statistics"))
     {
-        HubConnection.On<DailyStatistics>("ReceiveDailyStatistics", (stats) =>
+        HubConnection.On<DailyStatistics, TotalStatistics>("ReceiveDailyStatistics", (daily, total) =>
         {
-            OnStatisticsRefreshed?.Invoke(new StatisticsArgs(stats));
+            OnStatisticsRefreshed?.Invoke(new StatisticsArgs(daily, total));
         });
     }
 }
@@ -29,9 +29,11 @@ public delegate void StatisticsDelegate(StatisticsArgs arg);
 public class StatisticsArgs : EventArgs
 {
     public DailyStatistics DailyStatistics { get; }
+    public TotalStatistics TotalStatistics { get; }
 
-    public StatisticsArgs(DailyStatistics stats)
+    public StatisticsArgs(DailyStatistics daily, TotalStatistics total)
     {
-        DailyStatistics = stats;
+        DailyStatistics = daily;
+        TotalStatistics = total;
     }
 }

@@ -15,8 +15,9 @@ public class StatisticsSender : BackgroundService
         _Timer.Interval = SENDING_INTERVAL;
         _Timer.Elapsed += async (s, e) =>
         {
-            var stats = statsProvider.GetDailyStatistics();
-            await statisticsHub.Clients.All.ReceiveDailyStatistics(stats);
+            var daily = statsProvider.GetDailyStatistics();
+            var total = statsProvider.GetTotalStatistics();
+            await statisticsHub.Clients.All.ReceiveDailyStatistics(daily, total);
         };
         _Timer.Start();
     }

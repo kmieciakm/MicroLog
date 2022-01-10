@@ -135,7 +135,7 @@ public class MongoLogRepository : ILogSink, ILogRegistry, ILogStatsProvider
         return intervals;
     }
 
-    public LogsStatistics GetTotalStatistics()
+    public TotalStatistics GetTotalStatistics()
     {
         long totalCount = 0;
         var logsCount = new List<LogsCount>();
@@ -148,10 +148,11 @@ public class MongoLogRepository : ILogSink, ILogRegistry, ILogStatsProvider
             logsCount.Add(new LogsCount(logLevel, count));
         }
 
-        return new LogsStatistics()
+        return new TotalStatistics()
         {
             LogsCount = logsCount,
-            TotalCount = totalCount
+            TotalCount = totalCount,
+            ProviderName = _Collection.CollectionNamespace.FullName
         };
     }
 }
