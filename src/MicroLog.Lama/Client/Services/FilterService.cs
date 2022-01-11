@@ -37,14 +37,14 @@ class FilterService : IFilterService
 
     public async Task<IEnumerable<Filter>> GetAsync()
     {
-        return await _HttpClient.GetFromJsonAsync<IEnumerable<Filter>>("/filters");
+        return await _HttpClient.GetFromJsonAsync<IEnumerable<Filter>>("api/filters");
     }
 
     public async Task EditAsync(Filter filter)
     {
         var body = JsonSerializer.Serialize(filter);
         var content = new StringContent(body, Encoding.UTF8, "application/json");
-        var response = await _HttpClient.PatchAsync("/filters/edit", content);
+        var response = await _HttpClient.PatchAsync("api/filters/edit", content);
 
         await ThrowIfNotSucceded(response);
     }
@@ -53,14 +53,14 @@ class FilterService : IFilterService
     {
         var body = JsonSerializer.Serialize(filter);
         var content = new StringContent(body, Encoding.UTF8, "application/json");
-        var response = await _HttpClient.PostAsync("/filters/save", content);
+        var response = await _HttpClient.PostAsync("api/filters/save", content);
 
         await ThrowIfNotSucceded(response);
     }
 
     public async Task DeleteAsync(Filter filter)
     {
-        var response = await _HttpClient.DeleteAsync($"/filters/{filter.Name}");
+        var response = await _HttpClient.DeleteAsync($"api/filters/{filter.Name}");
         await ThrowIfNotSucceded(response);
     }
 
@@ -102,7 +102,7 @@ class FilterService : IFilterService
                 .SendQueryAsync<FilterResponse>(request)
                 .ConfigureAwait(false);
 
-            return graphQLResponse.Data.Logs;
+            return graphQLResponse.Data.Logs ?? graphQLResponse.Data.DailyLogs;
         }
         catch (Exception ex)
         {
@@ -113,5 +113,6 @@ class FilterService : IFilterService
     private class FilterResponse
     {
         public LogsResponse Logs { get; set; }
+        public LogsResponse DailyLogs { get; set; }
     }
 }

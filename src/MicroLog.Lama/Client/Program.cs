@@ -20,5 +20,7 @@ builder.Services.AddBlazorDownloadFile();
 builder.Services.AddSingleton<ILogsStorage, LogsStorage>();
 builder.Services.AddSingleton<IAlertService, AlertService>();
 builder.Services.AddSingleton<IFilterService, FilterService>();
+builder.Services.AddSingleton<IStatisticsService, StatisticsService>();
+builder.Services.AddSingleton<IRealTimeStatisticsService, RealTimeStatisticsService>();
 
 await builder.Build().RunAsync();

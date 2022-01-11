@@ -1,13 +1,13 @@
-﻿using MicroLog.Sink.MongoDb.Config;
+﻿using MicroLog.Core.Statistics;
+using MicroLog.Sink.MongoDb.Config;
 using Microsoft.Extensions.Options;
-using Polly;
 
 namespace MicroLog.Sink.MongoDb;
 
 /// <summary>
 /// A MongoDb data access point of logs.
 /// </summary>
-public class MongoLogRepository : ILogSink, ILogRegistry
+public class MongoLogRepository : ILogSink, ILogRegistry, ILogStatsProvider
 {
     private const string COLLECTION_NAME = "logs";
     private const int MAX_CONNECTION_POOL_SIZE = 1000;
@@ -60,13 +60,6 @@ public class MongoLogRepository : ILogSink, ILogRegistry
         return entity.ToEnumerable();
     }
 
-    async Task<IEnumerable<ILogEvent>> ILogRegistry.GetAsync(Expression<Func<ILogEvent, bool>> predicate)
-    {
-        Func<MongoLogEntity, bool> func = predicate.Compile();
-        using var entities = await _Collection.FindAsync(entity => func.Invoke(entity));
-        return entities.ToEnumerable();
-    }
-
     async Task ILogSink.InsertAsync(ILogEvent logEvent)
     {
         var entity = MongoLogMapper.Map(logEvent);
@@ -79,16 +72,87 @@ public class MongoLogRepository : ILogSink, ILogRegistry
         await _Collection.InsertManyAsync(entities);
     }
 
-    /// <summary>
-    /// Insert retry policy.
-    /// </summary>
-    private IAsyncPolicy GetInsertPolicy()
+    public DailyStatistics GetDailyStatistics()
     {
-        var maxNumberOfRetry = 10;
-        var pauseBetweenFailures = TimeSpan.FromSeconds(1);
-        var retryPolicy = Policy
-             .Handle<Exception>()
-             .WaitAndRetryAsync(maxNumberOfRetry, _ => pauseBetweenFailures);
-        return retryPolicy;
+        (var totalCount, var logsCount) = GetDailyLogCount();
+        var intervals = GetLastMinuteLogsInterval();
+
+        return new DailyStatistics()
+        {
+            LogsCount = logsCount,
+            TotalCount = totalCount,
+            LogsInterval = intervals
+        };
+    }
+
+    private (long totalCount, List<LogsCount> logsCount) GetDailyLogCount()
+    {
+        var totalCount = 0;
+        var logsCount = new List<LogsCount>();
+
+        var currentDayStart = DateTime.UtcNow.Date;
+        var currentDayEnds = DateTime.UtcNow.Date.AddDays(1);
+
+        foreach (var logLevel in Enum.GetValues<LogLevel>())
+        {
+            var count = _Collection
+                .AsQueryable()
+                .Count(entity =>
+                    entity.Level == logLevel &&
+                    entity.Timestamp >= currentDayStart &&
+                    entity.Timestamp < currentDayEnds);
+
+            totalCount += count;
+            logsCount.Add(new LogsCount(logLevel, count));
+        }
+
+        return (totalCount, logsCount);
+    }
+
+    private Dictionary<DateTime, int> GetLastMinuteLogsInterval()
+    {
+        var lastMinuteEnd = DateTime.UtcNow;
+        var lastMinuteStart = lastMinuteEnd.AddMinutes(-1);
+
+        var lastMinuteLogs = _Collection
+                .AsQueryable()
+                .Where(entity =>
+                    entity.Timestamp >= lastMinuteStart &&
+                    entity.Timestamp < lastMinuteEnd)
+                .ToList();
+
+        int secondsInInterval = 10;
+        Dictionary<DateTime, int> intervals = new();
+
+        for (var intervalStart = lastMinuteStart; intervalStart < lastMinuteEnd; intervalStart = intervalStart.AddSeconds(secondsInInterval))
+        {
+            var logsInInterval = lastMinuteLogs.Count(entity =>
+                    entity.Timestamp >= intervalStart &&
+                    entity.Timestamp < intervalStart.AddSeconds(secondsInInterval));
+            intervals.Add(intervalStart, logsInInterval / secondsInInterval);
+        }
+
+        return intervals;
+    }
+
+    public TotalStatistics GetTotalStatistics()
+    {
+        long totalCount = 0;
+        var logsCount = new List<LogsCount>();
+        foreach (var logLevel in Enum.GetValues<LogLevel>())
+        {
+            var count = _Collection
+                .AsQueryable()
+                .Count(entity => entity.Level == logLevel);
+            totalCount += count;
+            logsCount.Add(new LogsCount(logLevel, count));
+        }
+
+        return new TotalStatistics()
+        {
+            LogsCount = logsCount,
+            TotalCount = totalCount,
+            ProviderName = _Collection.CollectionNamespace.FullName
+        };
     }
 }

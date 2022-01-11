@@ -2,7 +2,9 @@
 
 @inherits LayoutComponentBase
 
+@inject NavigationManager NavigationManager
 @inject IAlertService AlertService
+@inject IRealTimeStatisticsService RealTimeStatsService
 @inject ISnackbar Snackbar
 
 <MudThemeProvider Theme="AppTheme.Theme" />
@@ -33,7 +35,7 @@
 
         <div class="centered">
             <MudMainContent Class="mud-container-maxwidth-xl" Style="margin-right: 0px !important;">
-                <div class="pt-4 pa-3" style="height: 100%">
+                <div class="pt-4 pa-3 mb-1" style="height: 100%">
                     @Body
                 </div>
             </MudMainContent>
@@ -43,18 +45,38 @@
 
 @code
 {
+    private bool alertShown { get; set; } = false;
     private bool showThemeManager = false;
     private ThemeManager ThemeManager { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
+        await RealTimeStatsService.Run();
         await AlertService.Run();
         AlertService.OnAlert += ShowAlertPopup;
     }
 
     public void ShowAlertPopup(AlertArgs args)
     {
-        Snackbar.Add(args.Log.Message, Severity.Error);
+        if (!alertShown)
+        {
+            alertShown = true;
+            Snackbar.Add(
+                "Application error has occured. Check logs.",
+                Severity.Warning,
+                config =>
+                {
+                    config.Onclick = snakbar =>
+                    {
+                        NavigationManager.NavigateTo("/");
+                        alertShown = false;
+                        return Task.CompletedTask;
+                    };
+                    config.RequireInteraction = true;
+                    config.ShowCloseIcon = false;
+                }
+            );
+        }
     }
 
     protected override void OnAfterRender(bool firstRender)

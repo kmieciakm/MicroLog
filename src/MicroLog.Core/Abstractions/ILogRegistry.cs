@@ -24,10 +24,4 @@ public interface ILogRegistry
     /// <param name="identities"></param>
     /// <returns>A task whose result is a collection of desired logs.</returns>
     Task<IEnumerable<ILogEvent>> GetAsync(IEnumerable<ILogEventIdentity> identities);
-    /// <summary>
-    /// Returns the collection of logs matching the predicate filter.
-    /// </summary>
-    /// <param name="predicate">Filter function.</param>
-    /// <returns>A task whose result is a collection of matching logs.</returns>
-    Task<IEnumerable<ILogEvent>> GetAsync(Expression<Func<ILogEvent, bool>> predicate);
 }

@@ -1,0 +1,32 @@
+﻿<MudPaper Width="100%" Square="false">
+    <MudList>
+        <MudListItem Icon="@Icons.Material.Filled.Star" IconColor="Color.Primary">
+            <MudText Typo="Typo.subtitle2">Provider</MudText>
+            <div class="text-bold">@DatabaseName</div>
+        </MudListItem>
+
+        <MudDivider DividerType="DividerType.Inset" />
+        <MudListItem Icon="@Icons.Material.Filled.TrendingUp" IconColor="Color.Primary">
+            <MudText Typo="Typo.subtitle2">Total</MudText>
+            <div>@TotalRecords</div>
+        </MudListItem>
+
+        <MudDivider DividerType="DividerType.Inset" />
+        <MudListItem Icon="@Icons.Material.Filled.AccessTime" IconColor="Color.Primary">
+            <MudText Typo="Typo.subtitle2">Access</MudText>
+            <div>@System.DateTime.Now.ToString("dd/MM/yyyy HH:mm")</div>
+        </MudListItem>
+
+        <MudDivider DividerType="DividerType.Inset" />
+        <MudListItem Icon="@Icons.Material.Filled.Beenhere" IconColor="Color.Primary">
+            <MudText Typo="Typo.subtitle2">Status</MudText>
+            <div>@(Connected ? "Connected" : "Disconnected")</div>
+        </MudListItem>
+    </MudList>
+</MudPaper>
+
+@code {
+    [Parameter, EditorRequired] public string DatabaseName { get; set; } 
+    [Parameter, EditorRequired] public long TotalRecords { get; set; }
+    [Parameter, EditorRequired] public bool Connected { get; set; }
+}

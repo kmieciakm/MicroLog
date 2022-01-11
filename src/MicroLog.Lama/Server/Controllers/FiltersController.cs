@@ -7,7 +7,7 @@ namespace MircoLog.Lama.Server.Controllers;
 /* TODO: Move MongoDb specific code to separate service */
 
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]")]
 public class FiltersController : FilterControllerBase
 {
     private const string COLLECTION_NAME = "filters";

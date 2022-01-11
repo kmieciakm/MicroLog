@@ -27,6 +27,7 @@ global using MongoDB.Driver.Core.Events;
 
 global using MicroLog.Core;
 global using MicroLog.Core.Abstractions;
+global using MicroLog.Core.Statistics;
 global using MicroLog.Sink.Hub;
 global using MicroLog.Sink.MongoDb;
 global using MicroLog.Sink.MongoDb.Config;

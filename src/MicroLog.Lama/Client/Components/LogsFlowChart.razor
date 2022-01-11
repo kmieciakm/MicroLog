@@ -1,0 +1,49 @@
+﻿<div>
+    <MudChart ChartType="ChartType.Line" ChartSeries="@Series" ChartOptions="@ChartOptions" XAxisLabels="@Labels" Width="@Width" Height="@Height">
+    </MudChart>
+</div>
+
+@code {
+    [Parameter] public string Width { get; set; } = "100%";
+    [Parameter] public string Height { get; set; } = "300px";
+    [Parameter, EditorRequired] public DailyStatistics Stats { get; set; }
+
+    private string[] Labels = { "00:00:00", "00:00:10", "00:00:10", "00:00:30", "00:00:40", "00:00:50" };
+    private List<ChartSeries> Series = new()
+    {
+        new() {
+            Data = new double[] { 0, 0, 0, 0, 0, 0 }
+        }
+    };
+    protected ChartOptions ChartOptions { get; set; } = new ChartOptions()
+	{
+		ChartPalette = new string[] { "#0f9aa7" },
+        DisableLegend = true
+	};
+
+    protected override void OnParametersSet() => Refresh();
+
+    protected void Refresh()
+    {
+        if (Stats is null) return;
+
+        Labels = Stats
+            .LogsInterval
+            .Select(interval =>
+                interval.Key.ToString("HH:mm:ss"))
+            .ToArray();
+
+        Series = new()
+        {
+            new() {
+                Data = Stats
+                    .LogsInterval
+                    .Select(interval =>
+                        Convert.ToDouble(interval.Value))
+                    .ToArray()
+            },
+        };
+
+        StateHasChanged();
+    }
+}
