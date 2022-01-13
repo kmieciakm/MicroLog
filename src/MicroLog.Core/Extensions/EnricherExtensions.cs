@@ -9,4 +9,9 @@ public static class EnricherExtensions
     {
         app.UseMiddleware<HttpContextEnricherMiddleware>();
     }
+
+    public static void UseEnvironmentEnricher(this IApplicationBuilder app)
+    {
+        app.UseMiddleware<EnvironmentEnricherMiddleware>();
+    }
 }

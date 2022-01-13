@@ -22,6 +22,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpContextEnricher();
+app.UseEnvironmentEnricher();
 
 app.UseHttpsRedirection();
 
