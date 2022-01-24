@@ -1,7 +1,7 @@
 ﻿namespace MicroLog.Core.Abstractions;
 
 /// <summary>
-/// Writes log entries to the permanent data storage.
+/// Writes log entries to the data destination.
 /// </summary>
 public interface ILogSink
 {

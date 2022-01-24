@@ -10,7 +10,7 @@ public abstract class ConnectionBackgroundService : BackgroundService
         var retryPolicy = Policy
                 .Handle<Exception>()
                 .WaitAndRetry(maxNumberOfRetry, (attemptCount) =>
-                TimeSpan.FromSeconds(attemptCount * 2));
+                    TimeSpan.FromSeconds(attemptCount * 2));
         return retryPolicy;
     }
 }

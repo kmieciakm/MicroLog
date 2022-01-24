@@ -7,7 +7,7 @@
 public class LogCollectorClient : ILogger
 {
     private static readonly HttpClient _httpClient = new HttpClient();
-
+    
     private LogCollectorConfig _Config { get; }
     private LogCollectorRoutes _Routes { get; }
     private AggregateEnricher _EmbeddedEnrichers { get; } = new();

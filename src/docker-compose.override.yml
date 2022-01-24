@@ -61,3 +61,23 @@ services:
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+
+  microshop.ordering:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - "LogCollectorConfig__Url=http://microlog.publisher"
+      - "LogCollectorConfig__MinimumLevel=1"
+      - "ProcessingConfig__Enabled=true"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+
+  microshop.shipping:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - "LogCollectorConfig__Url=http://microlog.publisher"
+      - "LogCollectorConfig__MinimumLevel=1"
+      - "ProcessingConfig__Enabled=true"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro

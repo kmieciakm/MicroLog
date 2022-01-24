@@ -26,6 +26,7 @@ public sealed class AspMicroLoggerProvider : ILoggerProvider
         return _loggers.GetOrAdd(categoryName, name =>
                 new Lazy<AspMicroLogger>(new AspMicroLogger(name, _Logger))).Value;
     }
+
     public void Dispose()
     {
         _loggers.Clear();

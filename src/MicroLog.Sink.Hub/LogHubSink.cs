@@ -3,6 +3,9 @@ using Polly;
 
 namespace MicroLog.Sink.Hub;
 
+/// <summary>
+/// A real-time log sink, built with SignalR.
+/// </summary>
 public class LogHubSink : ILogSink, IAsyncDisposable
 {
     public ISinkConfig Config { get; }
@@ -41,7 +44,9 @@ public class LogHubSink : ILogSink, IAsyncDisposable
     {
         if (IsConnected)
         {
-            List<LogEvent> logs = logEvents.Select(log => LogEvent.Parse(log)).ToList();
+            List<LogEvent> logs = logEvents
+                .Select(log => LogEvent.Parse(log))
+                .ToList();
             await _HubConnection.SendAsync("InsertMany", logs);
         }
     }

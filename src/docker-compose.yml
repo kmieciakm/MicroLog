@@ -41,6 +41,20 @@ services:
       context: .
       dockerfile: Microlog.Lama/Server/Dockerfile
 
+  microshop.ordering:
+    image: ${DOCKER_REGISTRY-}microshopordering
+    container_name: microshop.ordering
+    build:
+      context: .
+      dockerfile: examples/microshop/MicroShop.Ordering/Dockerfile
+
+  microshop.shipping:
+    image: ${DOCKER_REGISTRY-}microshopshipping
+    container_name: microshop.shipping
+    build:
+      context: .
+      dockerfile: examples/microshop/MicroShop.Shipping/Dockerfile
+
 volumes:
   logsDb_data:
   logsDb_config:

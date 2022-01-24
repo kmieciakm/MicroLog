@@ -20,7 +20,7 @@ public class AggregateEnricher : ILogEnricher
     }
 
     /// <summary>
-    /// Appends given enricher to itself.
+    /// Appends given enricher.
     /// </summary>
     /// <param name="enricher">Enricher to append.</param>
     public void Add(ILogEnricher enricher)
