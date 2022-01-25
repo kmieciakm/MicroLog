@@ -9,14 +9,14 @@ public class Worker : BackgroundService
     private readonly ILogger<Worker> _logger;
     private readonly ProcessingConfig _config;
 
-    private IOrderProcessingService OrderProcessingService { get; set; }
+    private IOrderProcessingService _OrderProcessingService { get; }
 
     public Worker(ILogger<Worker> logger, IOptions<ProcessingConfig> processingOptions,
         IOrderProcessingService orderProcessingService)
     {
         _logger = logger;
         _config = processingOptions.Value;
-        OrderProcessingService = orderProcessingService;
+        _OrderProcessingService = orderProcessingService;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -25,7 +25,7 @@ public class Worker : BackgroundService
         while (!stoppingToken.IsCancellationRequested && _config.Enabled)
         {
             Order order = FakeDataProvider.GenerateFakeOrder();
-            OrderProcessingService.ProcessOrder(order);
+            _OrderProcessingService.ProcessOrder(order);
             await Task.Delay(_config.DelayInMilliseconds, stoppingToken);
         }
         _logger.LogInformation($"ORDERING - Worker stoped at: {DateTime.Now}");

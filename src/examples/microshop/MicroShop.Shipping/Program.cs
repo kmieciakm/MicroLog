@@ -20,11 +20,14 @@ builder.ConfigureServices((hostContext, services) =>
             .ClearProviders()
             .AddAspMicroLogger());
 
+    services.AddScoped<ShippingEnricher>();
+    services.AddScoped<IShippingProcessingService, FakeShippingProcessingService>();
     services.AddHostedService<Worker>();
 });
 
 var host = builder.Build();
 
+host.Services.UseEnricher<ShippingEnricher>();
 host.Services.UseEnvironmentEnricher();
 
 await host.RunAsync();

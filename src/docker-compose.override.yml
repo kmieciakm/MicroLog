@@ -68,7 +68,7 @@ services:
       - "LogCollectorConfig__Url=http://microlog.publisher"
       - "LogCollectorConfig__MinimumLevel=1"
       - "ProcessingConfig__Enabled=true"
-      - "ProcessingConfig__DelayInMilliseconds=5000"
+      - "ProcessingConfig__DelayInMilliseconds=2000"
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
@@ -78,8 +78,8 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - "LogCollectorConfig__Url=http://microlog.publisher"
       - "LogCollectorConfig__MinimumLevel=1"
-      - "ProcessingConfig__Enabled=false"
-      - "ProcessingConfig__DelayInMilliseconds=5000"
+      - "ProcessingConfig__Enabled=true"
+      - "ProcessingConfig__DelayInMilliseconds=2000"
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro

@@ -10,6 +10,10 @@ public class LogException
     /// </summary>
     public string Message { get; set; }
     /// <summary>
+    /// A message that describes the immediate frames of the call stack.
+    /// </summary>
+    public string StackTrace { get; set; }
+    /// <summary>
     /// The type of the exception instance.
     /// </summary>
     public string Type { get; set; }
@@ -34,6 +38,7 @@ public class LogException
         return new LogException()
         {
             Message = exception.Message,
+            StackTrace = exception.StackTrace,
             Type = exception.GetType().Name,
             Source = exception.Source,
             InnerException = Parse(exception.InnerException)
@@ -44,6 +49,7 @@ public class LogException
     {
         return obj is LogException exception &&
                Message == exception.Message &&
+               StackTrace == exception.StackTrace &&
                Type == exception.Type &&
                Source == exception.Source &&
                InnerException is not null ? InnerException.Equals(exception.InnerException) : true;
@@ -51,6 +57,6 @@ public class LogException
 
     public override int GetHashCode()
     {
-        return HashCode.Combine(Message, Type, Source, InnerException);
+        return HashCode.Combine(Message, StackTrace, Type, Source, InnerException);
     }
 }

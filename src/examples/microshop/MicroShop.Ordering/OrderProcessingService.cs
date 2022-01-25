@@ -8,13 +8,14 @@ public interface IOrderProcessingService
     void ProcessOrder(Order order);
 }
 
-public class FakeOrderProcessingService : IOrderProcessingService
+internal class FakeOrderProcessingService : IOrderProcessingService
 {
     private readonly ILogger<FakeOrderProcessingService> _logger;
 
     private OrderEnricher _OrderEnricher { get; }
 
-    public FakeOrderProcessingService(ILogger<FakeOrderProcessingService> logger, OrderEnricher orderEnricher)
+    public FakeOrderProcessingService(
+        ILogger<FakeOrderProcessingService> logger, OrderEnricher orderEnricher)
     {
         _logger = logger;
         _OrderEnricher = orderEnricher;
@@ -24,37 +25,36 @@ public class FakeOrderProcessingService : IOrderProcessingService
     {
         _OrderEnricher.Order = order;
 
-        _logger.LogInformation($"Started processing ..");
+        _logger.LogInformation($"Started processing ...");
 
         Random random = new();
         var process = random.RandomizeAction<Order>(
             5,
             order => ProcessCorrectly(order),
             order => ProcessIncorrectly(order));
-
         process.Invoke(order);
 
-        _logger.LogInformation($"Ended processing");
+        _logger.LogInformation($"Ended processing.");
     }
 
     private void ProcessCorrectly(Order order)
     {
         _logger.LogInformation(
-            $"Checking products availability ..");
+            $"Checking products availability ...");
         _logger.LogInformation(
-            $"All ordered products are accessible ..");
+            $"All ordered products are accessible ...");
         _logger.LogInformation(
-            $"Booking products ..");
+            $"Booking products ...");
         _logger.LogInformation(
-            $"Products booked");
+            $"Products booked.");
         _logger.LogDebug(
-            $"Booked products ids: {string.Join("-", order.ProductsIds)}");
+            $"Booked products ids: {string.Join(", ", order.ProductsIds)}.");
         _logger.LogInformation(
-            $"Accessing buyer location ..");
+            $"Accessing buyer location ...");
         _logger.LogInformation(
-            $"Creating shipping request ..");
+            $"Creating shipping request ...");
         _logger.LogInformation(
-            $"Sending order confiration email to {order.BuyerName} ({order.BuyerEmail})");
+            $"Sending order confiration email to {order.BuyerName} ({order.BuyerEmail}).");
     }
 
     private void ProcessIncorrectly(Order order)
@@ -69,33 +69,33 @@ public class FakeOrderProcessingService : IOrderProcessingService
         void UnavailableProduct()
         {
             _logger.LogInformation(
-                $"Checking products availability ..");
+                $"Checking products availability ...");
             _logger.LogWarning(
-                $"Product of id: {order.ProductsIds.First()} is temporary unavailable");
+                $"Product of id: {order.ProductsIds.First()} is temporary unavailable.");
             _logger.LogInformation(
-                $"Redirecting order to delay queue");
+                $"Redirecting order to delay queue.");
             _logger.LogInformation(
-                $"Sending order delay email to {order.BuyerName} ({order.BuyerEmail})");
+                $"Sending order delay email to {order.BuyerName} ({order.BuyerEmail}).");
         }
 
         void BuyerBlocked()
         {
             _logger.LogInformation(
-            $"Checking products availability ..");
+            $"Checking products availability ...");
             _logger.LogInformation(
-                $"All ordered products are accessible ..");
+                $"All ordered products are accessible ...");
             _logger.LogInformation(
-                $"Booking products ..");
+                $"Booking products ...");
             _logger.LogInformation(
-                $"Products booked");
+                $"Products booked.");
             _logger.LogDebug(
-                $"Booked products ids: {string.Join("-", order.ProductsIds)}");
+                $"Booked products ids: {string.Join("-", order.ProductsIds)}.");
             _logger.LogInformation(
-                $"Accessing buyer location ..");
+                $"Accessing buyer location ...");
             _logger.LogError(
-                $"Buyer {order.BuyerName} ({order.BuyerId}) is blocked. Order cannot be delivered");
+                $"Buyer {order.BuyerName} ({order.BuyerId}) is blocked. Order cannot be delivered.");
             _logger.LogDebug(
-                $"Blocking reason: exceed credit limit");
+                $"Blocking reason: exceed credit limit.");
         }
     }
 }
