@@ -5,8 +5,9 @@
     <DockerTargetOS>Linux</DockerTargetOS>
     <ProjectGuid>75366c85-9104-4a3b-b54e-913b93cf1e18</ProjectGuid>
     <DockerLaunchAction>LaunchBrowser</DockerLaunchAction>
-    <DockerServiceUrl>{Scheme}://localhost:{ServicePort}/swagger</DockerServiceUrl>
-    <DockerServiceName>microlog.collector</DockerServiceName>
+    <DockerServiceUrl>{Scheme}://localhost:{ServicePort}</DockerServiceUrl>
+    <DockerServiceName>microlog.lama</DockerServiceName>
+    <DockerComposeProjectName>Microlog</DockerComposeProjectName>
   </PropertyGroup>
   <ItemGroup>
     <None Include="docker-compose.override.yml">

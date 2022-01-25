@@ -5,6 +5,10 @@
       "commandVersion": "1.0",
       "serviceActions": {
         "microlog.collector": "StartDebugging",
+        "microlog.publisher": "StartDebugging",
+        "microshop.ordering": "StartDebugging",
+        "microshop.shipping": "StartDebugging",
+        "microlog.lama": "StartDebugging",
         "microlog.mongoDb": "StartWithoutDebugging",
         "microlog.rabbitmq": "StartWithoutDebugging"
       }
