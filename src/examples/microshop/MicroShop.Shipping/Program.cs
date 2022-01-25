@@ -1,6 +1,7 @@
 using MicroLog.Collector.Client;
 using MicroLog.Core.Extensions;
 using MicroLog.Provider.AspNetCore;
+using MicroShop.Core;
 using MicroShop.Shipping;
 using IMicroLogger = MicroLog.Core.Abstractions.ILogger;
 

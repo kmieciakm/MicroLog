@@ -23,4 +23,11 @@ public static class EnricherExtensions
         var enricher = new EnvironmentEnricher();
         logger.AddEnricher(enricher);
     }
+
+    public static void UseEnricher<T>(this IServiceProvider serviceProvider)
+    {
+        var logger = serviceProvider.GetRequiredService<ILogger>();
+        var enricher = serviceProvider.GetRequiredService<T>() as ILogEnricher;
+        logger.AddEnricher(enricher);
+    }
 }

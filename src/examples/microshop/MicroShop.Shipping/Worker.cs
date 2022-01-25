@@ -1,3 +1,4 @@
+using MicroShop.Core;
 using Microsoft.Extensions.Options;
 
 namespace MicroShop.Shipping;

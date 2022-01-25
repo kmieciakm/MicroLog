@@ -1,3 +1,5 @@
+using MicroShop.Core;
+using MicroShop.Core.Models;
 using Microsoft.Extensions.Options;
 
 namespace MicroShop.Ordering;
@@ -7,18 +9,25 @@ public class Worker : BackgroundService
     private readonly ILogger<Worker> _logger;
     private readonly ProcessingConfig _config;
 
-    public Worker(ILogger<Worker> logger, IOptions<ProcessingConfig> processingOptions)
+    private IOrderProcessingService OrderProcessingService { get; set; }
+
+    public Worker(ILogger<Worker> logger, IOptions<ProcessingConfig> processingOptions,
+        IOrderProcessingService orderProcessingService)
     {
         _logger = logger;
         _config = processingOptions.Value;
+        OrderProcessingService = orderProcessingService;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
+        _logger.LogInformation($"ORDERING - Worker started at: {DateTime.Now}");
         while (!stoppingToken.IsCancellationRequested && _config.Enabled)
         {
-            _logger.LogInformation($"ORDERING - Worker running at: {DateTime.Now}");
-            await Task.Delay(1000, stoppingToken);
+            Order order = FakeDataProvider.GenerateFakeOrder();
+            OrderProcessingService.ProcessOrder(order);
+            await Task.Delay(_config.DelayInMilliseconds, stoppingToken);
         }
+        _logger.LogInformation($"ORDERING - Worker stoped at: {DateTime.Now}");
     }
 }

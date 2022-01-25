@@ -1,6 +1,7 @@
 using MicroLog.Collector.Client;
 using MicroLog.Core.Extensions;
 using MicroLog.Provider.AspNetCore;
+using MicroShop.Core;
 using MicroShop.Ordering;
 using IMicroLogger = MicroLog.Core.Abstractions.ILogger;
 
@@ -19,11 +20,14 @@ builder.ConfigureServices((hostContext, services) =>
             .ClearProviders()
             .AddAspMicroLogger());
 
+    services.AddScoped<OrderEnricher>();
+    services.AddScoped<IOrderProcessingService, FakeOrderProcessingService>();
     services.AddHostedService<Worker>();
 });
 
 var host = builder.Build();
 
+host.Services.UseEnricher<OrderEnricher>();
 host.Services.UseEnvironmentEnricher();
 
 await host.RunAsync();
